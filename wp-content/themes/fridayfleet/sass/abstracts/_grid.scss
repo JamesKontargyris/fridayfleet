@@ -1,0 +1,84 @@
+$neat-grid: (
+        columns: 12,
+        gutter: 2.4rem,
+);
+
+$neat-grid-rtl: (
+        columns: 12,
+        gutter: 2.4rem,
+        direction: rtl,
+);
+
+$grid-huge: (
+        columns: 12,
+        gutter: 2.4rem,
+        media: 'screen and (min-width:1800px)',
+        direction: ltr,
+);
+
+$grid-desktop-wide: (
+        columns: 12,
+        gutter: 2.4rem,
+        media: 'screen and (min-width:1400px)',
+        direction: ltr,
+);
+
+$grid-max-width-plus: (
+        columns: 12,
+        gutter: 2.4rem,
+        media: 'screen and (min-width:1140px)',
+        direction: ltr,
+);
+
+$grid-desktop: (
+        columns: 12,
+        gutter: 2.4rem,
+        media: 'screen and (min-width:1024px)',
+        direction: ltr,
+);
+
+$grid-tablet-plus: (
+        columns: 12,
+        gutter: 2rem,
+        media: 'screen and (min-width:768px)',
+        direction: ltr,
+);
+
+$grid-tablet: (
+        columns: 12,
+        gutter: 2rem,
+        media: 'screen and (min-width:768px) and (max-width:1023px)',
+        direction: ltr,
+);
+
+$grid-tablet-max: (
+        columns: 12,
+        gutter: 2.4rem,
+        media: 'screen and (max-width:1023px)',
+        direction: ltr,
+);
+
+$grid-mobile: (
+        columns: 12,
+        gutter: 1.6rem,
+        media: 'screen and (max-width:767px)',
+        direction: ltr,
+);
+
+$grid-gallery--desktop: (
+        columns: 5,
+        gutter: 3rem,
+        direction: ltr,
+);
+
+$grid-gallery--tablet: (
+        columns: 3,
+        gutter: 2rem,
+        direction: ltr,
+);
+
+$grid-gallery--mobile: (
+        columns: 1,
+        gutter: 2rem,
+        direction: ltr,
+);

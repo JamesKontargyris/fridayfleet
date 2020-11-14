@@ -1,0 +1,33 @@
+ul.switcher {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 $base-spacing * 0.5;
+  display: flex;
+  justify-content: flex-start;
+}
+
+li.switcher__option {
+  padding: 1rem 1.5rem;
+  border-left: 0.1rem solid $oxford-blue;
+  border-right: 0.1rem solid $oxford-blue;
+  cursor: pointer;
+  background: $gunmetal;
+  border-radius: 999rem;
+  transition:all 0.3s;
+
+  &.is-active {
+    background: $light-blue;
+    a {
+      color:white;
+    }
+  }
+}
+
+a.switcher__option__link {
+  display: block;
+  width:100%;
+  @include font-size(12, 12);
+  text-align: center;
+  color:$light-blue;
+  font-weight:bold;
+}

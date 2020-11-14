@@ -1,0 +1,7 @@
+.graph-group {
+  display: none;
+
+  &.is-active {
+    display: block;
+  }
+}

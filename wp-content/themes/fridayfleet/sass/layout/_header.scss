@@ -1,0 +1,16 @@
+.site__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background:$dark-blue;
+  color:$frost-blue;
+  padding:1rem;
+}
+
+.site__header__logo {
+  background:url(img/ff-logo-white.svg) left center no-repeat;
+  background-size:auto 1.2rem;
+  height:1.2rem;
+  width:100%;
+  text-indent: -999999rem;
+}

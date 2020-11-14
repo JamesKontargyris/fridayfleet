@@ -1,0 +1,10 @@
+.section-title-with-switcher {
+  @include grid-media($grid-tablet-plus) {
+    display: flex;
+    align-items: center;
+
+    .section-title {
+      flex-grow: 1;
+    }
+  }
+}

@@ -1,0 +1,65 @@
+.switch {
+  background:tint($navy-blue, 12%);
+  border-radius: 999rem;
+  margin: 0 0 0 1.5rem;
+}
+
+.switch__option-group {
+  display: flex;
+}
+
+.switch__option {
+  grid-row: 1;
+  padding: 1rem;
+  border: 0;
+  background: transparent;
+  font-family: $base-font-family;
+  font-weight: $font-regular;
+  @include font-size(12, 12);
+  white-space: nowrap;
+  color: $frost-blue;
+  text-align: left;
+  min-height: 2.4rem;
+  border-radius: 999rem;
+
+  &.is-active {
+    background: $light-blue;
+    color: white;
+    font-weight: $font-black;
+  }
+
+  &:focus {
+    outline:none;
+    border-radius: 999rem;
+    box-shadow: 0 0 0.2rem white;
+  }
+}
+
+@include grid-media($grid-tablet-plus) {
+  .switch__option--quarters,
+  .switch__option--years {
+
+    padding-left: 3.4rem;
+  }
+
+  .switch__option--quarters {
+    background: url(img/icon-quarter-white.svg) left 1rem center no-repeat;
+    background-size: 1.8rem;
+
+
+    &.is-active {
+      background: url(img/icon-quarter-white.svg) left 1rem center no-repeat, $light-blue;
+      background-size: 1.8rem, auto;
+    }
+  }
+
+  .switch__option--years {
+    background: url(img/icon-year-white.svg) left 1rem center no-repeat;
+    background-size: 1.8rem;
+
+    &.is-active {
+      background: url(img/icon-year-white.svg) left 1rem center no-repeat, $light-blue;
+      background-size: 1.8rem, auto;
+    }
+  }
+}

@@ -1,0 +1,20 @@
+.btn {
+  display: inline-block;
+  @include font-size(12, 12);
+  padding:1rem;
+  border-radius: 999rem;
+}
+
+.btn--reset-zoom {
+  display:none;
+  position: absolute;
+  top:1rem;
+  right:1rem;
+  background: url(img/icon-reset-light-blue.svg) left 1rem center no-repeat, white;
+  background-size:1.8rem, auto;
+  padding-left:3.4rem;
+
+  &.is-active {
+    display:inline-block;
+  }
+}

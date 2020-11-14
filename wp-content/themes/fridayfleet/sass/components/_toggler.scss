@@ -1,0 +1,10 @@
+.toggler {
+  background: url(img/icon-arrow-up-white.svg) left center no-repeat;
+  background-size: 1.4rem;
+  padding-left: 2rem;
+
+  &.is-active {
+    background: url(img/icon-arrow-down-white.svg) left center no-repeat;
+    background-size: 1.4rem;
+  }
+}

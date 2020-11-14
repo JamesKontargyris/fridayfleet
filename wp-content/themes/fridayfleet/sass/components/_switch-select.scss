@@ -1,0 +1,23 @@
+select.switch-select {
+  background: url(img/icon-arrow-down-white.svg) right 1rem center no-repeat;
+  background-size: auto 1rem;
+  border: 0.1rem solid $frost-blue;
+  padding: 1rem 3rem 1rem 1rem;
+  border-radius: 9999rem;
+  color: $frost-blue;
+  appearance: none;
+  @include font-size(13, 13);
+  font-family: $base-font-family;
+  font-weight: $font-regular;
+
+  /* Hide arrow icon in IE browsers */
+  &::-ms-expand {
+    display: none;
+  }
+}
+
+.switch-select option {
+  background-color: transparent;
+    font-family: $base-font-family;
+  color:$navy-blue;
+  }

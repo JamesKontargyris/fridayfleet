@@ -1,0 +1,64 @@
+/*
+Theme Name: ThemeNameHere
+Author: James Kontargyris
+Author URI: http://jameskontargyris.co.uk/
+Description: ThemeNameHere Wordpress template
+Version: 1.0
+Text Domain: textdomainhere
+*/
+
+@charset "utf-8";
+
+/// Third party libraries and stylesheets
+@import
+'vendors/bourbon/bourbon',
+'vendors/neat/neat';
+
+/// Abstracts (utilities that do not output any CSS)
+@import
+'abstracts/fonts',
+'abstracts/variables',
+'abstracts/functions',
+'abstracts/mixins',
+'abstracts/placeholders',
+'abstracts/grid';
+
+/// Base formatting and resets
+@import
+'base/normalize',
+'base/underscores',
+'base/base',
+'base/typography',
+'base/menus',
+'base/helpers',
+'base/animations';
+
+/// Layout (page partials)
+@import
+'layout/navigation',
+'layout/header',
+'layout/footer',
+'layout/sidebar',
+'layout/forms',
+'layout/structure';
+
+/// Components (modules)
+@import
+'components/nav-bar',
+'components/tab',
+'components/box',
+'components/graph-group',
+'components/graph',
+'components/switcher',
+'components/data-table',
+'components/toggler',
+'components/switch-select',
+'components/switch',
+'components/help',
+'components/buttons',
+'components/tooltipster';
+
+/// Page-specific stylesheets
+@import
+'pages/home',
+'pages/dashboard';

@@ -1,0 +1,18 @@
+.help-icon {
+  position: relative;
+  display: inline-block;
+  width:1.4rem;
+  height:1.4rem;
+  color:white;
+  border:0.1rem solid $frost;
+  border-radius: 999rem;
+  @include font-size(13,13);
+
+  &:before {
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    content: '?';
+  }
+}

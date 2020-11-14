@@ -1,0 +1,69 @@
+// Typography
+$base-font-family: 'Lato', Calibri, sans-serif;
+$heading-font-family: 'Lato', Calibri, sans-serif;
+
+// Font Sizes
+$base-font-size: 1.5rem;
+
+// Font Weights
+$font-light: 300;
+$font-regular: 400;
+$font-black: 900;
+$font-bold: $font-black;
+
+// Line height
+$base-line-height: 1.8;
+$heading-line-height: 1.2;
+
+// Other Sizes
+$base-border-radius: 0.5rem;
+$base-spacing: 1rem;
+$small-spacing: $base-spacing / 2;
+$base-z-index: 0;
+
+// Primary Colours
+$red: #ea0000;
+$frost-blue: #bccbdc;
+$light-blue: #369ddf;
+$dark-blue: #086296;
+$navy-blue: #002235;
+
+// UI colours - names taken from coolors
+$gunmetal: #223242;
+$oxford-blue: #122235;
+$frost: #BCCBDC;
+$queen-blue: #4C7094;
+$bedazzled: #3E5D7A;
+$tomato: #f33920;
+
+$light-grey: #ebebeb;
+$grey: #9d9d9d;
+$dark-grey: #5a5a5a;
+
+// Other Colours
+$white: hsl(0, 0, 100);
+$soft-black: #222222;
+
+
+// Font Colors
+$base-font-color: $soft-black;
+$action-color: $red;
+$link-color:$light-blue;
+
+// Border
+$base-border-color: $light-grey;
+$base-border: 1px solid $base-border-color;
+
+// Background Colors
+$base-background-color: $light-grey;
+$secondary-background-color: tint($base-border-color, 75%);
+
+// Forms
+$form-box-shadow: inset 0 1px 3px rgba(#000, 0.06);
+$form-box-shadow-focus: $form-box-shadow, 0 0 5px adjust-color($action-color, $lightness: -5%, $alpha: -0.3);
+
+// Animations
+$base-duration: 300ms;
+$base-timing: ease;
+
+

@@ -1,0 +1,43 @@
+// Visibility
+.is-shown {
+  display: block;
+}
+
+.is-hidden {
+  display: none;
+}
+
+.hide--mobile {
+  @include grid-media($grid-mobile) {
+    display: none;
+  }
+}
+
+.hide--tablet {
+  @include grid-media($grid-tablet) {
+    display: none;
+  }
+}
+
+.hide--desktop {
+  @include grid-media($grid-desktop) {
+    display: none;
+  }
+}
+
+.hide--no-touch {
+  @include no-touch {
+    display:none !important;
+  }
+}
+
+.hide--touch {
+  @include touch {
+    display:none !important;
+  }
+}
+
+// Text colours
+.text--red {
+  color:$red;
+}

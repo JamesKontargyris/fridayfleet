@@ -1,0 +1,26 @@
+.graph--mobile {
+  display:none !important;
+
+  @include grid-media($grid-mobile) {
+    display: block !important;
+  }
+}
+
+.graph--tablet {
+  display: none !important;
+
+  @include grid-media($grid-tablet) {
+    display: block !important;
+  }
+}
+
+.graph--desktop {
+  display: none !important;
+
+  @include grid-media($grid-desktop) {
+    display: block !important;
+  }
+}
+
+.graph-group canvas {
+}

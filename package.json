@@ -1,0 +1,17 @@
+{
+  "name": "fridayfleet",
+  "version": "1.0.0",
+  "description": "Friday Fleet Node Modules",
+  "main": "index.php",
+  "scripts": {},
+  "author": "James Kontargyris",
+  "devDependencies": {
+    "browser-sync": "^2.18.13",
+    "gulp": "^4.0.0",
+    "gulp-autoprefixer": "^2.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^4.0.2",
+    "gulp-uglify": "^1.5.3",
+    "node-sass": "^4.14.1"
+  }
+}

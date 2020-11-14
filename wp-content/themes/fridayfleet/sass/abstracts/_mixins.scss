@@ -1,0 +1,138 @@
+// Baseline, measured in pixels
+// The value should be the same as the font-size value for the html element
+// If the html element's font-size is set to 62.5% (of the browser's default font-size of 16px),
+// then the variable below would be 10px.
+@function parseInt($n) { /* 2 */
+  @return $n / ($n * 0 + 1);
+}
+
+
+/// Rem font size with pixel fallback
+/// @access public
+/// @param {Integer} $sizeValue
+@mixin font-size($size: 16, $lineHeight: (parseInt($size) * 1.5)) {
+  font-size: parseInt($size) * 1px;
+  line-height: parseInt($lineHeight) * 1px;
+  font-size: (parseInt($size) / 10) + rem;
+  line-height: (parseInt($lineHeight) / 10) + rem;
+}
+
+
+
+@mixin rem($property, $values) {
+  $px : (); /* 3 */
+  $rem: (); /* 3 */
+
+  @each $value in $values { /* 4 */
+
+    @if $value == 0 or $value == auto { /* 5 */
+      $px : append($px , $value);
+      $rem: append($rem, $value);
+    }
+
+    @else {
+      $unit: unit($value);    /* 6 */
+      $val: parseInt($value); /* 6 */
+
+      @if $unit == "px" {  /* 7 */
+        $px : append($px,  $value);
+        $rem: append($rem, ($val / 10 + rem));
+      }
+
+      @if $unit == "rem" { /* 7 */
+        $px : append($px,  ($val * 10 + px));
+        $rem: append($rem, $value);
+      }
+    }
+  }
+
+  @if $px == $rem {     /* 8 */
+    #{$property}: $px;  /* 9 */
+  } @else {
+    #{$property}: $px;  /* 9 */
+    #{$property}: $rem; /* 9 */
+  }
+}
+
+/// Helper to size an element
+/// @author Hugo Giraudel
+/// @param {Length} $width
+/// @param {Length} $height
+@mixin size($width, $height: $width) {
+  width: $width;
+  height: $height;
+}
+
+/// Helper to add padding to an element
+/// @param $value
+@mixin pad($value: 20px) {
+  padding-left: parseInt($value) * 1px;
+  @include rem('padding-left', $value);
+  padding-right: parseInt($value) * 1px;
+  @include rem('padding-right', $value);
+  padding-top: parseInt($value) * 1px;
+  @include rem('padding-top', $value);
+  padding-bottom: parseInt($value) * 1px;
+  @include rem('padding-bottom', $value);
+}
+
+/// Helper to add padding to top and bottom of element
+/// @param $value
+@mixin tb-pad($value: 10px) {
+  padding-top: parseInt($value) * 1px;
+  @include rem('padding-top', $value);
+  padding-bottom: parseInt($value) * 1px;
+  @include rem('padding-bottom', $value);
+}
+
+/// Helper to add padding to left and right of element
+/// @param $value
+@mixin lr-pad($value: 20px) {
+  padding-left: parseInt($value) * 1px;
+  @include rem('padding-left', $value);
+  padding-right: parseInt($value) * 1px;
+  @include rem('padding-right', $value);
+}
+
+/// Helper function for font weights
+@mixin font-weight($weight: 'regular') {
+  font-family: "UniformRounded--#{$weight}", sans-serif;
+}
+
+// Button reset
+@mixin button-reset() {
+  padding: 0;
+  border: none;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  background: none;
+}
+
+// Grid container helper
+@mixin container($include-padding: true) {
+  @include grid-container;
+  max-width:$max-container-width;
+  margin:0 auto;
+
+  @if($include-padding == true) {
+
+    padding-left:$pad-small;
+    padding-right:$pad-small;
+
+    @include grid-media($grid-desktop) {
+      padding-left:$pad-large;
+      padding-right:$pad-large;
+    }
+
+  }
+}
+
+// Touch / no-touch media queries
+@mixin no-touch {
+  @media (hover:hover) { @content; }
+}
+
+@mixin touch {
+  @media (hover:none) { @content; }
+}

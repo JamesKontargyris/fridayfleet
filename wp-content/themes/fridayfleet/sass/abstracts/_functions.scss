@@ -1,0 +1,18 @@
+/// z-index function by Hugo Giraudel
+/// https://www.sitepoint.com/better-solution-managing-z-index-sass/
+@function z($layer) {
+  $z-layers: (
+    "above-all": 9001,
+    "high": 8000,
+    "medium": 5000,
+    "default": 1,
+    "low": -1,
+    "below-all": -9000
+  );
+
+  @if not map-has-key($z-layers, $layer) {
+    @warn "No layer found for `#{$layer}` in $z-layers map. Property omitted.";
+  }
+
+  @return map-get($z-layers, $layer);
+}

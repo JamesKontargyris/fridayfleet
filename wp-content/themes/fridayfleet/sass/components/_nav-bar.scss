@@ -1,0 +1,38 @@
+.nav-bar {
+  position: fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:$gunmetal;
+  padding:0;
+  @include font-size(12, 12);
+  text-align: center;
+}
+
+ul.nav-bar__menu {
+  list-style: none;
+  padding:0;
+  margin:0;
+  display: flex;
+  justify-content: space-between;
+
+  @include grid-media($grid-tablet-plus) {
+  justify-content: center;
+}
+}
+
+li.nav-bar__menu__item {
+  width:25%;
+}
+
+a.nav-bar__menu__link {
+  display: block;
+  padding:2rem;
+  color:$frost;
+  border-top:0.3rem solid transparent;
+
+  &.is-active {
+    border-top:0.3rem solid $light-blue;
+    background:shade($light-blue, 50%);
+  }
+}
