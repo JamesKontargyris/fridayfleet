@@ -3,65 +3,120 @@
 
 class ProcessData {
 
-	public function processValueOverTime_GraphData( $ship_data ) {
-		$value_over_time_data = []; // the master array of all processed data
+	public function processValueOverTimeData( $ship_data, $timeline = 'quarters', $purpose = 'graph' ) {
+		$value_over_time_data   = []; // the master array of all processed data
+		$first_month_of_quarter = [
+			1 => '01',
+			2 => '04',
+			3 => '07',
+			4 => '10'
+		]; // number of first month of each quarter
 
-		foreach ( array_keys( $ship_data ) as $ship ) { // ship_data keys are ship sizes, so loop through them to get data
-			$new       = '';
-			$avg_5     = '';
-			$avg_10    = '';
-			$avg_15    = '';
-			$avg_20    = '';
-			$avg_25    = '';
-			$avg_scrap = '';
+		if ( $purpose == 'table' && $timeline == 'quarters' ) {
+			return $ship_data; // no need to do any more to the data for the table by quarters
+		}
 
-			foreach ( $ship_data[ $ship ] as $dataset ) {
-				$new       .= "'" . ( $dataset['average_new_build'] ? $dataset['average_new_build'] : 0 ) . "',";
-				$avg_5     .= "'" . ( $dataset['average_5_year'] ? $dataset['average_5_year'] : 0 ) . "',";
-				$avg_10    .= "'" . ( $dataset['average_10_year'] ? $dataset['average_10_year'] : 0 ) . "',";
-				$avg_15    .= "'" . ( $dataset['average_15_year'] ? $dataset['average_15_year'] : 0 ) . "',";
-				$avg_20    .= "'" . ( $dataset['average_20_year'] ? $dataset['average_20_year'] : 0 ) . "',";
-				$avg_25    .= "'" . ( $dataset['average_25_year'] ? $dataset['average_25_year'] : 0 ) . "',";
-				$avg_scrap .= "'" . ( $dataset['average_scrap'] ? $dataset['average_scrap'] : 0 ) . "',";
+		foreach ( array_keys( $ship_data ) as $ship ) { // ship_data keys are ship types, so loop through them to get data
+
+			if ( $purpose == 'graph' ) {
+				$value_over_time_data[ $ship ]['new']['label']   = 'New';
+				$value_over_time_data[ $ship ]['5yr']['label']   = '5yr';
+				$value_over_time_data[ $ship ]['10yr']['label']  = '10yr';
+				$value_over_time_data[ $ship ]['15yr']['label']  = '15yr';
+				$value_over_time_data[ $ship ]['20yr']['label']  = '20yr';
+				$value_over_time_data[ $ship ]['25yr']['label']  = '25yr';
+				$value_over_time_data[ $ship ]['scrap']['label'] = 'Scrap';
 			}
 
-			$value_over_time_data[ $ship ]['new']['data']             = $new;
-			$value_over_time_data[ $ship ]['new']['data_label']       = 'New build';
-			$value_over_time_data[ $ship ]['avg_5']['data']           = $avg_5;
-			$value_over_time_data[ $ship ]['avg_5']['data_label']     = '5yr';
-			$value_over_time_data[ $ship ]['avg_10']['data']          = $avg_10;
-			$value_over_time_data[ $ship ]['avg_10']['data_label']    = '10yr';
-			$value_over_time_data[ $ship ]['avg_15']['data']          = $avg_15;
-			$value_over_time_data[ $ship ]['avg_15']['data_label']    = '15yr';
-			$value_over_time_data[ $ship ]['avg_20']['data']          = $avg_20;
-			$value_over_time_data[ $ship ]['avg_20']['data_label']    = '20yr';
-			$value_over_time_data[ $ship ]['avg_25']['data']          = $avg_25;
-			$value_over_time_data[ $ship ]['avg_25']['data_label']    = '25yr';
-			$value_over_time_data[ $ship ]['avg_scrap']['data']       = $avg_scrap;
-			$value_over_time_data[ $ship ]['avg_scrap']['data_label'] = 'Scrap';
+
+			if ( $timeline == 'quarters' ) {
+
+				foreach ( $ship_data[ $ship ] as $dataset ) {
+
+					if ( $dataset['average_new_build'] ) {
+						$value_over_time_data[ $ship ]['new']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_new_build'];
+					}
+					if ( $dataset['average_5_year'] ) {
+						$value_over_time_data[ $ship ]['5yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_5_year'];
+					}
+					if ( $dataset['average_10_year'] ) {
+						$value_over_time_data[ $ship ]['10yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_10_year'];
+					}
+					if ( $dataset['average_15_year'] ) {
+						$value_over_time_data[ $ship ]['15yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_15_year'];
+					}
+					if ( $dataset['average_20_year'] ) {
+						$value_over_time_data[ $ship ]['20yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_20_year'];
+					}
+					if ( $dataset['average_25_year'] ) {
+						$value_over_time_data[ $ship ]['25yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_25_year'];
+					}
+					if ( $dataset['average_scrap'] ) {
+						$value_over_time_data[ $ship ]['scrap']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_scrap'];
+					}
+				}
+
+			} elseif ( $timeline == 'years' ) {
+
+				$data_by_year = [];
+				$last_year = 0;
+
+				if ( $ship_data && $ship ) {
+
+					foreach ( $ship_data[ $ship ] as $dataset ) { // collect all data and store in arrays per year
+
+						if ( $dataset['average_new_build'] ) {
+							$data_by_year[ $dataset['year'] ]['new'][] = $dataset['average_new_build'];
+						}
+						if ( $dataset['average_5_year'] ) {
+							$data_by_year[ $dataset['year'] ]['5yr'][] = $dataset['average_5_year'];
+						}
+						if ( $dataset['average_10_year'] ) {
+							$data_by_year[ $dataset['year'] ]['10yr'][] = $dataset['average_10_year'];
+						}
+						if ( $dataset['average_15_year'] ) {
+							$data_by_year[ $dataset['year'] ]['15yr'][] = $dataset['average_15_year'];
+						}
+						if ( $dataset['average_20_year'] ) {
+							$data_by_year[ $dataset['year'] ]['20yr'][] = $dataset['average_20_year'];
+						}
+						if ( $dataset['average_25_year'] ) {
+							$data_by_year[ $dataset['year'] ]['25yr'][] = $dataset['average_25_year'];
+						}
+						if ( $dataset['average_scrap'] ) {
+							$data_by_year[ $dataset['year'] ]['scrap'][] = $dataset['average_scrap'];
+						}
+
+						$last_year = $dataset['year'];
+
+					}
+
+				}
+
+				foreach ( $data_by_year as $year => $dataset ) {
+
+					foreach ( $dataset as $dataset_label => $quarter_values ) {
+						$number_of_quarters = count( $quarter_values );
+						$year_total         = array_sum( $quarter_values );
+						$average            = number_format( $year_total / $number_of_quarters, 2 );
+
+						if ( $purpose == 'table' ) {
+							$value_over_time_data[ $ship ][ $year ][ $dataset_label ] = $average ? $average : 0;
+						} else { // purpose is graph
+							$value_over_time_data[ $ship ][ $dataset_label ]['data'][ $year ] = $average ? $average : 0;
+						}
+
+					}
+
+				}
+
+			}
 
 		}
+
 
 		return $value_over_time_data;
+
 	}
-
-	public function processValueOverTime_XAxisLabels( $data, $timeline = 'quarters' ) {
-		$labels = '';
-
-		foreach ( $data as $ship_data ) {
-
-			foreach ( $ship_data as $dataset ) {
-				if ( $timeline == 'quarters' ) {
-					$labels .= "'" . $dataset['year'] . ' Q' . $dataset['quarter'] . "', ";
-				} elseif ( $timeline == 'years' ) {
-					$labels .= "'" . $dataset['year'] . "', ";
-				}
-			}
-
-		}
-
-		return $labels;
-	}
-
 
 }

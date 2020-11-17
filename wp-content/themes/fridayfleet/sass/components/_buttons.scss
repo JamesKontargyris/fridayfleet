@@ -13,8 +13,21 @@
   background: url(img/icon-reset-light-blue.svg) left 1rem center no-repeat, white;
   background-size:1.8rem, auto;
   padding-left:3.4rem;
+  z-index: z('high');
 
   &.is-active {
     display:inline-block;
   }
+}
+
+.btn--plot-on-graph {
+  display: block;
+  position: absolute;
+  top:0;
+  right:0;
+  background: url(img/icon-crosshair-on-graph-white.svg) center no-repeat;
+  background-size:1.8rem;
+  text-indent: -9999rem;
+  width:1.8rem;
+  height:1.8rem;
 }

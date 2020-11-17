@@ -148,15 +148,16 @@ function fridayfleet_scripts() {
 	wp_enqueue_script( 'fridayfleet-buttons', get_template_directory_uri() . '/js/buttons.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-box', get_template_directory_uri() . '/js/box.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-nav-bar', get_template_directory_uri() . '/js/nav-bar.js', array(), _S_VERSION, true );
-	wp_enqueue_script( 'fridayfleet-switcher', get_template_directory_uri() . '/js/switcher.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-switch', get_template_directory_uri() . '/js/switch.js', array(), _S_VERSION, true );
-	wp_enqueue_script( 'fridayfleet-toggler', get_template_directory_uri() . '/js/toggler.js', array(), _S_VERSION, true );
+	wp_enqueue_script( 'fridayfleet-moment-js', 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@2.9.3', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-hammer-js', 'https://cdn.jsdelivr.net/npm/hammerjs@2.0.8', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-chart-js-zoom-plugin', 'https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-chart-js-trendline-plugin', 'https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline', array(), _S_VERSION, true );
+	wp_enqueue_script( 'fridayfleet-chart-js-annotation-plugin', 'https://cdn.jsdelivr.net/gh/mill1000/chartjs-plugin-annotation@v0.5.8/chartjs-plugin-annotation.min.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-chart-options', get_template_directory_uri() . '/js/chart-options.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-tooltipster', get_template_directory_uri() . '/js/vendor/tooltipster/js/tooltipster.bundle.min.js', array(), _S_VERSION, true );
+	wp_enqueue_script( 'fridayfleet-sticky', get_template_directory_uri() . '/js/vendor/sticky/jquery.sticky.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-init', get_template_directory_uri() . '/js/init.js', array(), _S_VERSION, true );
 
 

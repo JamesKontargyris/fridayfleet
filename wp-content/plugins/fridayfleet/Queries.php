@@ -23,23 +23,13 @@ class Queries {
 		$this->dbConn = new Mysql( $pdoConn );
 	}
 
-	public function get_vessel_final_price_averages( $deadweight_category = '', $timeline = 'quarters' ) {
+	public function get_vessel_final_price_averages( $deadweight_category = '' ) {
 		$query = 'SELECT * FROM vessel_final_price_averages';
 		$bound_variables = [];
 
 		if ( $deadweight_category ) {
 			$bound_variables['deadweight_category'] = $deadweight_category;
 			$query .= ' WHERE vessel_deadweight_category = :deadweight_category';
-		}
-
-		if ( $timeline == 'years' ) {
-			$bound_variables['quarter'] = 1;
-
-			if ( $deadweight_category ) {
-				$query .= ' AND quarter = :quarter';
-			} else {
-				$query .= ' WHERE quarter = :quarter';
-			}
 		}
 
 		$query .= ' ORDER BY vessel_deadweight_category ASC, year ASC, quarter ASC';

@@ -1,17 +1,12 @@
 table.data-table {
   position: relative;
   @include font-size(11, 13);
-  display: none;
   width: 100%;
   margin: 0;
   border-collapse: collapse;
 
   @include grid-media($grid-desktop) {
     @include font-size(12, 14);
-}
-
-  &.is-active {
-    display: table;
   }
 
   tr {
@@ -22,8 +17,8 @@ table.data-table {
       border-right: 0.1rem dotted tint($navy-blue, 20%);
 
       &:last-of-type {
-      border-right: none;
-    }
+        border-right: none;
+      }
 
       @include grid-media($grid-tablet-plus) {
         padding: 0.5rem;
@@ -35,19 +30,25 @@ table.data-table {
     tr {
       th {
         position: sticky;
-        top: 0; /* Required for the stickiness */
+        top: 5.5rem; /* Required for the stickiness - allows for sticky tab__header */
         text-transform: uppercase;
         padding-top: 1rem;
         padding-bottom: 1rem;
         font-weight: bold;
         border-right: none;
-        background:tint($navy-blue, 7%);
-        color:$frost-blue;
+        background: tint($navy-blue, 7%);
+        color: $frost-blue;
       }
     }
   }
 
   tbody {
+    display: none;
+
+    &.is-active {
+      display: table-row-group;
+    }
+
     tr {
       background: tint($navy-blue, 12%);
       border-bottom: 0.2rem solid tint($navy-blue, 7%);

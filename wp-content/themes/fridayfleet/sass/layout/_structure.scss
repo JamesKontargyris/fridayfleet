@@ -8,3 +8,16 @@
     }
   }
 }
+
+// Display content off the page when not active
+// This avoids zero heights and widths on canvas elements that have display:none
+.content--value-over-time-quarters,
+.content--value-over-time-years {
+  position: fixed;
+  top:-99999rem;
+
+  &.is-active {
+    position: unset;
+    top:0;
+  }
+}

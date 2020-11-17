@@ -1,16 +1,22 @@
 .tab {
-  padding: 1rem;
+  padding: 0 1rem 1rem;
 
   @include grid-media($grid-tablet-plus) {
-    padding: 1rem 2rem;
+    padding: 0 2rem 1rem;
   }
+}
+
+.tab__header--sticky {
+  position: relative;
+  z-index: z('above-all') !important;
 }
 
 .tab__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 0 $base-spacing * 1.5 0;
+  height:5.5rem;
+  background: $navy-blue;
 }
 
 .tab__title {
@@ -33,6 +39,6 @@
 
 .tab__title__divider {
   color: $red;
-  vertical-align: text-bottom;
+  vertical-align: text-top;
   padding: 0 0.2rem;
 }

@@ -23,21 +23,13 @@ class FridayFleetController {
 		return $this->variables->getColours();
 	}
 
-	public function getRawData() {
-		return $this->get_data->getFinalPriceAverages();
-	}
-
-	public function getValueOverTime_GraphData( $ship = '', $timeline = 'quarters' ) {
-		return $this->get_data->getValueOverTime_GraphData( $ship, $timeline );
+	public function getValueOverTimeDataForGraph( $ship = '', $timeline = 'quarters', $purpose = 'graph' ) {
+		return $this->get_data->getValueOverTimeData( $ship, $timeline, $purpose );
 
 	}
 
-	public function getValueOverTime_XAxisLabels( $ship = '', $timeline = 'quarters' ) {
-		return $this->get_data->getValueOverTime_XAxisLabels( $ship, $timeline );
-	}
-
-	public function getValueOverTime_TableData( $ship = '', $timeline = 'quarters' ) {
-		return $this->get_data->getValueOverTime_TableData( $ship, $timeline );
+	public function getValueOverTimeDataForTable( $ship = '', $timeline = 'quarters', $purpose = 'table' ) {
+		return $this->get_data->getValueOverTimeData( $ship, $timeline, $purpose );
 
 	}
 

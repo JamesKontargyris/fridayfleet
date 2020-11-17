@@ -10,20 +10,59 @@ var chartOptionsLegend = {
     }
 }
 
-var chartOptionsScales = {
+var chartOptionsScalesQuarters = {
     xAxes: [{
-        scaleLabel: {
-            display: false,
-            labelString: 'TIME',
-            fontSize: 10,
-            fontColor: '#4C7094',
+        type: 'time',
+        distribution: 'series',
+        time: {
+            tooltipFormat: 'YYYY [Q]Q',
+            unit: 'quarter',
+            displayFormats: {
+                quarter: 'YYYY [Q]Q'
+            }
         },
         ticks: {
             fontColor: '#7996B9',
         },
         gridLines: {
             color: 'rgba(62, 93, 122, 0.3)',
+        },
+    }],
+    yAxes: [{
+        scaleLabel: {
+            display: true,
+            labelString: '€ MILLIONS',
+            fontSize: 11,
+            fontColor: '#4C7094',
+        },
+        ticks: {
+            beginAtZero: true,
+            fontColor: '#7996B9',
+        },
+        gridLines: {
+            color: 'rgba(62, 93, 122, 1)',
+            zeroLineColor: 'rgba(62, 93, 122, 1)',
         }
+    }]
+}
+
+var chartOptionsScalesYears = {
+    xAxes: [{
+        type: 'time',
+        distribution: 'series',
+        time: {
+            tooltipFormat: 'YYYY',
+            minUnit: 'year',
+            displayFormats: {
+                year: 'YYYY'
+            }
+        },
+        ticks: {
+            fontColor: '#7996B9',
+        },
+        gridLines: {
+            color: 'rgba(62, 93, 122, 0.3)',
+        },
     }],
     yAxes: [{
         scaleLabel: {
@@ -59,11 +98,29 @@ var chartOptionsPlugins = {
                 document.getElementsByClassName('btn--reset-zoom')[0].className += ' is-active';
             }
         }
-    }
+    },
 }
 
-var chartOptions = {
+var chartOptionsQuarters = {
+    responsive: true,
+    maintainAspectRatio: false,
     legend: chartOptionsLegend,
-    scales:chartOptionsScales,
-    plugins: chartOptionsPlugins
+    scales: chartOptionsScalesQuarters,
+    plugins: chartOptionsPlugins,
+    annotation: {
+        events: ["click"],
+        annotations: []
+    }
+};
+
+var chartOptionsYears = {
+    responsive: true,
+    maintainAspectRatio: false,
+    legend: chartOptionsLegend,
+    scales: chartOptionsScalesYears,
+    plugins: chartOptionsPlugins,
+    annotation: {
+        events: ["click"],
+        annotations: []
+    }
 };
