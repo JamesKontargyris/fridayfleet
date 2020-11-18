@@ -1,13 +1,13 @@
 .note {
   @include font-size(13, 20);
-  color:$frost-blue;
-  padding:0.5rem 0 1rem;
-  border-bottom:0.1rem solid tint($navy-blue, 12%);
-  margin-bottom:$base-spacing;
+  color: $frost-blue;
+  padding: 0.5rem 0 1rem;
+  border-bottom: 0.1rem solid tint($navy-blue, 12%);
+  margin-bottom: $base-spacing;
 
   &:last-of-type {
-    padding-bottom:0.5rem;
-    border-bottom:none;
+    padding-bottom: 0.5rem;
+    border-bottom: none;
     margin-bottom: 0;
   }
 }
@@ -15,27 +15,31 @@
 .note__timestamp {
   position: relative;
   @include font-size(14, 20);
-  color:white;
+  color: white;
   font-weight: $font-black;
-  margin-bottom:$base-spacing;
-  padding-right:3rem;
+  margin-bottom: $base-spacing;
+  padding-right: 3rem;
 }
 
 .has-note-indicator {
-  padding-left:2.2rem;
+  padding-left: 2.2rem;
 }
 
 .note-indicator--positive {
-  background:url(img/icon-note-indicator-positive.svg) left center no-repeat;
+  background: url(img/icon-note-indicator-positive.svg) left top 0.3rem no-repeat;
   background-size: 1.5rem;
 }
 
 .note-indicator--neutral {
-  background:url(img/icon-note-indicator-neutral.svg) left center no-repeat;
+  background: url(img/icon-note-indicator-neutral.svg) left top 0.3rem no-repeat;
   background-size: 1.5rem;
 }
 
 .note-indicator--negative {
-  background:url(img/icon-note-indicator-negative.svg) left center no-repeat;
+  background: url(img/icon-note-indicator-negative.svg) left top 0.3rem no-repeat;
   background-size: 1.5rem;
+}
+
+.note__title {
+    display: block;
 }

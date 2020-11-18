@@ -45,7 +45,7 @@ Text Domain: textdomainhere
 /// Components (modules)
 @import
 'components/nav-bar',
-'components/tab',
+'components/data-view',
 'components/box',
 'components/graph-group',
 'components/graph',
@@ -55,6 +55,9 @@ Text Domain: textdomainhere
 'components/help',
 'components/buttons',
 'components/note',
+'components/message',
+'components/ajax-loader',
+'components/powered-by-message',
 'components/tooltipster';
 
 /// Page-specific stylesheets

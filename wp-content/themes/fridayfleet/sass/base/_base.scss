@@ -3,11 +3,16 @@
 }
 
 html {
-  min-height:100%;
+  min-height: 100%;
 }
+
 body {
-  min-height:100%;
+  min-height: 100%;
   overflow-x: hidden;
-  background:$navy-blue;
-  padding-bottom:6rem; // to allow for bottom nav on mobile and tablet
+  background: $navy-blue;
+  padding-bottom: 8rem; // to allow for bottom nav on mobile and tablet
+
+  @include grid-media($grid-desktop) {
+    padding-bottom: 0;
+  }
 }

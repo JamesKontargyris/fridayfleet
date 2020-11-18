@@ -5,15 +5,18 @@
   border-radius: 999rem;
 }
 
-.btn--reset-zoom {
-  display:none;
+.graph-update-button-group {
   position: absolute;
   top:1rem;
   right:1rem;
+  z-index: z('high');
+}
+
+.btn--graph-update {
+  display:none;
   background: url(img/icon-reset-light-blue.svg) left 1rem center no-repeat, white;
   background-size:1.8rem, auto;
   padding-left:3.4rem;
-  z-index: z('high');
 
   &.is-active {
     display:inline-block;

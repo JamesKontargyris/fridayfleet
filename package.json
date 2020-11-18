@@ -6,12 +6,12 @@
   "scripts": {},
   "author": "James Kontargyris",
   "devDependencies": {
-    "browser-sync": "^2.26.13",
-    "gulp": "^4.0.2",
+    "gulp": "^4.0.0",
+    "browser-sync": "^2.18.13",
     "gulp-autoprefixer": "^2.1.0",
     "gulp-rename": "^1.2.2",
-    "gulp-sass": "^4.1.0",
+    "gulp-sass": "^4.0.2",
     "gulp-uglify": "^1.5.3",
-    "node-sass": "^5.0.0"
+    "node-sass": "^3.7.0"
   }
 }

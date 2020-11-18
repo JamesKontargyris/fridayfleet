@@ -1,0 +1,11 @@
+.footer__powered-by {
+  padding: 0 1rem 2rem;
+
+  @include grid-media($grid-tablet) {
+    padding: 0 2rem 2rem;
+  }
+
+  @include grid-media($grid-desktop) {
+    display: none;
+  }
+}

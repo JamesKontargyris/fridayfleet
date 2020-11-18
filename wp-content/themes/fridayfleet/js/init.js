@@ -1,32 +1,37 @@
 (function ($) {
-    // Scroll to page elements
-    $(".scroll-to-link").click(function (e) {
-        e.preventDefault();
-        var aid = $(this).attr("href");
-        $('html,body').animate({scrollTop: $(aid).offset().top}, 'slow');
-    });
+    window.ffInit = function() {
 
-    $('.tooltip--help').tooltipster({
-        animation: 'grow',
-        delay: 200,
-        maxWidth: 500,
-        side: 'bottom',
-        trigger: 'custom',
-        triggerOpen: {
-            click: true,
-            tap: true
-        },
-        triggerClose: {
-            click: true,
-            scroll: true
-        }
-    });
+        // Scroll to page elements
+        $(".scroll-to-link").click(function (e) {
+            e.preventDefault();
+            var aid = $(this).attr("href");
+            $('html,body').animate({scrollTop: $(aid).offset().top}, 'slow');
+        });
 
-    // Close boxes that are set to is-closed on page load
-    $('.box--is-closed').find('.box__content').hide();
+        $('.tooltip--help').tooltipster({
+            animation: 'grow',
+            delay: 200,
+            maxWidth: 500,
+            side: 'bottom',
+            trigger: 'custom',
+            triggerOpen: {
+                click: true,
+                tap: true
+            },
+            triggerClose: {
+                click: true,
+                scroll: true
+            }
+        });
 
-    // Make tab header sticky on scroll
-    $(".tab__header--sticky").sticky({topSpacing: 0});
+        // Close boxes that are set to is-closed on page load
+        $('.box--is-closed').find('.box__content').hide();
+
+        // Make tab header sticky on scroll
+        $(".data-view__header--sticky").sticky({topSpacing: 0});
+    }
+
+    window.ffInit();
 
 
 })(jQuery);

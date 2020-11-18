@@ -1,0 +1,30 @@
+.message {
+  margin:1rem 0;
+  background:tint($navy-blue, 12%);
+  padding:2rem;
+  color:white;
+}
+
+.message--error {
+  background:url(img/icon-message-error.svg) left 2rem center no-repeat, shade($red, 25%);
+  background-size: 1.8rem;
+  padding-left:4.4rem;
+}
+
+.message--success {
+  background:url(img/icon-message-success.svg) left 2rem center no-repeat, #00C31F;
+  background-size: 1.8rem;
+  padding-left:4.4rem;
+}
+
+.message--warning {
+  background:url(img/icon-message-warning.svg) left 2rem center no-repeat, #ff9900;
+  background-size: 1.8rem;
+  padding-left:4.4rem;
+}
+
+.message--info {
+  background:url(img/icon-message-info.svg) left 2rem center no-repeat, tint($navy-blue, 12%);
+  background-size: 1.8rem;
+  padding-left:4.4rem;
+}

@@ -1,38 +1,148 @@
 .nav-bar {
   position: fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  background:$gunmetal;
-  padding:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: tint($navy-blue, 7%);
+  padding: 0;
   @include font-size(12, 12);
   text-align: center;
+  z-index: z('above-all');
+  border-top: 0.2rem solid $navy-blue;
+
+  @include grid-media($grid-desktop) {
+    top: 0;
+    left: 0;
+    right: auto;
+    bottom: 0;
+    border-top: 0;
+    background: tint($navy-blue, 4%);
+    width: $nav-bar-width;
+    padding: 0;
+  }
+}
+
+.nav-bar__logo {
+  display: none;
+
+  @include grid-media($grid-desktop) {
+    display: flex;
+    align-items: center;
+    padding-left: 2rem;
+    height: 5.5rem;
+    background: $dark-blue;
+  }
 }
 
 ul.nav-bar__menu {
   list-style: none;
-  padding:0;
-  margin:0;
+  padding: 0;
+  margin: 0;
   display: flex;
-  justify-content: space-between;
-
-  @include grid-media($grid-tablet-plus) {
   justify-content: center;
-}
-}
+  align-items: center;
 
-li.nav-bar__menu__item {
-  width:25%;
-}
+  @include grid-media($grid-desktop) {
+    flex-direction: column;
+    align-content: flex-start;
+    margin-top: 5.5rem;
+  }
 
-a.nav-bar__menu__link {
-  display: block;
-  padding:2rem;
-  color:$frost;
-  border-top:0.3rem solid transparent;
+  li {
+    width: 20%;
+    transition: 0.3s all;
 
-  &.is-active {
-    border-top:0.3rem solid $light-blue;
-    background:shade($light-blue, 50%);
+    @include grid-media($grid-desktop) {
+      width: 100%;
+    }
+
+    a {
+      display: block;
+      padding: 4.6rem 1.4rem 2rem;
+      color: white;
+      @include font-size(11, 12);
+      background-position: top 2rem center !important;
+
+      @include grid-media($grid-tablet-plus) {
+        @include font-size(12, 13);
+      }
+
+      @include grid-media($grid-desktop) {
+        border-top: 0;
+        text-align: left;
+        padding: 2rem 1rem 2rem 6rem;
+        background-position: left 2rem center !important;
+        @include font-size(14, 15);
+        border-left: 0.4rem solid transparent;
+
+        @include no-touch {
+          &:hover,
+          &:active,
+          &:focus {
+            border-color: white;
+          }
+        }
+      }
+
+      &.icon--grid {
+        background: url(img/icon-grid-four-outline-white.svg) no-repeat;
+        background-size: auto 1.8rem;
+
+        @include grid-media($grid-desktop) {
+          background-size: 2rem auto;
+        }
+      }
+
+      &.icon--ship {
+        background: url(img/icon-cargo-ship-outline-white.svg) no-repeat;
+        background-size: auto 1.8rem;
+
+        @include grid-media($grid-desktop) {
+          background-size: 2.5rem auto;
+        }
+      }
+
+      &.is-active {
+        color: $red;
+        font-weight: $font-regular;
+
+        @include grid-media($grid-desktop) {
+          border-top: 0;
+          border-left: 0.4rem solid $red;
+          margin-right: -0.4rem;
+        }
+
+        &.icon--grid {
+          background: url(img/icon-grid-four-outline-red.svg) top 1.5rem center no-repeat, $navy-blue;
+          background-size: auto 1.6rem;
+
+          @include grid-media($grid-desktop) {
+            background-size: 2rem auto;
+          }
+        }
+
+        &.icon--ship {
+          background: url(img/icon-cargo-ship-outline-red.svg) top 1.5rem center no-repeat, $navy-blue;
+          background-size: auto 1.6rem;
+
+          @include grid-media($grid-desktop) {
+            background-size: 2.5rem auto;
+          }
+        }
+      }
+    }
   }
 }
+
+.nav-bar__powered-by {
+  display: none;
+
+  @include grid-media($grid-desktop) {
+    display: block;
+    position: absolute;
+    left: 2rem;
+    bottom: 2rem;
+  }
+}
+
+

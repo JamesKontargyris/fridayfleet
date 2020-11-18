@@ -2,7 +2,8 @@
 /// https://www.sitepoint.com/better-solution-managing-z-index-sass/
 @function z($layer) {
   $z-layers: (
-    "above-all": 9001,
+    "above-all": 9999,
+    "higher": 9001,
     "high": 8000,
     "medium": 5000,
     "default": 1,

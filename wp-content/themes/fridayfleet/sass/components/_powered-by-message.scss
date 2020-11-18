@@ -1,0 +1,12 @@
+.powered-by-message {
+  color:$frost-blue;
+  @include font-size(12, 13);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  img {
+    width:8rem;
+    margin-left:0.5rem;
+  }
+}

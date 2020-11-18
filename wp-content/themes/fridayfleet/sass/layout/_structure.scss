@@ -1,12 +1,14 @@
-.section-title-with-switcher {
-  @include grid-media($grid-tablet-plus) {
-    display: flex;
-    align-items: center;
+.site__body {
+  color:$frost-blue;
+  padding: 0 1rem 1rem;
 
-    .section-title {
-      flex-grow: 1;
-    }
+  @include grid-media($grid-tablet-plus) {
+    padding: 0 2rem 1rem;
   }
+
+  @include grid-media($grid-desktop) {
+	padding-left:$nav-bar-width + 2rem;
+}
 }
 
 // Display content off the page when not active

@@ -1,6 +1,5 @@
 // Dirs
 var baseDir = 'wp-content/themes/fridayfleet/';
-var pluginDir = 'wp-content/plugins/fridayfleet/';
 var sassDir = baseDir + 'sass/';
 var jsDir = baseDir + 'js/';
 
@@ -44,10 +43,24 @@ function browserSyncStream(done) {
 }
 
 
-// Compile Sass
+// Compile front-end Sass
 function styles() {
     return gulp
         .src([sassDir + 'style.scss'])
+        .pipe(sass({
+            outputStyle: 'compressed'
+        }))
+        .pipe(prefix(
+            "last 1 version", "> 1%", "ie 8", "ie 7"
+        ))
+        .pipe(gulp.dest(baseDir))
+        .pipe(browsersync.stream());
+}
+
+// Compile back-end Sass
+function stylesEditor() {
+    return gulp
+        .src([sassDir + 'admin-style.scss'])
         .pipe(sass({
             outputStyle: 'compressed'
         }))
@@ -74,10 +87,10 @@ function scripts() {
 function watchFiles(done) {
     // Uses polling to get around issues with changes made to files locally that are not reflected on the virtual machine
     // (https://github.com/floatdrop/gulp-watch/issues/213)
-    gulp.watch(sassDir + '**/*.scss', { usePolling: true, ignoreInitial: false }, gulp.series(styles));
+    gulp.watch([sassDir + '**/*.scss', '!' + sassDir + 'admin-style.scss'], { usePolling: true, ignoreInitial: false }, gulp.series(styles));
+    gulp.watch(sassDir + 'admin-style.scss', { usePolling: true, ignoreInitial: false }, gulp.series(stylesEditor));
     gulp.watch(baseDir + '**/*.php', { usePolling: true, ignoreInitial: false }, gulp.series(browserSyncReload));
-    gulp.watch(pluginDir + '**/*.php', { usePolling: true, ignoreInitial: false }, gulp.series(browserSyncReload));
-    gulp.watch(baseDir + '**/*.js', { usePolling: true, ignoreInitial: false }, gulp.series(browserSyncReload));
+    // gulp.watch(baseDir + '**/*.js', { usePolling: true, ignoreInitial: false }, gulp.series(browserSyncReload));
     done();
 }
 

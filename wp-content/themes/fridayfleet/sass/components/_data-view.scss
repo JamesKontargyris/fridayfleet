@@ -1,17 +1,12 @@
-.tab {
-  padding: 0 1rem 1rem;
-
-  @include grid-media($grid-tablet-plus) {
-    padding: 0 2rem 1rem;
-  }
+.data-view {
 }
 
-.tab__header--sticky {
+.data-view__header--sticky {
   position: relative;
-  z-index: z('above-all') !important;
+  z-index: z('higher') !important;
 }
 
-.tab__header {
+.data-view__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -19,7 +14,7 @@
   background: $navy-blue;
 }
 
-.tab__title {
+.data-view__title {
   @include font-size(16, 18);
   margin: 0;
   flex-grow: 1;
@@ -29,7 +24,7 @@
   }
 }
 
-.tab__title--icon-ship {
+.data-view__title--icon-ship {
   @include grid-media($grid-tablet-plus) {
     background: url(img/icon-cargo-ship-filled-white.svg) left center no-repeat;
     background-size: auto 1.8rem;
@@ -37,8 +32,20 @@
   }
 }
 
-.tab__title__divider {
+.data-view__title__divider {
   color: $red;
   vertical-align: text-top;
   padding: 0 0.2rem;
+}
+
+@include grid-media($grid-desktop) {
+  .data-view__main-col {
+    float:left;
+    width:calc(75% - 2rem);
+  }
+
+  .data-view__side-col {
+    float:right;
+    width:25%;
+  }
 }

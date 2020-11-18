@@ -1,10 +1,13 @@
 .site__header {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: $dark-blue;
   color: $frost-blue;
   padding: 1rem;
+  z-index: z('above-all');
+  height:5.5rem;
 
   @include grid-media($grid-tablet-plus) {
     padding: 1rem 2rem;
@@ -17,4 +20,9 @@
   height: 1.2rem;
   width: 100%;
   text-indent: -999999rem;
+
+  @include grid-media($grid-desktop) {
+	background-size: auto 1.4rem;
+    height:1.4rem;
+}
 }

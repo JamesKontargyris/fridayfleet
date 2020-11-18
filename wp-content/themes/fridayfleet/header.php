@@ -17,6 +17,6 @@
     <a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Skip to content', 'fridayfleet' ); ?></a>
 
     <header id="masthead" class="site__header">
-        <div class="site__header__logo">FRIDAY FLEET</div>
+        <div class="site__header__logo hide--desktop">FRIDAY FLEET</div>
         <div class="site__header__nav"></div>
     </header><!-- #masthead -->
