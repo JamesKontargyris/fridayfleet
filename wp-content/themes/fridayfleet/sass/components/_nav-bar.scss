@@ -3,12 +3,13 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: tint($navy-blue, 7%);
+  background: linear-gradient(to bottom, #164c6a 30%, shade(#164c6a, 22%) 100%);
   padding: 0;
   @include font-size(12, 12);
   text-align: center;
-  z-index: z('above-all');
-  border-top: 0.2rem solid $navy-blue;
+  z-index: z('higher');
+  box-shadow: 0 -0.3rem 0.4rem rgba(black, 0.3);
+  color: $frost-blue;
 
   @include grid-media($grid-desktop) {
     top: 0;
@@ -16,9 +17,12 @@
     right: auto;
     bottom: 0;
     border-top: 0;
-    background: tint($navy-blue, 4%);
+    background: linear-gradient(to bottom, tint($navy-blue, 5%) 0%, rgba(tint($navy-blue, 5%), 0) 100%);
     width: $nav-bar-width;
     padding: 0;
+    box-shadow: none;
+    text-align: left;
+    @include font-size(14, 15);
   }
 }
 
@@ -27,11 +31,40 @@
 
   @include grid-media($grid-desktop) {
     display: flex;
+    justify-content: center;
     align-items: center;
-    padding-left: 2rem;
     height: 5.5rem;
-    background: $dark-blue;
+    background: linear-gradient(to bottom, $dark-blue 40%, shade($dark-blue, 12%) 100%);
+    border-bottom: 0.1rem solid $red;
+
+    .site__header__logo {
+      background-position: center;
+    }
   }
+}
+
+.nav-bar__section {
+  @include grid-media($grid-desktop) {
+    padding: $base-spacing * 2 2rem;
+    border-bottom: 0.1rem solid tint($navy-blue, 20%);
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    &.nav-bar__section--no-pad {
+      padding: 0;
+    }
+  }
+}
+
+.nav-bar__section__title {
+  text-transform: uppercase;
+  font-weight: $font-black;
+  letter-spacing: 0.3rem;
+  @include font-size(11, 12);
+  color: tint($navy-blue, 35%);
+  margin-bottom: $base-spacing;
 }
 
 ul.nav-bar__menu {
@@ -45,7 +78,6 @@ ul.nav-bar__menu {
   @include grid-media($grid-desktop) {
     flex-direction: column;
     align-content: flex-start;
-    margin-top: 5.5rem;
   }
 
   li {
@@ -60,8 +92,10 @@ ul.nav-bar__menu {
       display: block;
       padding: 4.6rem 1.4rem 2rem;
       color: white;
+      font-weight: $font-black;
       @include font-size(11, 12);
       background-position: top 2rem center !important;
+      border-top: 0.3rem solid transparent;
 
       @include grid-media($grid-tablet-plus) {
         @include font-size(12, 13);
@@ -74,12 +108,13 @@ ul.nav-bar__menu {
         background-position: left 2rem center !important;
         @include font-size(14, 15);
         border-left: 0.4rem solid transparent;
+        font-weight: $font-regular;
 
         @include no-touch {
           &:hover,
           &:active,
           &:focus {
-            border-color: white;
+            border-color: $red;
           }
         }
       }
@@ -90,6 +125,14 @@ ul.nav-bar__menu {
 
         @include grid-media($grid-desktop) {
           background-size: 2rem auto;
+
+          @include no-touch {
+            &:hover,
+            &:active,
+            &:focus {
+              background-image: url(img/icon-grid-four-outline-red.svg);
+            }
+          }
         }
       }
 
@@ -99,33 +142,71 @@ ul.nav-bar__menu {
 
         @include grid-media($grid-desktop) {
           background-size: 2.5rem auto;
+
+          @include no-touch {
+            &:hover,
+            &:active,
+            &:focus {
+              background-image: url(img/icon-cargo-ship-outline-red.svg);
+            }
+          }
+        }
+      }
+
+      &.icon--note {
+        background: url(img/icon-pinned-notes-outline-white.svg) no-repeat;
+        background-size: auto 1.8rem;
+
+        @include grid-media($grid-desktop) {
+          background-size: 2.5rem auto;
+
+          @include no-touch {
+            &:hover,
+            &:active,
+            &:focus {
+              background-image: url(img/icon-pinned-notes-outline-red.svg);
+            }
+          }
         }
       }
 
       &.is-active {
-        color: $red;
-        font-weight: $font-regular;
+        color: $light-blue;
+        background: linear-gradient(to bottom, $navy-blue 30%, shade($navy-blue, 22%) 100%);
+        background-size:auto;
 
         @include grid-media($grid-desktop) {
           border-top: 0;
-          border-left: 0.4rem solid $red;
-          margin-right: -0.4rem;
+          border-left: 0.4rem solid $light-blue;
+          margin-top:0;
         }
 
         &.icon--grid {
-          background: url(img/icon-grid-four-outline-red.svg) top 1.5rem center no-repeat, $navy-blue;
-          background-size: auto 1.6rem;
+          background: url(img/icon-grid-four-outline-light-blue.svg) top 1.5rem center no-repeat, rgba($navy-blue, 0.5);
+          background-size: auto 1.8rem;
 
           @include grid-media($grid-desktop) {
+            background: url(img/icon-grid-four-outline-light-blue.svg) top 1.5rem center no-repeat, $navy-blue;
             background-size: 2rem auto;
           }
         }
 
         &.icon--ship {
-          background: url(img/icon-cargo-ship-outline-red.svg) top 1.5rem center no-repeat, $navy-blue;
-          background-size: auto 1.6rem;
+          background: url(img/icon-cargo-ship-outline-light-blue.svg) top 1.5rem center no-repeat, rgba($navy-blue, 0.5);
+          background-size: auto 1.8rem;
 
           @include grid-media($grid-desktop) {
+            background: url(img/icon-cargo-ship-outline-light-blue.svg) top 1.5rem center no-repeat, $navy-blue;
+            background-size: 2.5rem auto;
+          }
+        }
+
+        &.icon--note {
+          background: url(img/icon-pinned-notes-outline-light-blue.svg) top 1.5rem center no-repeat, rgba($navy-blue, 0.5);
+          background-size: auto 1.8rem;
+
+          @include grid-media($grid-desktop) {
+            background: url(img/icon-pinned-notes-outline-light-blue.svg) top 1.5rem center no-repeat, $navy-blue;
             background-size: 2.5rem auto;
           }
         }

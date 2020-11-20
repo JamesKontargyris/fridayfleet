@@ -6,6 +6,9 @@
   }
 
   @include grid-media($grid-desktop) {
-    display: none;
+    position: fixed;
+    left:2rem;
+    bottom:2rem;
+    padding:0;
   }
 }

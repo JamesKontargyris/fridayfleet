@@ -145,10 +145,13 @@ function fridayfleet_scripts() {
 	wp_enqueue_style( 'fridayfleet-tooltipster', get_template_directory_uri() . '/js/vendor/tooltipster/css/tooltipster.bundle.min.css', array(), _S_VERSION );
 
 	wp_enqueue_script( 'fridayfleet-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
+	wp_enqueue_script( 'fridayfleet-ajax', get_template_directory_uri() . '/js/ajax.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-buttons', get_template_directory_uri() . '/js/buttons.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-box', get_template_directory_uri() . '/js/box.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-nav-bar', get_template_directory_uri() . '/js/nav-bar.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-switch', get_template_directory_uri() . '/js/switch.js', array(), _S_VERSION, true );
+	wp_enqueue_script( 'fridayfleet-custom-select', get_template_directory_uri() . '/js/custom-select.js', array(), _S_VERSION, true );
+	wp_enqueue_script( 'fridayfleet-user-summary', get_template_directory_uri() . '/js/user-summary.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-moment-js', 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@2.9.3', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-hammer-js', 'https://cdn.jsdelivr.net/npm/hammerjs@2.0.8', array(), _S_VERSION, true );

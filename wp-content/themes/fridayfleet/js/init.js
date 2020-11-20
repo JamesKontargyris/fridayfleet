@@ -1,12 +1,9 @@
-(function ($) {
-    window.ffInit = function() {
+window.addEventListener('load', function(e) {
+    jQuery('.ajax-loader').removeClass('is-active');
+});
 
-        // Scroll to page elements
-        $(".scroll-to-link").click(function (e) {
-            e.preventDefault();
-            var aid = $(this).attr("href");
-            $('html,body').animate({scrollTop: $(aid).offset().top}, 'slow');
-        });
+(function ($) {
+    window.ffInit = function () {
 
         $('.tooltip--help').tooltipster({
             animation: 'grow',
@@ -33,5 +30,15 @@
 
     window.ffInit();
 
+    // Scroll to page elements
+    $('body').on('click', '.scroll-to-link', function (e) {
+        e.preventDefault();
+        var aid = $(this).attr("href");
+        $('html,body').animate({scrollTop: $(aid).offset().top}, 'slow');
+    });
+
+    $('body').on('click', '.btn--key', function(e) {
+       $('.data-view__legend').slideToggle();
+    });
 
 })(jQuery);

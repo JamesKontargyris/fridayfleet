@@ -124,3 +124,14 @@ var chartOptionsYears = {
         annotations: []
     }
 };
+
+var chartOptionsOverview = {
+    responsive: true,
+    maintainAspectRatio: false,
+    position: 'bottom',
+    align: 'center',
+    legend: {
+        display: false
+    },
+    scales: chartOptionsScalesYears,
+}

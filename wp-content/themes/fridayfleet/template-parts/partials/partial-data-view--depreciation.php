@@ -1,5 +1,4 @@
 <?php
-
 use FridayFleet\FridayFleetController;
 
 $ff = new FridayFleetController;
@@ -20,11 +19,11 @@ $ff = new FridayFleetController;
 		<?php else : ?>
 
 		<?php
-		$graph_colours = $ff->getColours();
+		$graph_colours                       = $ff->getColours();
 		$value_over_time_graph_data_quarters = $ff->getValueOverTimeDataForGraph( $ship, 'quarters' );
-		$value_over_time_graph_data_years = $ff->getValueOverTimeDataForGraph( $ship, 'years' );
+		$value_over_time_graph_data_years    = $ff->getValueOverTimeDataForGraph( $ship, 'years' );
 		$value_over_time_table_data_quarters = $ff->getValueOverTimeDataForTable( $ship, 'quarters' );
-		$value_over_time_table_data_years = $ff->getValueOverTimeDataForTable( $ship, 'years' );
+		$value_over_time_table_data_years    = $ff->getValueOverTimeDataForTable( $ship, 'years' );
 		?>
 
 		<?php
@@ -41,11 +40,11 @@ $ff = new FridayFleetController;
                 <div class="data-view__header">
                     <h2 class="data-view__title">
                         <strong class="data-view__title--icon-ship"><?php echo $ship; ?></strong>
-                        <span class="data-view__title__divider">&rang;</span> Value Over Time
+                        <span class="data-view__title__divider">&rang;</span> Depreciation
                     </h2>
 
                     <div class="data-view__controls">
-						<?php get_template_part( 'template-parts/partials/partial', 'data-view-select-desktop' ); ?>
+                        <?php get_template_part('template-parts/partials/partial', 'data-view-select-desktop'); ?>
                         <div class="switch">
                             <div class="switch__option-group">
                                 <button class="switch__option switch__option--quarters is-active"
@@ -87,11 +86,8 @@ $ff = new FridayFleetController;
                     <div class="box__content">
 
                         <div class="graph-update-button-group">
-                            <button onclick="resetZoom()" class="btn btn--graph-update btn--reset-zoom">Reset Zoom
-                            </button>
-                            <button onclick="clearAnnotations()" class="btn btn--graph-update btn--clear-annotations">
-                                Remove Line
-                            </button>
+                            <button onclick="resetZoom()" class="btn btn--graph-update btn--reset-zoom">Reset Zoom</button>
+                            <button onclick="clearAnnotations()" class="btn btn--graph-update btn--clear-annotations">Remove Lines</button>
                         </div>
 
 
@@ -272,12 +268,15 @@ $ff = new FridayFleetController;
                     datasets: [
 						<?php foreach($value_over_time_graph_data_quarters[ $ship ] as $dataset) : ?>
 						<?php $colour = ( ! current( $graph_colours ) ) ? reset( $graph_colours ) : current( $graph_colours ); next( $graph_colours ); ?>
+						<?php if($dataset['data']) : ?>
 
                         {
                             label: '<?php echo $dataset['label']; ?>',
                             data: [
 								<?php foreach($dataset['data'] as $x => $y) : ?>
+								<?php if($y) : ?>
                                 {x: moment('<?php echo $x; ?>', "YYYYMM"), y: <?php echo $y; ?>},
+								<?php endif; ?>
 								<?php endforeach; ?>
                             ],
                             fill: false,
@@ -288,7 +287,6 @@ $ff = new FridayFleetController;
                             pointStyle: 'circle',
                             pointRadius: 3,
                             lineTension: 0.3,
-                            spanGaps: true,
                             trendlineLinear: {
                                 style: "rgba(<?php echo $colour; ?>, 0.3)",
                                 lineStyle: "solid",
@@ -296,6 +294,8 @@ $ff = new FridayFleetController;
                             }
 
                         },
+
+						<?php endif; ?>
 
 						<?php endforeach; ?>
                     ]
@@ -315,6 +315,8 @@ $ff = new FridayFleetController;
 						<?php foreach($value_over_time_graph_data_years[ $ship ] as $dataset) : ?>
 						<?php $colour = ( ! current( $graph_colours ) ) ? reset( $graph_colours ) : current( $graph_colours ); next( $graph_colours ); ?>
 
+						<?php if($dataset['data']) : ?>
+
                         {
                             label: '<?php echo $dataset['label']; ?>',
                             data: [
@@ -331,6 +333,8 @@ $ff = new FridayFleetController;
                             pointRadius: 3,
                             lineTension: 0.3,
                         },
+
+						<?php endif; ?>
 
 						<?php endforeach; ?>
 

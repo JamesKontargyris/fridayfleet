@@ -1,7 +1,6 @@
 (function ($) {
-    window.switchInit = function() {
-        $('.switch__option').on('click', function () {
-            var $this = $(this);
+    $('body').on('click', '.switch__option', function() {
+        var $this = $(this);
             $this.closest('.switch').find('.switch__option').removeClass('is-active');
             $this.addClass('is-active');
             $($this.data('elements-to-hide')).fadeOut(200, function() {
@@ -10,8 +9,5 @@
             });
 
             return false;
-        });
-    }
-
-    window.switchInit();
+    });
 })(jQuery);

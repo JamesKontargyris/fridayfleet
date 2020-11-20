@@ -1,0 +1,161 @@
+$timing: .3s;
+
+// Standard version
+.custom-select {
+  position: relative;
+  display: none;
+  box-sizing: content-box;
+  min-height: 3.3rem;
+  max-height: 3.3rem;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  color: $light-blue;
+  outline: none;
+  border-radius: 2rem;
+  background-color: rgba($light-blue, 0.4);
+  transition: $timing all ease-in-out;
+
+  &.is-active {
+    @include grid-media($grid-desktop) {
+      display: inline-block;
+    }
+  }
+
+
+  input:focus + label {
+    background: #def;
+  }
+
+  input {
+    width: 1px;
+    height: 1px;
+    display: inline-block;
+    position: absolute;
+    opacity: 0.01;
+  }
+
+  label {
+    border-top: .1rem solid shade($light-blue, 20%);
+    display: block;
+    height: 3.3rem;
+    line-height: 3.3rem;
+    padding-left: 1rem;
+    padding-right: 3rem;
+    cursor: pointer;
+    position: relative;
+    transition: $timing color ease-in-out;
+    color: white;
+
+    &:nth-child(2) {
+      margin-top: 3.3rem;
+      border-top: .1rem solid shade($light-blue, 20%);
+    }
+  }
+
+  input:checked + label {
+    display: block;
+    border-top: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+
+    &:nth-child(2) {
+      margin-top: 0;
+      position: relative;
+    }
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: 1rem;
+    top: 1.2rem;
+    border: 0.5rem solid white;
+    border-color: white transparent transparent transparent;
+    transition: .4s all ease-in-out;
+  }
+
+  &.expanded {
+    background: $light-blue;
+    border-radius: $base-border-radius;
+    padding: 0;
+    max-height: 15rem;
+    margin-top:3.3rem;
+
+    label {
+      border-top: .1rem solid shade($light-blue, 20%);
+
+      &:hover {
+        color: $dark-blue;
+      }
+    }
+
+    input:checked + label {
+      color: white;
+    }
+
+    &::after {
+      opacity: 0.01;
+    }
+  }
+}
+
+// Header version for mobile and tablet
+.custom-select--mobile {
+  display:none;
+  min-height: 2.5rem;
+  max-height: 2.5rem;
+  color: white;
+  border: 0;
+  font-size: 1.2rem;
+  background-color: $light-blue;
+  min-width: auto;
+
+  @include grid-media($grid-tablet) {
+    font-size: 1.3rem;
+  }
+
+  &.is-active {
+    display: inline-block;
+
+    @include grid-media($grid-desktop) {
+      display: none;
+    }
+  }
+
+  label {
+    border-top: .1rem solid shade($light-blue, 20%);
+    height: 2.5rem;
+    line-height: 2.5rem;
+    padding-left: 1rem;
+    padding-right: 2.5rem;
+
+    &:nth-child(2) {
+      margin-top: 2.5rem;
+      border-top: .1rem solid shade($light-blue, 20%);
+    }
+  }
+
+  &::after {
+    right: 1rem;
+    top: 1rem;
+    border: 0.5rem solid white;
+    border-color: white transparent transparent transparent;
+  }
+
+  &.expanded {
+    border: none;
+    background: $light-blue;
+    margin-top:2.5rem;
+
+    label {
+      border-top: .1rem solid shade($light-blue, 20%);
+    }
+
+    input:checked + label {
+      color: white;
+    }
+  }
+}

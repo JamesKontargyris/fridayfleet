@@ -35,31 +35,50 @@ class ProcessData {
 
 					if ( $dataset['average_new_build'] ) {
 						$value_over_time_data[ $ship ]['new']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_new_build'];
+					} else {
+						$value_over_time_data[ $ship ]['new']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = 0;
 					}
+
 					if ( $dataset['average_5_year'] ) {
 						$value_over_time_data[ $ship ]['5yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_5_year'];
+					} else {
+						$value_over_time_data[ $ship ]['5yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = 0;
 					}
+
 					if ( $dataset['average_10_year'] ) {
 						$value_over_time_data[ $ship ]['10yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_10_year'];
+					} else {
+						$value_over_time_data[ $ship ]['10yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = 0;
 					}
+
 					if ( $dataset['average_15_year'] ) {
 						$value_over_time_data[ $ship ]['15yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_15_year'];
+					} else {
+						$value_over_time_data[ $ship ]['15yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = 0;
 					}
+
 					if ( $dataset['average_20_year'] ) {
 						$value_over_time_data[ $ship ]['20yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_20_year'];
+					} else {
+						$value_over_time_data[ $ship ]['20yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = 0;
 					}
+
 					if ( $dataset['average_25_year'] ) {
 						$value_over_time_data[ $ship ]['25yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_25_year'];
+					} else {
+						$value_over_time_data[ $ship ]['25yr']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = 0;
 					}
+
 					if ( $dataset['average_scrap'] ) {
 						$value_over_time_data[ $ship ]['scrap']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset['average_scrap'];
+					} else {
+						$value_over_time_data[ $ship ]['scrap']['data'][ $dataset['year'] . $first_month_of_quarter[ $dataset['quarter'] ] ] = 0;
 					}
 				}
 
 			} elseif ( $timeline == 'years' ) {
 
 				$data_by_year = [];
-				$last_year = 0;
 
 				if ( $ship_data && $ship ) {
 
@@ -67,27 +86,45 @@ class ProcessData {
 
 						if ( $dataset['average_new_build'] ) {
 							$data_by_year[ $dataset['year'] ]['new'][] = $dataset['average_new_build'];
-						}
-						if ( $dataset['average_5_year'] ) {
-							$data_by_year[ $dataset['year'] ]['5yr'][] = $dataset['average_5_year'];
-						}
-						if ( $dataset['average_10_year'] ) {
-							$data_by_year[ $dataset['year'] ]['10yr'][] = $dataset['average_10_year'];
-						}
-						if ( $dataset['average_15_year'] ) {
-							$data_by_year[ $dataset['year'] ]['15yr'][] = $dataset['average_15_year'];
-						}
-						if ( $dataset['average_20_year'] ) {
-							$data_by_year[ $dataset['year'] ]['20yr'][] = $dataset['average_20_year'];
-						}
-						if ( $dataset['average_25_year'] ) {
-							$data_by_year[ $dataset['year'] ]['25yr'][] = $dataset['average_25_year'];
-						}
-						if ( $dataset['average_scrap'] ) {
-							$data_by_year[ $dataset['year'] ]['scrap'][] = $dataset['average_scrap'];
+						} else {
+							$data_by_year[ $dataset['year'] ]['new'][] = 0;
 						}
 
-						$last_year = $dataset['year'];
+						if ( $dataset['average_5_year'] ) {
+							$data_by_year[ $dataset['year'] ]['5yr'][] = $dataset['average_5_year'];
+						} else {
+							$data_by_year[ $dataset['year'] ]['5yr'][] = 0;
+						}
+
+						if ( $dataset['average_10_year'] ) {
+							$data_by_year[ $dataset['year'] ]['10yr'][] = $dataset['average_10_year'];
+						} else {
+							$data_by_year[ $dataset['year'] ]['10yr'][] = 0;
+						}
+
+						if ( $dataset['average_15_year'] ) {
+							$data_by_year[ $dataset['year'] ]['15yr'][] = $dataset['average_15_year'];
+						} else {
+							$data_by_year[ $dataset['year'] ]['15yr'][] = 0;
+						}
+
+						if ( $dataset['average_20_year'] ) {
+							$data_by_year[ $dataset['year'] ]['20yr'][] = $dataset['average_20_year'];
+						} else {
+							$data_by_year[ $dataset['year'] ]['20yr'][] = 0;
+						}
+
+						if ( $dataset['average_25_year'] ) {
+							$data_by_year[ $dataset['year'] ]['25yr'][] = $dataset['average_25_year'];
+						} else {
+							$data_by_year[ $dataset['year'] ]['25yr'][] = 0;
+						}
+
+						if ( $dataset['average_scrap'] ) {
+							$data_by_year[ $dataset['year'] ]['scrap'][] = $dataset['average_scrap'];
+						} else {
+							$data_by_year[ $dataset['year'] ]['scrap'][] = 0;
+						}
 
 					}
 

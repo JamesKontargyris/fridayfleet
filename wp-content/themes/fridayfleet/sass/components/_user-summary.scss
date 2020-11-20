@@ -1,0 +1,61 @@
+.user-summary {
+  margin-left: 1rem;
+
+  @include grid-media($grid-desktop) {
+    margin-left: 0;
+  }
+}
+
+.user-summary__header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.user-summary__icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999rem;
+  background: url(img/icon-user-outline-white.svg) center bottom no-repeat;
+  background-size: 80%;
+  border: 0.2rem solid $frost-blue;
+  cursor: pointer;
+
+  @include grid-media($grid-desktop) {
+    margin-right: 1rem;
+    cursor: unset;
+  }
+}
+
+.user-summary__name {
+  display: none;
+
+  @include grid-media($grid-desktop) {
+    display: block;
+    @include font-size(13, 15);
+  }
+}
+
+.user-summary__menu {
+  display: none;
+  position: absolute;
+  top: 6rem;
+  right: 0;
+  list-style: none;
+  padding: 1rem;
+  margin: 0;
+  background: linear-gradient(to bottom, shade($dark-blue, 35%) 0, shade($dark-blue, 20%) 1rem);
+  min-width: 20rem;
+  text-align: right;
+  border-bottom-left-radius: $base-border-radius;
+
+  @include grid-media($grid-tablet) {
+    padding: 1rem 2rem;
+  }
+
+  li {
+    &:not(:last-of-type) {
+      margin-bottom: 0.5rem;
+    }
+  }
+}

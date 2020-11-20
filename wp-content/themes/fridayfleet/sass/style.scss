@@ -44,6 +44,7 @@ Text Domain: textdomainhere
 
 /// Components (modules)
 @import
+'components/ajax-loader',
 'components/nav-bar',
 'components/data-view',
 'components/box',
@@ -56,11 +57,13 @@ Text Domain: textdomainhere
 'components/buttons',
 'components/note',
 'components/message',
-'components/ajax-loader',
+'components/custom-select',
+'components/user-summary',
 'components/powered-by-message',
 'components/tooltipster';
 
 /// Page-specific stylesheets
 @import
 'pages/home',
-'pages/dashboard';
+'pages/dashboard',
+'pages/overview';

@@ -1,0 +1,25 @@
+.page__overview {
+  .box-group {
+    @include grid-media($grid-tablet-plus) {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+
+      .box {
+        width: calc(50% - 1rem);
+
+        &:nth-child(odd) {
+          margin-right: 2rem;
+        }
+      }
+    }
+  }
+
+  .graph-group__canvas-container {
+    height: 25vh;
+    @include grid-media($grid-desktop) {
+      height: 35vh;
+    }
+  }
+}

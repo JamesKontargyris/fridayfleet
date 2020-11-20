@@ -1,5 +1,5 @@
 .switch {
-  background:tint($navy-blue, 12%);
+  background: tint($navy-blue, 12%);
   border-radius: 999rem;
   margin: 0 0 0 1.5rem;
 }
@@ -22,6 +22,10 @@
   min-height: 2.4rem;
   border-radius: 999rem;
 
+  @include grid-media($grid-desktop) {
+    @include font-size(13, 13);
+  }
+
   &.is-active {
     background: $light-blue;
     color: white;
@@ -29,7 +33,7 @@
   }
 
   &:focus {
-    outline:none;
+    outline: none;
     border-radius: 999rem;
     box-shadow: 0 0 0.2rem white;
   }

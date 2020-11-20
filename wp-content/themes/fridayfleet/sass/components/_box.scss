@@ -1,7 +1,7 @@
 .box {
   background: tint($navy-blue, 7%);
   border-radius: $base-border-radius;
-  margin: 0 0 $base-spacing;
+  margin: 0 0 2rem;
   color: white;
 
   &.box--no-pad {
@@ -51,6 +51,12 @@
   }
 }
 
+.box__header__title--icon-ship {
+  background: url(img/icon-cargo-ship-outline-white.svg) left center no-repeat;
+  background-size: 2rem;
+  padding-left: 2.4rem;
+}
+
 .box__header__sub-title {
   @include font-size(13, 15);
   color: $frost-blue;
@@ -70,13 +76,13 @@
     background-size: 1rem;
 
     @include no-touch {
-    &:hover,
-    &:active,
-    &:focus {
-      background: url(img/icon-arrow-down-red.svg) left center no-repeat;
-      background-size: 1rem;
+      &:hover,
+      &:active,
+      &:focus {
+        background: url(img/icon-arrow-down-red.svg) left center no-repeat;
+        background-size: 1rem;
+      }
     }
-  }
   }
 }
 

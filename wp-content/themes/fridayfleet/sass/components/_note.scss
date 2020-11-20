@@ -1,13 +1,15 @@
 .note {
   @include font-size(13, 20);
   color: $frost-blue;
-  padding: 0.5rem 0 1rem;
-  border-bottom: 0.1rem solid tint($navy-blue, 12%);
-  margin-bottom: $base-spacing;
+  padding: 1.5rem 0;
+  border-top: 0.1rem solid tint($navy-blue, 35%);
+
+  &:first-of-type {
+    padding-top: 0;
+    border-top: none;
+  }
 
   &:last-of-type {
-    padding-bottom: 0.5rem;
-    border-bottom: none;
     margin-bottom: 0;
   }
 }
@@ -17,12 +19,12 @@
   @include font-size(14, 20);
   color: white;
   font-weight: $font-black;
-  margin-bottom: $base-spacing;
+  margin-bottom: $base-spacing * 0.5;
   padding-right: 3rem;
 }
 
 .has-note-indicator {
-  padding-left: 2.2rem;
+  padding-left: 2.4rem;
 }
 
 .note-indicator--positive {
@@ -42,4 +44,17 @@
 
 .note__title {
     display: block;
+}
+
+.note__meta {
+  @include font-size(14, 20);
+  color:$light-blue;
+  margin-bottom: $base-spacing * 0.5;
+  font-weight: $font-black;
+}
+
+.note__meta__ship {
+  background: url(img/icon-cargo-ship-outline-light-blue.svg) left center no-repeat;
+  background-size: 2rem;
+  padding-left: 2.4rem;
 }
