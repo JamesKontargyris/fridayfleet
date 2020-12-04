@@ -23,7 +23,7 @@ class Queries {
 		$this->dbConn = new Mysql( $pdoConn );
 	}
 
-	public function get_vessel_final_price_averages( $deadweight_category = '' ) {
+	public function get_vessel_final_price_averages( $deadweight_category = '', $order = 'ASC' ) {
 		$query = 'SELECT * FROM vessel_final_price_averages';
 		$bound_variables = [];
 
@@ -32,7 +32,7 @@ class Queries {
 			$query .= ' WHERE vessel_deadweight_category = :deadweight_category';
 		}
 
-		$query .= ' ORDER BY vessel_deadweight_category ASC, year ASC, quarter ASC';
+		$query .= ' ORDER BY vessel_deadweight_category ASC, year ' . $order . ', quarter ' . $order;
 
 		return $this->dbConn->fetchRowMany( $query, $bound_variables );
 	}

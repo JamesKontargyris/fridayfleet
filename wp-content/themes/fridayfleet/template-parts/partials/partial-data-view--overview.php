@@ -5,196 +5,173 @@ use FridayFleet\FridayFleetController;
 $ff = new FridayFleetController;
 ?>
 
-<main id="primary" class="site__body page__overview">
+    <main id="primary" class="site__body page__overview">
 
-    <div id="content-top"></div>
+        <div id="content-top"></div>
 
-	<?php
+		<?php
 
-	$ships                               = $ff->getShips();
-	$graph_colours                       = $ff->getColours();
-	$value_over_time_graph_data_quarters = $ff->getValueOverTimeDataForGraph( $ships, 'quarters' );
-	$value_over_time_graph_data_years    = $ff->getValueOverTimeDataForGraph( $ships, 'years' );
-	$value_over_time_table_data_quarters = $ff->getValueOverTimeDataForTable( $ships, 'quarters' );
-	$value_over_time_table_data_years    = $ff->getValueOverTimeDataForTable( $ships, 'years' );
-	?>
+		$ships                             = $ff->getShips();
+		$graph_colours                     = $ff->getColours();
+		$value_over_time_latest_data_point = $ff->getValueOverTimeLatestDataPoint( $ships );
+		?>
 
-    <div class="data-view">
-        <div class="data-view__header">
-            <h2 class="data-view__title">
-                Overview
-            </h2>
-            <div class="data-view__controls">
-                <button class="btn btn--key">Key</button>
-            </div>
-        </div>
-
-        <div class="data-view__main-col">
-
-            <div class="data-view__legend">
-                <ul class="data-view__legend__labels">
-                    <li><span style="color:rgb(<?php echo $graph_colours[0]; ?>);"
-                              class="data-view__legend__colour-circle">&bull;</span> New
-                    </li>
-                    <li><span style="color:rgb(<?php echo $graph_colours[1]; ?>);"
-                              class="data-view__legend__colour-circle">&bull;</span> 5yr
-                    </li>
-                    <li><span style="color:rgb(<?php echo $graph_colours[2]; ?>);"
-                              class="data-view__legend__colour-circle">&bull;</span> 10yr
-                    </li>
-                    <li><span style="color:rgb(<?php echo $graph_colours[3]; ?>);"
-                              class="data-view__legend__colour-circle">&bull;</span> 15yr
-                    </li>
-                    <li><span style="color:rgb(<?php echo $graph_colours[4]; ?>);"
-                              class="data-view__legend__colour-circle">&bull;</span> 20yr
-                    </li>
-                    <li><span style="color:rgb(<?php echo $graph_colours[5]; ?>);"
-                              class="data-view__legend__colour-circle">&bull;</span> 25yr
-                    </li>
-                    <li><span style="color:rgb(<?php echo $graph_colours[6]; ?>);"
-                              class="data-view__legend__colour-circle">&bull;</span> Scrap
-                    </li>
-                </ul>
+        <div class="data-view">
+            <div class="data-view__header">
+                <h2 class="data-view__title">
+                    Overview
+                </h2>
             </div>
 
-            <div class="box-group">
+            <div class="data-view__cols data-view__cols--overview">
 
-				<?php foreach ( $ships as $ship ) : ?>
+                <div class="data-view__main-col data-view__main-col--overview">
+
                     <section class="box">
                         <div class="box__header">
                             <div class="box__header__titles">
-                                <div class="box__header__title--no-toggle box__header__title--icon-ship">
-                                    <strong><?php echo $ship; ?></strong>
-                                    &rang; Value Over Time
-                                </div>
+                                <div class="box__header__title--no-toggle">Market Notes</div>
                             </div>
                         </div>
 
                         <div class="box__content">
-
-                            <div id="graphs" class="graphs-container">
-
-                                <div class="graph-group__canvas-container">
-                                    <canvas class="graph graph__value-over-time-years"
-                                            id="graph__value-over-time-years--<?php echo $ship; ?>"></canvas>
+                            <div class="note" data-year="2020">
+                                <div class="note__meta">
+                                    <div class="note__meta__ship"><a href="/data-view?ship=5000" class="change-ship"
+                                                                     data-ship="5000" data-page-type="data-view"
+                                                                     data-show-data-view-select="1">5000 DWT</a></div>
+                                </div>
+                                <div class="note__timestamp has-note-indicator note-indicator--neutral">
+                                    5 September 2019 <br>Note title here
+                                </div>
+                                <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+                                    do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                    veniam,
+                                    quis
+                                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </div>
+                            </div>
+                            <div class="note" data-year="2014">
+                                <div class="note__meta">
+                                    <div class="note__meta__ship"><a href="/data-view?ship=3600" class="change-ship"
+                                                                     data-ship="3600" data-page-type="data-view"
+                                                                     data-show-data-view-select="1">3600 DWT</a>, <a
+                                                href="/data-view?ship=8500" class="change-ship" data-ship="8500"
+                                                data-page-type="data-view" data-show-data-view-select="1">8500 DWT</a>
+                                    </div>
+                                </div>
+                                <div class="note__timestamp has-note-indicator note-indicator--negative">
+                                    10 August 2018 <br>Note title here
+                                </div>
+                                <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+                                    do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                    veniam,
+                                    quis
+                                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </div>
+                            </div>
+                            <div class="note" data-year="2013">
+                                <div class="note__meta">
+                                    <div class="note__meta__ship"><a href="/data-view?ship=3600" class="change-ship"
+                                                                     data-ship="3600" data-page-type="data-view"
+                                                                     data-show-data-view-select="1">3600 DWT</a></div>
+                                </div>
+                                <div class="note__timestamp has-note-indicator note-indicator--positive">
+                                    1 June 2016 <br>Note title here
                                 </div>
 
+                                <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+                                    do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                    veniam,
+                                    quis
+                                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </div>
                             </div>
-
-
                         </div>
                     </section>
-				<?php endforeach; ?>
+
+
+                </div>
+
+                <div class="data-view__side-col data-view__side-col--overview">
+
+					<?php foreach ( $ships as $ship ) : ?>
+                        <section class="box">
+                            <a href="/data-view?ship=<?php echo $ship; ?>" class="box__full-size-link change-ship"
+                               data-ship="<?php echo $ship; ?>" data-page-type="data-view"
+                               data-show-data-view-select="1"></a>
+                            <div class="box__header">
+                                <div class="box__header__titles">
+                                    <div class="box__header__title--no-toggle box__header__title--icon-ship">
+										<?php echo $ship; ?> DWT
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="box__content">
+                                <div class="box__content__title">Value Over Time</div>
+
+                                <table class="data-table data-table--first-col data-table--large-text"
+                                       cellpadding="0" cellspacing="0" border="0">
+                                    <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th><span class="hide--mobile"
+                                                  style="color:rgb(<?php echo $graph_colours[0]; ?>)">&bull;</span> New
+                                        </th>
+                                        <th><span class="hide--mobile"
+                                                  style="color:rgb(<?php echo $graph_colours[1]; ?>)">&bull;</span> 5yr
+                                        </th>
+                                        <th><span class="hide--mobile"
+                                                  style="color:rgb(<?php echo $graph_colours[2]; ?>)">&bull;</span> 10yr
+                                        </th>
+                                        <th><span class="hide--mobile"
+                                                  style="color:rgb(<?php echo $graph_colours[3]; ?>)">&bull;</span> 15yr
+                                        </th>
+                                        <th><span class="hide--mobile"
+                                                  style="color:rgb(<?php echo $graph_colours[4]; ?>)">&bull;</span> 20yr
+                                        </th>
+                                        <th><span class="hide--mobile"
+                                                  style="color:rgb(<?php echo $graph_colours[5]; ?>)">&bull;</span> 25yr
+                                        </th>
+                                        <th><span class="hide--mobile"
+                                                  style="color:rgb(<?php echo $graph_colours[6]; ?>)">&bull;</span>
+                                            Scrap
+                                        </th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody class="content--value-over-time-quarters is-active">
+									<?php $ship_data = $value_over_time_latest_data_point[ $ship ][0]; ?>
+                                    <tr>
+                                        <td><?php echo $ship_data['year'] . ' Q' . $ship_data['quarter']; ?></td>
+                                        <td><?php echo number_format($ship_data['average_new_build'], 2); ?></td>
+                                        <td><?php echo number_format($ship_data['average_5_year'], 2); ?></td>
+                                        <td><?php echo number_format($ship_data['average_10_year'], 2); ?></td>
+                                        <td><?php echo number_format($ship_data['average_15_year'], 2); ?></td>
+                                        <td><?php echo number_format($ship_data['average_20_year'], 2); ?></td>
+                                        <td><?php echo number_format($ship_data['average_25_year'], 2); ?></td>
+                                        <td><?php echo number_format($ship_data['average_scrap'], 2); ?></td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+
+                                <div class="note" data-year="2014">
+                                    <div class="note__timestamp has-note-indicator note-indicator--positive">
+                                        10 August 2018<br>Note title here
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+					<?php endforeach; ?>
+
+                </div>
 
             </div>
 
-
         </div>
 
-        <div class="data-view__side-col">
-
-            <section class="box">
-                <div class="box__header">
-                    <div class="box__header__titles">
-                        <div class="box__header__title--no-toggle">Recent Notes</div>
-                    </div>
-                </div>
-
-                <div class="box__content">
-                    <div class="note" data-year="2020">
-                        <div class="note__meta">
-                            <div class="note__meta__ship">5000</div>
-                        </div>
-                        <div class="note__timestamp has-note-indicator note-indicator--neutral">
-                            5 September 2019 <br>Optional note title here
-                        </div>
-                        <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                            do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                            quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                        </div>
-                    </div>
-                    <div class="note" data-year="2014">
-                        <div class="note__meta">
-                            <div class="note__meta__ship">8500</div>
-                        </div>
-                        <div class="note__timestamp has-note-indicator note-indicator--negative">
-                            10 August 2018 <br>Optional note title here
-                        </div>
-                        <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                            do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                            quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                        </div>
-                    </div>
-                    <div class="note" data-year="2013">
-                        <div class="note__meta">
-                            <div class="note__meta__ship">3600</div>
-                        </div>
-                        <div class="note__timestamp has-note-indicator note-indicator--positive">
-                            1 June 2016 <br>Optional note title here
-                        </div>
-
-                        <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                            do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                            quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </div>
-
-</main>
+    </main>
 
 <?php get_footer(); ?>
-
-<script>
-    (function ($) {
-
-		<?php foreach($ships as $ship) : ?>
-
-        var ctxValueOverTime<?php echo $ship; ?> = document.getElementById('graph__value-over-time-years--<?php echo $ship; ?>'),
-            chartValueOverTime<?php echo $ship; ?> = new Chart(ctxValueOverTime<?php echo $ship; ?>, {
-                type: 'line',
-                data: {
-                    datasets: [
-						<?php foreach($value_over_time_graph_data_years[ $ship ] as $dataset) : ?>
-						<?php $colour = ( ! current( $graph_colours ) ) ? reset( $graph_colours ) : current( $graph_colours ); next( $graph_colours ); ?>
-
-						<?php if($dataset['data']) : ?>
-
-                        {
-                            label: '<?php echo $dataset['label']; ?>',
-                            data: [
-								<?php foreach($dataset['data'] as $x => $y) : ?>
-                                {x: moment('<?php echo $x; ?>', "YYYY"), y: <?php echo $y; ?>},
-								<?php endforeach; ?>
-                            ],
-                            fill: false,
-                            borderColor: 'rgba(<?php echo $colour; ?>, 1)',
-                            backgroundColor: 'rgba(<?php echo $colour; ?>, 1)',
-                            borderWidth: 2,
-                            spanGaps: false,
-                            pointStyle: 'circle',
-                            pointRadius: 2,
-                            lineTension: 0.4,
-                            spanGaps: true,
-                        },
-
-						<?php endif; ?>
-
-						<?php endforeach; ?>
-
-                    ]
-                },
-
-                options: chartOptionsOverview,
-
-            });
-
-		<?php endforeach; ?>
-
-    })(jQuery);
-</script>

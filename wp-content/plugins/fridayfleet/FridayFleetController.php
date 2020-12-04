@@ -23,13 +23,24 @@ class FridayFleetController {
 		return $this->variables->getColours();
 	}
 
-	public function getValueOverTimeDataForGraph( $ship = '', $timeline = 'quarters', $purpose = 'graph' ) {
-		return $this->get_data->getValueOverTimeData( $ship, $timeline, $purpose );
+	public function getValueOverTimeDataForGraph( $ship = '', $timeline = 'quarters', $purpose = 'graph', $order = 'ASC' ) {
+		return $this->get_data->getValueOverTimeData( $ship, $timeline, $purpose, $order );
 
 	}
 
-	public function getValueOverTimeDataForTable( $ship = '', $timeline = 'quarters', $purpose = 'table' ) {
-		return $this->get_data->getValueOverTimeData( $ship, $timeline, $purpose );
+	public function getValueOverTimeDataForTable( $ship = '', $timeline = 'quarters', $purpose = 'table', $order = 'DESC' ) {
+		return $this->get_data->getValueOverTimeData( $ship, $timeline, $purpose, $order );
+	}
+
+	public function getValueOverTimeLatestDataPoint( $ship = '' ) {
+		$ship_data = $this->get_data->getValueOverTimeData( $ship, 'quarters', 'table', 'DESC' );
+		$latest_data = [];
+
+		foreach($ship_data as $ship_type => $datasets) {
+			$latest_data[$ship_type] = array_slice($datasets, 0, 1);
+		}
+
+		return $latest_data;
 	}
 
 	public function getNumberOfDatasets( $data = [], $array_key = 'data' ) {

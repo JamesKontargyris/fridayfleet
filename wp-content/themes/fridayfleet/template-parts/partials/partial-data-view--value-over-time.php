@@ -20,11 +20,11 @@ $ff = new FridayFleetController;
 		<?php else : ?>
 
 		<?php
-		$graph_colours = $ff->getColours();
+		$graph_colours                       = $ff->getColours();
 		$value_over_time_graph_data_quarters = $ff->getValueOverTimeDataForGraph( $ship, 'quarters' );
-		$value_over_time_graph_data_years = $ff->getValueOverTimeDataForGraph( $ship, 'years' );
+		$value_over_time_graph_data_years    = $ff->getValueOverTimeDataForGraph( $ship, 'years' );
 		$value_over_time_table_data_quarters = $ff->getValueOverTimeDataForTable( $ship, 'quarters' );
-		$value_over_time_table_data_years = $ff->getValueOverTimeDataForTable( $ship, 'years' );
+		$value_over_time_table_data_years    = $ff->getValueOverTimeDataForTable( $ship, 'years' );
 		?>
 
 		<?php
@@ -45,216 +45,264 @@ $ff = new FridayFleetController;
                     </h2>
 
                     <div class="data-view__controls">
-						<?php get_template_part( 'template-parts/partials/partial', 'data-view-select-desktop' ); ?>
-                        <div class="switch">
-                            <div class="switch__option-group">
-                                <button class="switch__option switch__option--quarters is-active"
-                                        data-elements-to-show=".content--value-over-time-quarters"
-                                        data-elements-to-hide=".content--value-over-time-years"
-                                        onclick="resetZoom()">
-                                    Quarters
-                                </button>
-                                <button class="switch__option switch__option--years"
-                                        data-elements-to-show=".content--value-over-time-years"
-                                        data-elements-to-hide=".content--value-over-time-quarters"
-                                        onclick="resetZoom()">
-                                    Years
-                                </button>
-                            </div>
-                        </div>
+						<?php // get_template_part( 'template-parts/partials/partial', 'data-view-select-desktop' ); ?>
+
                     </div>
                 </div>
 
             </div>
 
-            <div class="data-view__main-col">
-                <section class="box">
-                    <div class="box__header">
-                        <div class="box__header__titles">
-                            <div class="box__header__title">Graph <span
-                                        class="help-icon tooltip--help hide--no-touch"
-                                        title="Pinch and drag to zoom in/out and scroll. Tap a datapoint to view data. Tap a legend label to show/hide a dataset."></span>
-                                <span class="help-icon tooltip--help hide--touch"
-                                      title="Use your mouse wheel/gestures to zoom in/out and scroll. Click a datapoint to view data. Click a legend label to show/hide a dataset."></span>
-                            </div>
-                            <div class="box__header__sub-title content--value-over-time-years">Data based on an
-                                average of
-                                quarter figures for each year
-                            </div>
-                        </div>
-                    </div>
+            <div class="data-view__cols">
 
-                    <div class="box__content">
-
-                        <div class="graph-update-button-group">
-                            <button onclick="resetZoom()" class="btn btn--graph-update btn--reset-zoom">Reset Zoom
-                            </button>
-                            <button onclick="clearAnnotations()" class="btn btn--graph-update btn--clear-annotations">
-                                Remove Line
-                            </button>
-                        </div>
-
-
-                        <div id="graphs" class="graphs-container">
-
-                            <div class="graph-group graph-group--value-over-time-quarters content--value-over-time-quarters is-active">
-                                <div class="graph-group__canvas-container">
-                                    <canvas class="graph graph__value-over-time-quarters"
-                                            id="graph__value-over-time-quarters--<?php echo $ship; ?>"></canvas>
+                <div class="data-view__main-col data-view__main-col--ship-view">
+                    <section class="box">
+                        <div class="box__header">
+                            <div class="box__header__titles">
+                                <div class="box__header__title">Graph <span
+                                            class="help-icon tooltip--help hide--no-touch"
+                                            title="Drag out an area to zoom. Tap a datapoint to view data. Tap a legend label to show/hide other datasets."></span>
+                                    <span class="help-icon tooltip--help hide--touch"
+                                          title="Drag out an area to zoom. Click a datapoint to view data. Click a legend label to show/hide other datasets."></span>
+                                </div>
+                                <div class="box__header__sub-title content--value-over-time-years">Data based on an
+                                    average of
+                                    quarter figures for each year
                                 </div>
                             </div>
-
-                            <div class="graph-group graph-group--value-over-time-years content--value-over-time-years">
-                                <div class="graph-group__canvas-container">
-                                    <canvas class="graph graph__value-over-time-years"
-                                            id="graph__value-over-time-years--<?php echo $ship; ?>"></canvas>
+                            <div class="box__header__controls">
+                                <div class="switch">
+                                    <div class="switch__option-group">
+                                        <button class="switch__option switch__option--quarters is-active"
+                                                data-elements-to-show=".content--value-over-time-quarters"
+                                                data-elements-to-hide=".content--value-over-time-years"
+                                                onclick="resetZoom()">
+                                            Quarters
+                                        </button>
+                                        <button class="switch__option switch__option--years"
+                                                data-elements-to-show=".content--value-over-time-years"
+                                                data-elements-to-hide=".content--value-over-time-quarters"
+                                                onclick="resetZoom()">
+                                            Years
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
 
+                        <div class="box__content">
 
-                    </div>
-                </section>
+                            <div class="graph-update-button-group">
+                                <button onclick="resetZoom()" class="btn btn--graph-update btn--reset-zoom">Reset Zoom
+                                </button>
+                                <button onclick="clearAnnotations()"
+                                        class="btn btn--graph-update btn--clear-annotations">
+                                    Remove Line
+                                </button>
+                            </div>
 
-                <section class="box">
-                    <div class="box__header">
-                        <div class="box__header__titles">
-                            <div class="box__header__title">Data</div>
-                            <div class="box__header__sub-title content--value-over-time-years">Data based on an
-                                average of
-                                quarter figures for each year
+
+                            <div id="graphs" class="graphs-container">
+
+                                <div class="graph-group graph-group--value-over-time-quarters content--value-over-time-quarters is-active">
+                                    <div class="graph-group__canvas-container">
+                                        <canvas class="graph graph__value-over-time-quarters"
+                                                id="graph__value-over-time-quarters--<?php echo $ship; ?>"></canvas>
+                                    </div>
+                                </div>
+
+                                <div class="graph-group graph-group--value-over-time-years content--value-over-time-years">
+                                    <div class="graph-group__canvas-container">
+                                        <canvas class="graph graph__value-over-time-years"
+                                                id="graph__value-over-time-years--<?php echo $ship; ?>"></canvas>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </section>
+
+                    <section class="box">
+                        <div class="box__header">
+                            <div class="box__header__titles">
+                                <div class="box__header__title">Data</div>
+                                <div class="box__header__sub-title content--value-over-time-years">Data based on an
+                                    average of quarter figures for each year
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="box__content">
+                        <div class="box__content">
 
-                        <table class="data-table data-table--first-col"
-                               cellpadding="0" cellspacing="0" border="0">
-                            <thead>
-                            <tr>
-                                <th></th>
-                                <th><span class="hide--mobile"
-                                          style="color:rgb(<?php echo $graph_colours[0]; ?>)">&bull;</span> New
-                                </th>
-                                <th><span class="hide--mobile"
-                                          style="color:rgb(<?php echo $graph_colours[1]; ?>)">&bull;</span> 5yr
-                                </th>
-                                <th><span class="hide--mobile"
-                                          style="color:rgb(<?php echo $graph_colours[2]; ?>)">&bull;</span> 10yr
-                                </th>
-                                <th><span class="hide--mobile"
-                                          style="color:rgb(<?php echo $graph_colours[3]; ?>)">&bull;</span> 15yr
-                                </th>
-                                <th><span class="hide--mobile"
-                                          style="color:rgb(<?php echo $graph_colours[4]; ?>)">&bull;</span> 20yr
-                                </th>
-                                <th><span class="hide--mobile"
-                                          style="color:rgb(<?php echo $graph_colours[5]; ?>)">&bull;</span> 25yr
-                                </th>
-                                <th><span class="hide--mobile"
-                                          style="color:rgb(<?php echo $graph_colours[6]; ?>)">&bull;</span> Scrap
-                                </th>
-                            </tr>
-                            </thead>
+                            <table class="data-table data-table--first-col data-table--sticky-header"
+                                   cellpadding="0" cellspacing="0" border="0">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th><span class="hide--mobile"
+                                              style="color:rgb(<?php echo $graph_colours[0]; ?>)">&bull;</span> New
+                                    </th>
+                                    <th><span class="hide--mobile"
+                                              style="color:rgb(<?php echo $graph_colours[1]; ?>)">&bull;</span> 5yr
+                                    </th>
+                                    <th><span class="hide--mobile"
+                                              style="color:rgb(<?php echo $graph_colours[2]; ?>)">&bull;</span> 10yr
+                                    </th>
+                                    <th><span class="hide--mobile"
+                                              style="color:rgb(<?php echo $graph_colours[3]; ?>)">&bull;</span> 15yr
+                                    </th>
+                                    <th><span class="hide--mobile"
+                                              style="color:rgb(<?php echo $graph_colours[4]; ?>)">&bull;</span> 20yr
+                                    </th>
+                                    <th><span class="hide--mobile"
+                                              style="color:rgb(<?php echo $graph_colours[5]; ?>)">&bull;</span> 25yr
+                                    </th>
+                                    <th><span class="hide--mobile"
+                                              style="color:rgb(<?php echo $graph_colours[6]; ?>)">&bull;</span> Scrap
+                                    </th>
+                                </tr>
+                                </thead>
 
-                            <tbody class="content--value-over-time-quarters is-active">
-							<?php $year = 0;
-							foreach ( $value_over_time_table_data_quarters[ $ship ] as $ship_data ) : ?>
-								<?php if ( $year != $ship_data['year'] ) : $year = $ship_data['year']; ?>
-                                    <tr class="data-table__sub-title">
-                                        <td colspan="8"><?php echo $ship_data['year']; ?></td>
+                                <tbody class="content--value-over-time-quarters is-active">
+								<?php $year = 0;
+								foreach ( $value_over_time_table_data_quarters[ $ship ] as $ship_data ) : ?>
+									<?php if ( $year != $ship_data['year'] ) : $year = $ship_data['year']; ?>
+                                        <tr class="data-table__sub-title">
+                                            <td colspan="8"><?php echo $ship_data['year']; ?></td>
+                                        </tr>
+									<?php endif; ?>
+                                    <tr>
+                                        <td><?php echo 'Q' . $ship_data['quarter']; ?></td>
+                                        <td><?php echo number_format( $ship_data['average_new_build'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_5_year'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_10_year'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_15_year'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_20_year'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_25_year'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_scrap'], 2 ); ?></td>
                                     </tr>
-								<?php endif; ?>
-                                <tr>
-                                    <td><?php echo 'Q' . $ship_data['quarter']; ?></td>
-                                    <td><?php echo $ship_data['new_build']; ?></td>
-                                    <td><?php echo $ship_data['average_5_year']; ?></td>
-                                    <td><?php echo $ship_data['average_10_year']; ?></td>
-                                    <td><?php echo $ship_data['average_15_year']; ?></td>
-                                    <td><?php echo $ship_data['average_20_year']; ?></td>
-                                    <td><?php echo $ship_data['average_25_year']; ?></td>
-                                    <td><?php echo $ship_data['average_scrap']; ?></td>
-                                </tr>
-							<?php endforeach; ?>
-                            </tbody>
+								<?php endforeach; ?>
+                                </tbody>
 
-                            <tbody class="content--value-over-time-years">
-							<?php $year = 0;
-							foreach ( $value_over_time_table_data_years[ $ship ] as $year => $ship_data ) : ?>
-                                <tr>
-                                    <td><?php echo $year; ?></td>
-                                    <td><?php echo $ship_data['new']; ?></td>
-                                    <td><?php echo $ship_data['5yr']; ?></td>
-                                    <td><?php echo $ship_data['10yr']; ?></td>
-                                    <td><?php echo $ship_data['15yr']; ?></td>
-                                    <td><?php echo $ship_data['20yr']; ?></td>
-                                    <td><?php echo $ship_data['25yr']; ?></td>
-                                    <td><?php echo $ship_data['scrap']; ?></td>
-                                </tr>
-							<?php endforeach; ?>
-                            </tbody>
+                                <tbody class="content--value-over-time-years">
+								<?php $year = 0;
+								foreach ( $value_over_time_table_data_years[ $ship ] as $year => $ship_data ) : ?>
+                                    <tr>
+                                        <td><?php echo $year; ?></td>
+                                        <td><?php echo number_format( $ship_data['new'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['5yr'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['10yr'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['15yr'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['20yr'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['25yr'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['scrap'], 2 ); ?></td>
+                                    </tr>
+								<?php endforeach; ?>
+                                </tbody>
 
-                        </table>
+                            </table>
 
-                    </div>
-                </section>
-            </div>
+                        </div>
+                    </section>
+                </div>
 
-            <div class="data-view__side-col">
+                <div class="data-view__side-col data-view__side-col--ship-view">
 
-                <section class="box">
-                    <div class="box__header">
-                        <div class="box__header__titles">
-                            <div class="box__header__title">Notes</div>
+                    <div class="box box--is-closed">
+                        <div class="box__header">
+                            <div class="box__header__titles">
+                                <div class="box__header__title">Ship Definition</div>
+                            </div>
+                        </div>
+                        <div class="box__content">
+                            Ship definition info here
                         </div>
                     </div>
 
-                    <div class="box__content">
-                        <div class="note" data-year="2020">
-                            <div class="note__timestamp has-note-indicator note-indicator--neutral">
-                                5 September 2019 <br>Optional note title here
+                    <section class="box">
+                        <div class="box__header">
+                            <div class="box__header__titles">
+                                <div class="box__header__title">Market Notes</div>
+                            </div>
+                        </div>
+
+                        <div class="box__content box__content--scrollable">
+                            <div class="note" data-year="2020">
                                 <a href="#content-top"
                                    onclick="addAnnotationVertical('2019', '09', '05', '5 September 2019')"
-                                   class="btn--plot-on-graph scroll-to-link">Plot on graph</a></div>
-                            <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                                do
-                                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                quis
-                                nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                   class="btn--plot-on-graph scroll-to-link">Plot on graph</a>
+                                <div class="note__timestamp has-note-indicator note-indicator--neutral">
+                                    5 September 2019 <br>Optional note title here
+                                </div>
+                                <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+                                    do
+                                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                    quis
+                                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </div>
                             </div>
-                        </div>
-                        <div class="note" data-year="2014">
-                            <div class="note__timestamp has-note-indicator note-indicator--negative">
-                                10 August 2018 <br>Optional note title here
+                            <div class="note" data-year="2014">
                                 <a href="#content-top"
                                    onclick="addAnnotationVertical('2018', '08', '10', '10 August 2018')"
-                                   class="btn--plot-on-graph scroll-to-link">Plot on graph</a></div>
-                            <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                                do
-                                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                quis
-                                nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                   class="btn--plot-on-graph scroll-to-link">Plot on graph</a>
+                                <div class="note__timestamp has-note-indicator note-indicator--negative">
+                                    10 August 2018 <br>Optional note title here
+                                </div>
+                                <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+                                    do
+                                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                    quis
+                                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </div>
                             </div>
-                        </div>
-                        <div class="note" data-year="2013">
-                            <div class="note__timestamp has-note-indicator note-indicator--positive">
-                                1 June 2016 <br>Optional note title here
+                            <div class="note" data-year="2013">
                                 <a href="#content-top"
                                    onclick="addAnnotationVertical('2016', '06', '01', '1 June 2016')"
                                    class="btn--plot-on-graph scroll-to-link">Plot on graph</a>
+                                <div class="note__timestamp has-note-indicator note-indicator--positive">
+                                    1 June 2016 <br>Optional note title here
+                                </div>
+                                <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+                                    do
+                                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                    quis
+                                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </div>
                             </div>
-                            <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                                do
-                                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                quis
-                                nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                            <div class="note" data-year="2013">
+                                <a href="#content-top"
+                                   onclick="addAnnotationVertical('2016', '06', '01', '1 June 2016')"
+                                   class="btn--plot-on-graph scroll-to-link">Plot on graph</a>
+                                <div class="note__timestamp has-note-indicator note-indicator--positive">
+                                    1 June 2016 <br>Optional note title here
+                                </div>
+                                <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+                                    do
+                                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                    quis
+                                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </div>
+                            </div>
+                            <div class="note" data-year="2013">
+                                <a href="#content-top"
+                                   onclick="addAnnotationVertical('2016', '06', '01', '1 June 2016')"
+                                   class="btn--plot-on-graph scroll-to-link">Plot on graph</a>
+                                <div class="note__timestamp has-note-indicator note-indicator--positive">
+                                    1 June 2016 <br>Optional note title here
+                                </div>
+                                <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+                                    do
+                                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                    quis
+                                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                </div>
             </div>
+
         </div>
 
     </main>
@@ -277,7 +325,7 @@ $ff = new FridayFleetController;
                             label: '<?php echo $dataset['label']; ?>',
                             data: [
 								<?php foreach($dataset['data'] as $x => $y) : ?>
-                                {x: moment('<?php echo $x; ?>', "YYYYMM"), y: <?php echo $y; ?>},
+                                {x: moment('<?php echo $x; ?>', "YYYYMM"), y: <?php echo number_format( $y, 2 ); ?>},
 								<?php endforeach; ?>
                             ],
                             fill: false,
@@ -289,11 +337,11 @@ $ff = new FridayFleetController;
                             pointRadius: 3,
                             lineTension: 0.3,
                             spanGaps: true,
-                            trendlineLinear: {
-                                style: "rgba(<?php echo $colour; ?>, 0.3)",
-                                lineStyle: "solid",
-                                width: 2,
-                            }
+                            //trendlineLinear: {
+                            //    style: "rgba(<?php //echo $colour; ?>//, 0.3)",
+                            //    lineStyle: "solid",
+                            //    width: 2,
+                            //}
 
                         },
 
@@ -319,7 +367,7 @@ $ff = new FridayFleetController;
                             label: '<?php echo $dataset['label']; ?>',
                             data: [
 								<?php foreach($dataset['data'] as $x => $y) : ?>
-                                {x: moment('<?php echo $x; ?>', "YYYY"), y: <?php echo $y; ?>},
+                                {x: moment('<?php echo $x; ?>', "YYYY"), y: <?php echo number_format( $y, 2 ); ?>},
 								<?php endforeach; ?>
                             ],
                             fill: false,

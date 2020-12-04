@@ -135,7 +135,7 @@ class ProcessData {
 					foreach ( $dataset as $dataset_label => $quarter_values ) {
 						$number_of_quarters = count( $quarter_values );
 						$year_total         = array_sum( $quarter_values );
-						$average            = number_format( $year_total / $number_of_quarters, 2 );
+						$average            = $year_total / $number_of_quarters;
 
 						if ( $purpose == 'table' ) {
 							$value_over_time_data[ $ship ][ $year ][ $dataset_label ] = $average ? $average : 0;

@@ -1,15 +1,16 @@
 (function ($) {
-    $('.nav-bar__menu a').on('click', function (e) {
+    $('body').on('click', '.nav-bar__menu a, .change-ship', function (e) {
 
         var url = $(this).attr('href'),
             dataView = $('#data-view-value').val(),
             pageType = $(this).data('page-type'),
+            shipType = $(this).data('ship'),
             showDataViewSelect = $(this).data('show-data-view-select');
 
         $('#current-url').val(url);
         $('#page-type').val(pageType);
 
-        if (!$(this).hasClass('is-active')) {
+        if (!$(this).hasClass('change-ship') && !$(this).hasClass('is-active')) {
 
             $('.nav-bar__menu a').removeClass('is-active');
             $(this).addClass('is-active');
@@ -18,6 +19,14 @@
 
         }
 
+        if($(this).hasClass('change-ship')) {
+            $('.nav-bar__menu a').removeClass('is-active');
+            $('.nav-bar__link__' + shipType).addClass('is-active');
+
+            window.ajaxUpdate(url, dataView, pageType, showDataViewSelect);
+        }
+
         e.preventDefault();
     });
+
 })(jQuery);

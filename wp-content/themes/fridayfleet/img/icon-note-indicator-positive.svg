@@ -1,2 +1,19 @@
-<?xml version="1.0"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><g xmlns="http://www.w3.org/2000/svg" id="_02_User" data-name="02 User"><path d="m256 404.25a20 20 0 0 1 -20-20v-221.79a20 20 0 0 1 40 0v221.79a20 20 0 0 1 -20 20z" fill="#27e100" data-original="#000000" style=""/><path d="m351.69 237.16a19.94 19.94 0 0 1 -14.14-5.86l-81.55-81.55-81.55 81.55a20 20 0 0 1 -28.29-28.3l85-85a35.18 35.18 0 0 1 49.68 0l85 85a20 20 0 0 1 -14.15 34.14z" fill="#27e100" data-original="#000000" style=""/><path d="m410 512h-308a102.12 102.12 0 0 1 -102-102v-308a102.12 102.12 0 0 1 102-102h308a102.12 102.12 0 0 1 102 102v308a102.12 102.12 0 0 1 -102 102zm-308-472a62.07 62.07 0 0 0 -62 62v308a62.07 62.07 0 0 0 62 62h308a62.07 62.07 0 0 0 62-62v-308a62.07 62.07 0 0 0 -62-62z" fill="#27e100" data-original="#000000" style=""/></g></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns:svgjs="http://svgjs.com/svgjs"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512"
+	 style="enable-background:new 0 0 512 512;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#27E100;}
+	.st1{fill:#FFFFFF;}
+</style>
+<g>
+	<g id="_02_User">
+		<path class="st0" d="M410,512H102C45.7,511.9,0.1,466.3,0,410V102C0.1,45.7,45.7,0.1,102,0h308c56.3,0.1,101.9,45.7,102,102v308
+			C511.9,466.3,466.3,511.9,410,512z"/>
+		<path class="st1" d="M365.8,203l-85-85c-13.7-13.7-35.9-13.7-49.7,0l-85,85c-7.8,7.8-7.8,20.5,0,28.3s20.5,7.8,28.3,0l61.5-61.6
+			v214.5c0,11,9,20,20,20s20-9,20-20V169.8l61.5,61.6c3.7,3.8,8.8,5.9,14.1,5.9v0c5.3,0,10.4-2.1,14.1-5.9
+			C373.6,223.5,373.6,210.8,365.8,203z"/>
+	</g>
+</g>
+</svg>

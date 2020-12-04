@@ -6,8 +6,6 @@
 
         }
 
-        console.log(url + ' / ' + dataView + ' / ' + pageType);
-
         jQuery.ajax({
             url: url,
             beforeSend: function (xhr) {

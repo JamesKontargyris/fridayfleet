@@ -7,6 +7,27 @@ var chartOptionsLegend = {
         boxWidth: 15,
         fontSize: 13,
         fontColor: '#7996B9',
+    },
+    onClick: function (e, legendItem) {
+        var index = legendItem.datasetIndex;
+        var ci = this.chart;
+        var alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
+
+        ci.data.datasets.forEach(function (e, i) {
+            var meta = ci.getDatasetMeta(i);
+
+            if (i !== index) {
+                if (!alreadyHidden) {
+                    meta.hidden = meta.hidden === null ? !meta.hidden : null;
+                } else if (meta.hidden === null) {
+                    meta.hidden = true;
+                }
+            } else if (i === index) {
+                meta.hidden = null;
+            }
+        });
+
+        ci.update();
     }
 }
 
@@ -85,13 +106,14 @@ var chartOptionsScalesYears = {
 var chartOptionsPlugins = {
     zoom: {
         pan: {
-            enabled: true,
+            enabled: false,
             mode: 'xy',
             speed: 2,
             threshold: 2
         },
         zoom: {
             enabled: true,
+            drag: true,
             mode: 'xy',
             sensitivity: 1,
             onZoomComplete: function ({chart}) {
@@ -99,6 +121,12 @@ var chartOptionsPlugins = {
             }
         }
     },
+    // crosshair: {
+    //     line: {
+    //         color: '#F66',  // crosshair line color
+    //         width: 1        // crosshair line width
+    //     },
+    // }
 }
 
 var chartOptionsQuarters = {
@@ -110,7 +138,7 @@ var chartOptionsQuarters = {
     annotation: {
         events: ["click"],
         annotations: []
-    }
+    },
 };
 
 var chartOptionsYears = {
@@ -122,7 +150,7 @@ var chartOptionsYears = {
     annotation: {
         events: ["click"],
         annotations: []
-    }
+    },
 };
 
 var chartOptionsOverview = {

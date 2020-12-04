@@ -1,25 +1,27 @@
 .page__overview {
-  .box-group {
-    @include grid-media($grid-tablet-plus) {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-
-      .box {
-        width: calc(50% - 1rem);
-
-        &:nth-child(odd) {
-          margin-right: 2rem;
-        }
-      }
-    }
-  }
-
   .graph-group__canvas-container {
     height: 25vh;
     @include grid-media($grid-desktop) {
       height: 35vh;
     }
   }
+}
+
+@include grid-media($grid-desktop) {
+  .data-view__main-col--overview {
+    width:calc(25% - 2rem);
+    max-width: 50rem;
+  }
+
+  .data-view__side-col--overview {
+    width:75%;
+    max-width:100rem;
+  }
+
+
+}
+
+.data-view__side-col--overview .note {
+  border-top:0;
+  padding-bottom:0;
 }

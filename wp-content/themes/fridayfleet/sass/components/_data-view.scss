@@ -108,21 +108,33 @@
   margin-top: -0.1rem;
 }
 
+.data-view__cols {
+  @include grid-media($grid-desktop) {
+    //display: flex;
+  }
+}
+
 .data-view__main-col {
   margin-top: 2rem; // to allow for sticky header
 }
 
 @include grid-media($grid-desktop) {
   .data-view__main-col {
-    float: left;
-    width: calc(75% - 2rem);
+    float:left;
+    margin-right:2rem;
+    width:calc(75% - 2rem);
+    max-width:200rem;
   }
 
   .data-view__side-col {
-    float: right;
-    width: 25%;
+    float:left;
     margin-top: 2rem; // to allow for sticky header
+    width:25%;
+    max-width:50rem;
   }
 
+}
+
+.data-view__side-col--ship-view {
 
 }

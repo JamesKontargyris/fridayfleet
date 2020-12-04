@@ -9,6 +9,14 @@ table.data-table {
     @include font-size(12, 14);
   }
 
+  &.data-table--large-text {
+    @include font-size(12, 14);
+
+    @include grid-media($grid-desktop) {
+      @include font-size(14, 16);
+    }
+  }
+
   tr {
     th, td {
       width: (100/8) * 1%;
@@ -29,8 +37,6 @@ table.data-table {
   thead {
     tr {
       th {
-        position: sticky;
-        top: 5.5rem; /* Required for the stickiness - allows for sticky tab__header */
         text-transform: uppercase;
         padding-top: 1rem;
         padding-bottom: 1rem;
@@ -58,6 +64,17 @@ table.data-table {
         font-weight: $font-black;
         color: $red;
         border-bottom: 0.1rem solid $dark-blue;
+      }
+    }
+  }
+}
+
+table.data-table--sticky-header {
+  thead {
+    tr {
+      th {
+        position: sticky;
+        top: 5.5rem; /* Required for the stickiness - allows for sticky tab__header */
       }
     }
   }

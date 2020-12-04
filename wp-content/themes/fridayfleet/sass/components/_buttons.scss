@@ -1,45 +1,58 @@
 .btn {
   display: inline-block;
   @include font-size(12, 12);
-  padding:1rem;
+  padding: 1rem;
   border-radius: 999rem;
-  border:0;
+  border: 0;
 }
 
 .graph-update-button-group {
   position: absolute;
-  top:1rem;
-  right:1rem;
+  top: 1rem;
+  right: 1rem;
   z-index: z('high');
 }
 
 .btn--graph-update {
-  display:none;
+  display: none;
   background: url(img/icon-reset-light-blue.svg) left 0.7rem center no-repeat, white;
-  background-size:1.4rem, auto;
-  padding:0.7rem 0.5rem 0.7rem 2.4rem;
+  background-size: 1.4rem, auto;
+  padding: 0.7rem 0.5rem 0.7rem 2.4rem;
 
   &.is-active {
-    display:inline-block;
+    display: inline-block;
   }
 }
 
 .btn--plot-on-graph {
-  display: block;
   position: absolute;
-  top:0;
-  right:0;
-  background: url(img/icon-crosshair-on-graph-white.svg) center no-repeat;
-  background-size:1.8rem;
-  text-indent: -9999rem;
-  width:1.8rem;
-  height:1.8rem;
+  top: 0;
+  bottom: 0;
+  left: -1rem;
+  right: -1rem;
+  z-index: z('high');
+  opacity: 0.01;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: none;
+
+  @include no-touch {
+    &:hover {
+      opacity:1;
+      background: rgba($navy-blue, 0.7);
+      color: white;
+      font-weight: $font-black;
+      @include font-size(16, 16);
+
+    }
+  }
 }
 
 .btn--key {
   background: url(img/icon-key-outline-white.svg) center no-repeat;
-  background-size:2.4rem;
+  background-size: 2.4rem;
   text-indent: -9999rem;
-  width:3.2rem;
-  height:3.2rem;
+  width: 3.2rem;
+  height: 3.2rem;
 }

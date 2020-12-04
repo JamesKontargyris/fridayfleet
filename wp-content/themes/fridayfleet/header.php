@@ -24,7 +24,7 @@
     <header id="masthead" class="site__header">
         <div class="site__header__logo hide--desktop">FRIDAY FLEET</div>
         <div class="site__header__tools">
-            <?php get_template_part('template-parts/partials/partial', 'data-view-select-mobile'); ?>
+            <?php // get_template_part('template-parts/partials/partial', 'data-view-select-mobile'); ?>
             <?php get_template_part('template-parts/partials/partial', 'user-summary'); ?>
         </div>
     </header><!-- #masthead -->
