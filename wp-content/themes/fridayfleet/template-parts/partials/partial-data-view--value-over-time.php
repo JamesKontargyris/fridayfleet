@@ -41,7 +41,7 @@ $ff = new FridayFleetController;
                 <div class="data-view__header">
                     <h2 class="data-view__title">
                         <strong class="data-view__title--icon-ship"><?php echo $ship; ?></strong>
-                        <span class="data-view__title__divider">&rang;</span> Value Over Time
+                        <span class="data-view__title__divider">&rang;</span> Fixed Age Value
                     </h2>
 
                     <div class="data-view__controls">
