@@ -2,19 +2,28 @@
 
 use Simplon\Mysql\Mysql;
 use Simplon\Mysql\PDOConnector;
+use Dotenv\Dotenv;
 
 class Queries {
 
 	private $dbConn;
 
 	public function __construct() {
-		// TODO: update to ENV variables
+		$dotenv = Dotenv::createImmutable( ABSPATH );
+		$dotenv->load();
+
 		$pdo = new PDOConnector(
-			'178.128.47.241', // server
-			'james', // user
-			'letmeinplease', // password
-			'sea3r' // database
+			$_ENV['SEA3R_DB_HOST'], // server
+			$_ENV['SEA3R_DB_USER'], // user
+			$_ENV['SEA3R_DB_PASSWORD'], // password
+			$_ENV['SEA3R_DB_NAME'] // database
 		);
+//		$pdo = new PDOConnector(
+//			'188.166.62.246', // server
+//			'sea3r', // user
+//			'C3R2020abc', // password
+//			'sea3r' // database
+//		);
 
 		$pdoConn = $pdo->connect( 'utf8', [] ); // charset, options
 
@@ -24,12 +33,12 @@ class Queries {
 	}
 
 	public function get_vessel_final_price_averages( $deadweight_category = '', $order = 'ASC' ) {
-		$query = 'SELECT * FROM vessel_final_price_averages';
+		$query           = 'SELECT * FROM vessel_final_price_averages';
 		$bound_variables = [];
 
 		if ( $deadweight_category ) {
 			$bound_variables['deadweight_category'] = $deadweight_category;
-			$query .= ' WHERE vessel_deadweight_category = :deadweight_category';
+			$query                                  .= ' WHERE vessel_deadweight_category = :deadweight_category';
 		}
 
 		$query .= ' ORDER BY vessel_deadweight_category ASC, year ' . $order . ', quarter ' . $order;

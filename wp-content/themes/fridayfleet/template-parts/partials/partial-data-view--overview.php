@@ -19,7 +19,7 @@ $ff = new FridayFleetController;
         <div class="data-view">
             <div class="data-view__header">
                 <h2 class="data-view__title">
-                    Overview
+                    Overview <span class="data-view__title__divider">&rang;</span> Dry Gearless
                 </h2>
             </div>
 
@@ -37,9 +37,9 @@ $ff = new FridayFleetController;
                         <div class="box__content">
                             <div class="note" data-year="2020">
                                 <div class="note__meta">
-                                    <div class="note__meta__ship"><a href="/data-view?ship=5000" class="change-ship"
-                                                                     data-ship="5000" data-page-type="data-view"
-                                                                     data-show-data-view-select="1">5000 DWT</a></div>
+                                    <a href="/data-view?ship=5000" class="btn btn--pill btn--pill--small change-ship"
+                                       data-ship="5000" data-page-type="data-view"
+                                       data-show-data-view-select="1">5000 DWT</a>
                                 </div>
                                 <div class="note__timestamp has-note-indicator note-indicator--neutral">
                                     5 September 2019 <br>Note title here
@@ -53,12 +53,12 @@ $ff = new FridayFleetController;
                             </div>
                             <div class="note" data-year="2014">
                                 <div class="note__meta">
-                                    <div class="note__meta__ship"><a href="/data-view?ship=3600" class="change-ship"
-                                                                     data-ship="3600" data-page-type="data-view"
-                                                                     data-show-data-view-select="1">3600 DWT</a>, <a
-                                                href="/data-view?ship=8500" class="change-ship" data-ship="8500"
-                                                data-page-type="data-view" data-show-data-view-select="1">8500 DWT</a>
-                                    </div>
+                                    <a href="/data-view?ship=3600" class="btn btn--pill btn--pill--small change-ship"
+                                       data-ship="3600" data-page-type="data-view"
+                                       data-show-data-view-select="1">3600 DWT</a><a
+                                            href="/data-view?ship=8500" class="btn btn--pill btn--pill--small change-ship"
+                                            data-ship="8500"
+                                            data-page-type="data-view" data-show-data-view-select="1">8500 DWT</a>
                                 </div>
                                 <div class="note__timestamp has-note-indicator note-indicator--negative">
                                     10 August 2018 <br>Note title here
@@ -72,9 +72,9 @@ $ff = new FridayFleetController;
                             </div>
                             <div class="note" data-year="2013">
                                 <div class="note__meta">
-                                    <div class="note__meta__ship"><a href="/data-view?ship=3600" class="change-ship"
-                                                                     data-ship="3600" data-page-type="data-view"
-                                                                     data-show-data-view-select="1">3600 DWT</a></div>
+                                    <a href="/data-view?ship=3600" class="btn btn--pill btn--pill--small change-ship"
+                                       data-ship="3600" data-page-type="data-view"
+                                       data-show-data-view-select="1">3600 DWT</a>
                                 </div>
                                 <div class="note__timestamp has-note-indicator note-indicator--positive">
                                     1 June 2016 <br>Note title here
@@ -103,15 +103,14 @@ $ff = new FridayFleetController;
                             <div class="box__header">
                                 <div class="box__header__titles">
                                     <div class="box__header__title--no-toggle box__header__title--icon-ship">
-										<?php echo $ship; ?> DWT
+										<?php echo $ship; ?> DWT <span class="box__header__title__divider">&rang;</span>
+                                        Fixed Age Value
                                     </div>
                                 </div>
                             </div>
 
                             <div class="box__content">
-                                <div class="box__content__title">Value Over Time</div>
-
-                                <table class="data-table data-table--first-col data-table--large-text"
+                                <table class="data-table data-table--first-col"
                                        cellpadding="0" cellspacing="0" border="0">
                                     <thead>
                                     <tr>
@@ -141,17 +140,17 @@ $ff = new FridayFleetController;
                                     </tr>
                                     </thead>
 
-                                    <tbody class="content--value-over-time-quarters is-active">
+                                    <tbody class="is-active">
 									<?php $ship_data = $value_over_time_latest_data_point[ $ship ][0]; ?>
                                     <tr>
                                         <td><?php echo $ship_data['year'] . ' Q' . $ship_data['quarter']; ?></td>
-                                        <td><?php echo number_format($ship_data['average_new_build'], 2); ?></td>
-                                        <td><?php echo number_format($ship_data['average_5_year'], 2); ?></td>
-                                        <td><?php echo number_format($ship_data['average_10_year'], 2); ?></td>
-                                        <td><?php echo number_format($ship_data['average_15_year'], 2); ?></td>
-                                        <td><?php echo number_format($ship_data['average_20_year'], 2); ?></td>
-                                        <td><?php echo number_format($ship_data['average_25_year'], 2); ?></td>
-                                        <td><?php echo number_format($ship_data['average_scrap'], 2); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_new_build'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_5_year'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_10_year'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_15_year'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_20_year'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_25_year'], 2 ); ?></td>
+                                        <td><?php echo number_format( $ship_data['average_scrap'], 2 ); ?></td>
                                     </tr>
                                     </tbody>
 

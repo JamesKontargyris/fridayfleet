@@ -108,6 +108,7 @@ $ff = new FridayFleetController;
                                         <canvas class="graph graph__value-over-time-quarters"
                                                 id="graph__value-over-time-quarters--<?php echo $ship; ?>"></canvas>
                                     </div>
+                                    <div id="quarters-legend-container"></div>
                                 </div>
 
                                 <div class="graph-group graph-group--value-over-time-years content--value-over-time-years">
@@ -115,6 +116,7 @@ $ff = new FridayFleetController;
                                         <canvas class="graph graph__value-over-time-years"
                                                 id="graph__value-over-time-years--<?php echo $ship; ?>"></canvas>
                                     </div>
+                                    <div id="years-legend-container"></div>
                                 </div>
 
                             </div>
@@ -133,7 +135,7 @@ $ff = new FridayFleetController;
                             </div>
                         </div>
 
-                        <div class="box__content">
+                        <div class="box__content box__content--scrollable" style="max-height: 20vh;">
 
                             <table class="data-table data-table--first-col data-table--sticky-header"
                                    cellpadding="0" cellspacing="0" border="0">
@@ -165,14 +167,16 @@ $ff = new FridayFleetController;
                                 </thead>
 
                                 <tbody class="content--value-over-time-quarters is-active">
-								<?php $year = 0;
+								<?php $year   = 0;
+								$current_year = date( 'Y' );
 								foreach ( $value_over_time_table_data_quarters[ $ship ] as $ship_data ) : ?>
 									<?php if ( $year != $ship_data['year'] ) : $year = $ship_data['year']; ?>
-                                        <tr class="data-table__sub-title">
+                                        <tr class="data-table__sub-title<?php if ( $year == $current_year ) : ?> is-active<?php endif; ?>"
+                                            data-year="<?php echo $year; ?>">
                                             <td colspan="8"><?php echo $ship_data['year']; ?></td>
                                         </tr>
 									<?php endif; ?>
-                                    <tr>
+                                    <tr data-year-data="<?php echo $year; ?>" <?php if ( $year == $current_year ) : ?> class="is-active"<?php endif; ?>>
                                         <td><?php echo 'Q' . $ship_data['quarter']; ?></td>
                                         <td><?php echo number_format( $ship_data['average_new_build'], 2 ); ?></td>
                                         <td><?php echo number_format( $ship_data['average_5_year'], 2 ); ?></td>
@@ -227,7 +231,7 @@ $ff = new FridayFleetController;
                             </div>
                         </div>
 
-                        <div class="box__content box__content--scrollable">
+                        <div class="box__content box__content--scrollable" style="max-height: 70vh;">
                             <div class="note" data-year="2020">
                                 <a href="#content-top"
                                    onclick="addAnnotationVertical('2019', '09', '05', '5 September 2019')"
@@ -336,13 +340,6 @@ $ff = new FridayFleetController;
                             pointStyle: 'circle',
                             pointRadius: 3,
                             lineTension: 0.3,
-                            spanGaps: true,
-                            //trendlineLinear: {
-                            //    style: "rgba(<?php //echo $colour; ?>//, 0.3)",
-                            //    lineStyle: "solid",
-                            //    width: 2,
-                            //}
-
                         },
 
 						<?php endforeach; ?>
@@ -352,7 +349,6 @@ $ff = new FridayFleetController;
                 options: chartOptionsQuarters,
 
             });
-
 
 			<?php reset( $graph_colours ); ?>
 
@@ -388,6 +384,44 @@ $ff = new FridayFleetController;
                 options: chartOptionsYears,
 
             });
+
+            // Custom legend
+            var quartersLegendContainer = document.getElementById("quarters-legend-container"),
+                yearsLegendContainer = document.getElementById("years-legend-container");
+
+            // generate HTML legends
+            quartersLegendContainer.innerHTML = chartQuarters.generateLegend();
+            yearsLegendContainer.innerHTML = chartYears.generateLegend();
+
+            // bind onClick event to all LI-tags of the legend
+            var legendItems = quartersLegendContainer.getElementsByTagName('li');
+            for (var i = 0; i < legendItems.length; i += 1) {
+                legendItems[i].addEventListener("click", legendClickCallback, false);
+            }
+            var legendItems = yearsLegendContainer.getElementsByTagName('li');
+            for (var i = 0; i < legendItems.length; i += 1) {
+                legendItems[i].addEventListener("click", legendClickCallback, false);
+            }
+
+            function legendClickCallback(event) {
+                event = event || window.event;
+
+                var target = event.target || event.srcElement;
+                while (target.nodeName !== 'LI') {
+                    target = target.parentElement;
+                }
+                var parent = target.parentElement;
+                var chartId = parseInt(parent.classList[0].split("-")[0], 10);
+                var chart = Chart.instances[chartId];
+                var index = Array.prototype.slice.call(parent.children).indexOf(target);
+
+                chart.legend.options.onClick.call(chart, event, chart.legend.legendItems[index]);
+                if (chart.isDatasetVisible(index)) {
+                    target.classList.remove('hidden');
+                } else {
+                    target.classList.add('hidden');
+                }
+            }
 
             window.resetZoom = function () {
                 chartQuarters.resetZoom();
@@ -483,7 +517,26 @@ $ff = new FridayFleetController;
             // Listen for screen resize and fire function
             window.addEventListener("resize", changeGraphOptions);
 
+
         })(jQuery);
     </script>
+
+    <style type="text/css">
+        /* Style legend colours according to $graph_colours */
+        <?php reset($graph_colours); ?>
+
+        <?php for($i = 1; $i <= count($graph_colours); $i++) : ?>
+        .chartjs-legend li:nth-child(<?php echo $i; ?>) {
+            color: rgb(<?php echo current( $graph_colours ); ?>);
+        }
+
+        .chartjs-legend li:nth-child(<?php echo $i; ?>):before {
+            background: rgb(<?php echo current( $graph_colours ); ?>);
+            border-color: rgb(<?php echo current( $graph_colours ); ?>);
+        }
+
+        <?php next( $graph_colours ); ?>
+        <?php endfor; ?>
+    </style>
 
 <?php endif; ?>

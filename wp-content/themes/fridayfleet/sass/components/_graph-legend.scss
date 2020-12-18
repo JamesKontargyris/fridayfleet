@@ -1,0 +1,40 @@
+.chartjs-legend { // Quarters and years legends
+  list-style: none;
+  padding: 0;
+  margin: 0.7rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @include font-size(14, 14);
+
+  li {
+    color: $frost-blue;
+    margin: 0.5rem 1rem;
+    cursor: pointer;
+
+    @include grid-media($grid-tablet-plus) {
+      &:before {
+        content: ' ';
+        display: inline-block;
+        width: 1.8rem;
+        height: 1.8rem;
+        vertical-align: text-top;
+        background: white;
+        border-color: white;
+        border-radius: 999rem;
+        margin-right:0.5rem;
+      }
+    }
+
+    &.hidden {
+      color:shade($frost-blue, 35%) !important;
+
+      &:before {
+        background:transparent !important;
+        border-width: 0.2rem;
+        border-style: solid;
+      }
+    }
+  }
+}

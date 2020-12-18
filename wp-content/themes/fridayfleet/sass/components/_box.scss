@@ -105,13 +105,15 @@ a.box__full-size-link {
   }
 }
 
+.box__header__title__divider {
+  @extend .data-view__title__divider;
+}
+
 .box__content {
   position: relative;
 }
 
-.box__content--scrollable {
-  @include grid-media($grid-desktop) {
-    max-height: 70vh;
+.box__content--scrollable { // set max-height on element
     overflow-y: auto;
     scrollbar-color: $light-blue rgba(0, 0, 0, 0);
 
@@ -125,7 +127,6 @@ a.box__full-size-link {
       background-color: $light-blue;
       border-radius: 999rem;
     }
-  }
 }
 
 .box__content__title {

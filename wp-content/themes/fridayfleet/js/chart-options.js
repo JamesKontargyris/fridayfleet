@@ -1,34 +1,15 @@
 var chartOptionsLegend = {
-    position: 'bottom',
-    align: 'center',
-    labels: {
-        usePointStyle: true,
-        padding: 20,
-        boxWidth: 15,
-        fontSize: 13,
-        fontColor: '#7996B9',
-    },
-    onClick: function (e, legendItem) {
-        var index = legendItem.datasetIndex;
-        var ci = this.chart;
-        var alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
+    display: false,
 
-        ci.data.datasets.forEach(function (e, i) {
-            var meta = ci.getDatasetMeta(i);
-
-            if (i !== index) {
-                if (!alreadyHidden) {
-                    meta.hidden = meta.hidden === null ? !meta.hidden : null;
-                } else if (meta.hidden === null) {
-                    meta.hidden = true;
-                }
-            } else if (i === index) {
-                meta.hidden = null;
-            }
-        });
-
-        ci.update();
-    }
+    // position: 'bottom',
+    // align: 'center',
+    // labels: {
+    //     usePointStyle: true,
+    //     padding: 20,
+    //     boxWidth: 15,
+    //     fontSize: 13,
+    //     fontColor: '#7996B9',
+    // },
 }
 
 var chartOptionsScalesQuarters = {
@@ -133,6 +114,19 @@ var chartOptionsQuarters = {
     responsive: true,
     maintainAspectRatio: false,
     legend: chartOptionsLegend,
+    legendCallback: function (chart) {
+        var text = [];
+        text.push('<ul class="' + chart.id + '-legend chartjs-legend">');
+        for (var i = 0; i < chart.data.datasets.length; i++) {
+            text.push('<li>');
+            if (chart.data.datasets[i].label) {
+                text.push(chart.data.datasets[i].label);
+            }
+            text.push('</li>');
+        }
+        text.push('</ul>');
+        return text.join('');
+    },
     scales: chartOptionsScalesQuarters,
     plugins: chartOptionsPlugins,
     annotation: {
@@ -145,6 +139,19 @@ var chartOptionsYears = {
     responsive: true,
     maintainAspectRatio: false,
     legend: chartOptionsLegend,
+    legendCallback: function (chart) {
+        var text = [];
+        text.push('<ul class="' + chart.id + '-legend chartjs-legend">');
+        for (var i = 0; i < chart.data.datasets.length; i++) {
+            text.push('<li>');
+            if (chart.data.datasets[i].label) {
+                text.push(chart.data.datasets[i].label);
+            }
+            text.push('</li>');
+        }
+        text.push('</ul>');
+        return text.join('');
+    },
     scales: chartOptionsScalesYears,
     plugins: chartOptionsPlugins,
     annotation: {
