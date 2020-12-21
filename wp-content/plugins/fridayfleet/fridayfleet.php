@@ -9,8 +9,3 @@ require_once( 'Variables.php' );
 require_once( 'Queries.php' );
 require_once( 'GetData.php' );
 require_once( 'ProcessData.php' );
-
-
-
-
-

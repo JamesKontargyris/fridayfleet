@@ -135,7 +135,7 @@ $ff = new FridayFleetController;
                             </div>
                         </div>
 
-                        <div class="box__content box__content--scrollable" style="max-height: 20vh;">
+                        <div class="box__content box__content--scrollable" style="max-height: 25vh;">
 
                             <table class="data-table data-table--first-col data-table--sticky-header"
                                    cellpadding="0" cellspacing="0" border="0">
@@ -333,15 +333,17 @@ $ff = new FridayFleetController;
 								<?php endforeach; ?>
                             ],
                             fill: false,
-                            borderColor: 'rgba(<?php echo $colour; ?>, 1)',
-                            backgroundColor: 'rgba(<?php echo $colour; ?>, 1)',
+                            borderColor: 'rgba(<?php echo $colour; ?>, 0.2)',
+                            backgroundColor: 'rgba(<?php echo $colour; ?>, 0.2)',
                             borderWidth: 2,
                             spanGaps: true,
                             pointStyle: 'circle',
-                            pointRadius: 3,
+                            pointRadius: 2,
+                            pointHoverRadius: 4,
+                            pointHoverBorderColor: 'rgba(<?php echo $colour; ?>, 0.8)',
+                            pointHoverBackgroundColor: 'rgba(<?php echo $colour; ?>, 0.8)',
                             lineTension: 0.3,
                         },
-
 						<?php endforeach; ?>
                     ]
                 },
@@ -349,6 +351,45 @@ $ff = new FridayFleetController;
                 options: chartOptionsQuarters,
 
             });
+
+			<?php reset( $graph_colours ); ?>
+
+            // Add polynomial lines
+			<?php foreach($value_over_time_graph_data_quarters[ $ship ] as $dataset) : ?>
+			<?php $colour = ( ! current( $graph_colours ) ) ? reset( $graph_colours ) : current( $graph_colours ); next( $graph_colours ); ?>
+
+            // Build an array of raw data
+            var rawData = [],
+                i = 0;
+			<?php foreach($dataset['data'] as $x => $y) : ?>
+            rawData.push([i, <?php echo number_format( $y, 2 ); ?>]);
+            i++;
+			<?php endforeach; ?>
+
+            polynomialData = regression.polynomial(rawData, {order: 3, precision: 10});
+
+            chartQuarters.data.datasets.push({
+                data: [
+					<?php $i = 0; ?>
+					<?php foreach($dataset['data'] as $x => $y) : ?>
+                    {x: moment('<?php echo $x; ?>', "YYYYMM"), y: polynomialData['points'][<?php echo $i; ?>][1]},
+					<?php $i ++; ?>
+					<?php endforeach; ?>
+                ],
+                fill: false,
+                borderColor: 'rgba(<?php echo $colour; ?>, 1)',
+                backgroundColor: 'rgba(<?php echo $colour; ?>, 1)',
+                borderWidth: 2,
+                spanGaps: true,
+                pointStyle: 'circle',
+                pointRadius: 0,
+                pointHoverRadius: 0,
+                lineTension: 0.3,
+            });
+            chartQuarters.update();
+
+			<?php endforeach; ?>
+
 
 			<?php reset( $graph_colours ); ?>
 
@@ -416,6 +457,7 @@ $ff = new FridayFleetController;
                 var index = Array.prototype.slice.call(parent.children).indexOf(target);
 
                 chart.legend.options.onClick.call(chart, event, chart.legend.legendItems[index]);
+                chart.legend.options.onClick.call(chart, event, chart.legend.legendItems[index + 7]); // +7 to hide polynomial line too
                 if (chart.isDatasetVisible(index)) {
                     target.classList.remove('hidden');
                 } else {

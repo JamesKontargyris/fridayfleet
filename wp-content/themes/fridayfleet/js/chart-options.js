@@ -12,41 +12,61 @@ var chartOptionsLegend = {
     // },
 }
 
-var chartOptionsScalesQuarters = {
-    xAxes: [{
-        type: 'time',
-        distribution: 'series',
-        time: {
-            tooltipFormat: 'YYYY [Q]Q',
-            unit: 'quarter',
-            displayFormats: {
-                quarter: 'YYYY [Q]Q'
+var chartOptionsTooltips = {
+    onlyShowForDatasetIndex: [0, 1, 2, 3, 4, 5, 6, 7],
+    displayColors: false,
+    backgroundColor: '#ffffff',
+    titleFontColor: '#086296',
+    titleFontFamily: "'Lato', Calibri, sans-serif",
+    bodyFontColor: '#002235',
+    bodyFontFamily: "'Lato', Calibri, sans-serif",
+};
+
+var chartOptionsHover = {
+    mode: 'nearest'
+};
+
+var chartOptionsAnnotations = {
+    events: ["click"],
+    annotations: []
+};
+
+var
+    chartOptionsScalesQuarters = {
+        xAxes: [{
+            type: 'time',
+            distribution: 'series',
+            time: {
+                tooltipFormat: 'YYYY [Q]Q',
+                unit: 'quarter',
+                displayFormats: {
+                    quarter: 'YYYY [Q]Q'
+                }
+            },
+            ticks: {
+                fontColor: '#7996B9',
+            },
+            gridLines: {
+                color: 'rgba(62, 93, 122, 0.3)',
+            },
+        }],
+        yAxes: [{
+            scaleLabel: {
+                display: true,
+                labelString: '€ MILLIONS',
+                fontSize: 11,
+                fontColor: '#4C7094',
+            },
+            ticks: {
+                beginAtZero: true,
+                fontColor: '#7996B9',
+            },
+            gridLines: {
+                color: 'rgba(62, 93, 122, 1)',
+                zeroLineColor: 'rgba(62, 93, 122, 1)',
             }
-        },
-        ticks: {
-            fontColor: '#7996B9',
-        },
-        gridLines: {
-            color: 'rgba(62, 93, 122, 0.3)',
-        },
-    }],
-    yAxes: [{
-        scaleLabel: {
-            display: true,
-            labelString: '€ MILLIONS',
-            fontSize: 11,
-            fontColor: '#4C7094',
-        },
-        ticks: {
-            beginAtZero: true,
-            fontColor: '#7996B9',
-        },
-        gridLines: {
-            color: 'rgba(62, 93, 122, 1)',
-            zeroLineColor: 'rgba(62, 93, 122, 1)',
-        }
-    }]
-}
+        }]
+    }
 
 var chartOptionsScalesYears = {
     xAxes: [{
@@ -111,29 +131,29 @@ var chartOptionsPlugins = {
 }
 
 var chartOptionsQuarters = {
-    responsive: true,
-    maintainAspectRatio: false,
-    legend: chartOptionsLegend,
-    legendCallback: function (chart) {
-        var text = [];
-        text.push('<ul class="' + chart.id + '-legend chartjs-legend">');
-        for (var i = 0; i < chart.data.datasets.length; i++) {
-            text.push('<li>');
-            if (chart.data.datasets[i].label) {
-                text.push(chart.data.datasets[i].label);
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: chartOptionsLegend,
+        legendCallback: function (chart) {
+            var text = [];
+            text.push('<ul class="' + chart.id + '-legend chartjs-legend">');
+            for (var i = 0; i < chart.data.datasets.length; i++) {
+                if (chart.data.datasets[i].label) {
+                    text.push('<li>');
+                    text.push(chart.data.datasets[i].label);
+                    text.push('</li>');
+                }
             }
-            text.push('</li>');
-        }
-        text.push('</ul>');
-        return text.join('');
-    },
-    scales: chartOptionsScalesQuarters,
-    plugins: chartOptionsPlugins,
-    annotation: {
-        events: ["click"],
-        annotations: []
-    },
-};
+            text.push('</ul>');
+            return text.join('');
+        },
+        tooltips: chartOptionsTooltips,
+        hover: chartOptionsHover,
+        scales: chartOptionsScalesQuarters,
+        plugins: chartOptionsPlugins,
+        annotation: chartOptionsAnnotations,
+    }
+;
 
 var chartOptionsYears = {
     responsive: true,
@@ -152,21 +172,9 @@ var chartOptionsYears = {
         text.push('</ul>');
         return text.join('');
     },
+    tooltips: chartOptionsTooltips,
+    hover: chartOptionsHover,
     scales: chartOptionsScalesYears,
     plugins: chartOptionsPlugins,
-    annotation: {
-        events: ["click"],
-        annotations: []
-    },
+    annotation: chartOptionsAnnotations,
 };
-
-var chartOptionsOverview = {
-    responsive: true,
-    maintainAspectRatio: false,
-    position: 'bottom',
-    align: 'center',
-    legend: {
-        display: false
-    },
-    scales: chartOptionsScalesYears,
-}
