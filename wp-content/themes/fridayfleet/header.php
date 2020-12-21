@@ -14,6 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,900;1,300;1,400;1,900&display=swap"
           rel="stylesheet">
 
+    <?php get_template_part('template-parts/partials/partial', 'favicon'); ?>
+
 	<?php wp_head(); ?>
 </head>
 
