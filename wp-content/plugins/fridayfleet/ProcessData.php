@@ -20,8 +20,8 @@ class ProcessData {
 			4 => '10'
 		];
 
-	public function processValueOverTimeData( $ship_data, $timeline = 'quarters', $purpose = 'graph' ) {
-		$value_over_time_data   = []; // the master array of all processed data
+	public function processFixedAgeValueData( $ship_data, $timeline = 'quarters', $purpose = 'graph' ) {
+		$fixed_age_value_data   = []; // the master array of all processed data
 
 
 		if ( $purpose == 'table' && $timeline == 'quarters' ) {
@@ -32,7 +32,7 @@ class ProcessData {
 
 			if ( $purpose == 'graph' ) {
 				foreach ( $this->ship_types as $short_label => $long_label ) {
-					$value_over_time_data[ $ship ][ $short_label ]['label'] = ucfirst( $short_label );
+					$fixed_age_value_data[ $ship ][ $short_label ]['label'] = ucfirst( $short_label );
 				}
 			}
 
@@ -44,9 +44,9 @@ class ProcessData {
 					foreach ( $this->ship_types as $short_label => $long_label ) {
 
 						if ( $dataset[ $long_label ] ) {
-							$value_over_time_data[ $ship ][ $short_label ]['data'][ $dataset['year'] . $this->first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset[ $long_label ];
+							$fixed_age_value_data[ $ship ][ $short_label ]['data'][ $dataset['year'] . $this->first_month_of_quarter[ $dataset['quarter'] ] ] = $dataset[ $long_label ];
 						} else {
-							$value_over_time_data[ $ship ][ $short_label ]['data'][ $dataset['year'] . $this->first_month_of_quarter[ $dataset['quarter'] ] ] = 0;
+							$fixed_age_value_data[ $ship ][ $short_label ]['data'][ $dataset['year'] . $this->first_month_of_quarter[ $dataset['quarter'] ] ] = 0;
 						}
 
 					}
@@ -81,9 +81,9 @@ class ProcessData {
 							$average            = $year_total / $number_of_quarters;
 
 							if ( $purpose == 'table' ) {
-								$value_over_time_data[ $ship ][ $year ][ $dataset_label ] = $average ? $average : 0;
+								$fixed_age_value_data[ $ship ][ $year ][ $dataset_label ] = $average ? $average : 0;
 							} else { // purpose is graph
-								$value_over_time_data[ $ship ][ $dataset_label ]['data'][ $year ] = $average ? $average : 0;
+								$fixed_age_value_data[ $ship ][ $dataset_label ]['data'][ $year ] = $average ? $average : 0;
 							}
 
 						}
@@ -94,7 +94,7 @@ class ProcessData {
 
 			}
 
-			return $value_over_time_data;
+			return $fixed_age_value_data;
 
 		}
 

@@ -12,10 +12,10 @@ class GetData {
 		$this->variables    = new Variables;
 	}
 
-	public function getValueOverTimeData( $ship = '', $timeline = 'quarters', $purpose = 'graph', $order = 'ASC' ) {
+	public function getFixedAgeValueData( $ship = '', $timeline = 'quarters', $purpose = 'graph', $order = 'ASC' ) {
 		$data = $this->getFinalPriceAverages( $ship, $order );
 
-		return $this->process_data->processValueOverTimeData( $data, $timeline, $purpose );
+		return $this->process_data->processFixedAgeValueData( $data, $timeline, $purpose );
 	}
 
 	public function getFinalPriceAverages( $ship = '', $order = 'ASC' ) {

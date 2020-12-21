@@ -83,9 +83,10 @@
 }
 
 .data-view__title {
-  @include font-size(16, 18);
+  @include font-size(18, 18);
   margin: 0;
   flex-grow: 1;
+  font-weight: $font-regular;
 
   @include grid-media($grid-tablet-plus) {
     @include font-size(20, 22);

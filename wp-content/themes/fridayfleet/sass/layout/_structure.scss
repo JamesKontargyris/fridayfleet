@@ -1,5 +1,5 @@
 .site__body {
-  color:$frost-blue;
+  color: $frost-blue;
   padding: 0 1rem 1rem;
 
   @include grid-media($grid-tablet-plus) {
@@ -7,8 +7,12 @@
   }
 
   @include grid-media($grid-desktop) {
-	padding-left:$nav-bar-width + 2rem;
-}
+    padding-left: $nav-bar-width + 2rem;
+  }
+
+  &.site__body--full-width {
+    padding-left:1rem;
+  }
 }
 
 // Display content off the page when not active
@@ -16,10 +20,10 @@
 .content--value-over-time-quarters,
 .content--value-over-time-years {
   position: fixed;
-  top:-99999rem;
+  top: -99999rem;
 
   &.is-active {
     position: unset;
-    top:0;
+    top: 0;
   }
 }

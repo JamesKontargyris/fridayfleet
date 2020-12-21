@@ -50,7 +50,7 @@ if ( ! function_exists( 'fridayfleet_setup' ) ) :
 		// This theme uses wp_nav_menu() in one location.
 		register_nav_menus(
 			array(
-				'menu-1' => esc_html__( 'Primary', 'fridayfleet' ),
+				'sub-menu' => esc_html__( 'Sub Menu', 'fridayfleet' ),
 			)
 		);
 
@@ -149,6 +149,7 @@ function fridayfleet_scripts() {
 	wp_enqueue_script( 'fridayfleet-buttons', get_template_directory_uri() . '/js/buttons.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-box', get_template_directory_uri() . '/js/box.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-nav-bar', get_template_directory_uri() . '/js/nav-bar.js', array(), _S_VERSION, true );
+	wp_enqueue_script( 'fridayfleet-sub-menu', get_template_directory_uri() . '/js/sub-menu.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-data-table', get_template_directory_uri() . '/js/data-table.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-switch', get_template_directory_uri() . '/js/switch.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-custom-select', get_template_directory_uri() . '/js/custom-select.js', array(), _S_VERSION, true );
@@ -164,6 +165,7 @@ function fridayfleet_scripts() {
 	wp_enqueue_script( 'fridayfleet-chart-options', get_template_directory_uri() . '/js/chart-options.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-tooltipster', get_template_directory_uri() . '/js/vendor/tooltipster/js/tooltipster.bundle.min.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-sticky', get_template_directory_uri() . '/js/vendor/sticky/jquery.sticky.js', array(), _S_VERSION, true );
+	wp_enqueue_script( 'fridayfleet-hamburgers', get_template_directory_uri() . '/js/hamburgers.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-init', get_template_directory_uri() . '/js/init.js', array(), _S_VERSION, true );
 
 

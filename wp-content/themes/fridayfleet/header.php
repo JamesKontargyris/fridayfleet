@@ -3,7 +3,9 @@
 <head>
     <script>
         // no-js/js class toggle
-        (function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement);
+        (function (H) {
+            H.className = H.className.replace(/\bno-js\b/, 'js')
+        })(document.documentElement);
     </script>
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,9 +24,32 @@
     <a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Skip to content', 'fridayfleet' ); ?></a>
 
     <header id="masthead" class="site__header">
-        <div class="site__header__logo hide--desktop">FRIDAY FLEET</div>
+        <?php if(is_front_page()) : ?>
+            <h1 class="site__header__logo hide--desktop">FRIDAY FLEET - SHORTSEA VALUES</h1>
+        <?php else : ?>
+            <div class="site__header__logo hide--desktop">FRIDAY FLEET - SHORTSEA VALUES</div>
+        <?php endif; ?>
         <div class="site__header__tools">
-            <?php // get_template_part('template-parts/partials/partial', 'data-view-select-mobile'); ?>
-            <?php get_template_part('template-parts/partials/partial', 'user-summary'); ?>
+			<?php // get_template_part('template-parts/partials/partial', 'data-view-select-mobile'); ?>
+			<?php get_template_part( 'template-parts/partials/partial', 'user-summary' ); ?>
+
+            <button class="hamburger hamburger--stand" type="button"
+                    aria-label="Menu" aria-controls="navigation">
+                <span class="hamburger-box">
+                  <span class="hamburger-inner"></span>
+                </span>
+            </button>
+
         </div>
+        <nav class="sub-menu--mobile sub-menu--tablet">
+			<?php wp_nav_menu( [
+				'menu'       => 'sub-menu',
+				'menu_class' => 'sub-menu',
+				'depth'      => 1,
+				'container'  => '',
+			] ); ?>
+        </nav>
     </header><!-- #masthead -->
+
+
+

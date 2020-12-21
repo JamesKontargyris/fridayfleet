@@ -1,0 +1,12 @@
+.page__header {
+  @extend .data-view__header;
+  margin-bottom:$base-spacing * 2;
+}
+
+.page__header__title {
+  @extend .data-view__title;
+}
+
+.page__content {
+  max-width: 100rem;
+}

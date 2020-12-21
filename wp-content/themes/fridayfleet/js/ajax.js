@@ -15,7 +15,9 @@
             .done(function (data) {
                 $('.ajax-page').html(data);
                 // Reinitialise events etc.
-                window.ffInit();
+                if(pageType == 'data-view') {
+                    window.ffInit();
+                }
                 window.updateDataViewValue();
                 if(showDataViewSelect == '1') {
                     $('.custom-select').addClass('is-active');

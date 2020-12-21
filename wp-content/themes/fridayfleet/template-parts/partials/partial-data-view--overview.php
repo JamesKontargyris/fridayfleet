@@ -13,13 +13,13 @@ $ff = new FridayFleetController;
 
 		$ships                             = $ff->getShips();
 		$graph_colours                     = $ff->getColours();
-		$value_over_time_latest_data_point = $ff->getValueOverTimeLatestDataPoint( $ships );
+		$fixed_age_value_latest_data_point = $ff->getFixedAgeValueLatestDataPoint( $ships );
 		?>
 
         <div class="data-view">
             <div class="data-view__header">
                 <h2 class="data-view__title">
-                    Overview <span class="data-view__title__divider">&rang;</span> Dry Gearless
+                    <strong>Overview</strong> <span class="data-view__title__divider">&rang;</span> Dry Gearless
                 </h2>
             </div>
 
@@ -141,7 +141,7 @@ $ff = new FridayFleetController;
                                     </thead>
 
                                     <tbody class="is-active">
-									<?php $ship_data = $value_over_time_latest_data_point[ $ship ][0]; ?>
+									<?php $ship_data = $fixed_age_value_latest_data_point[ $ship ][0]; ?>
                                     <tr>
                                         <td><?php echo $ship_data['year'] . ' Q' . $ship_data['quarter']; ?></td>
                                         <td><?php echo number_format( $ship_data['average_new_build'], 2 ); ?></td>

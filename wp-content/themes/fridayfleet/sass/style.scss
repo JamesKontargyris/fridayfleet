@@ -12,7 +12,8 @@ Text Domain: textdomainhere
 /// Third party libraries and stylesheets
 @import
 'vendors/bourbon/bourbon',
-'vendors/neat/neat';
+'vendors/neat/neat',
+'vendors/hamburgers/hamburgers';
 
 /// Abstracts (utilities that do not output any CSS)
 @import
@@ -65,6 +66,7 @@ Text Domain: textdomainhere
 
 /// Page-specific stylesheets
 @import
+'pages/page',
 'pages/home',
 'pages/dashboard',
 'pages/overview';

@@ -119,6 +119,7 @@ ul.nav-bar__menu {
           &:active,
           &:focus {
             border-color: $red;
+            color:$red;
           }
         }
       }

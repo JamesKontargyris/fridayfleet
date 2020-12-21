@@ -42,16 +42,12 @@
   top: 6rem;
   right: 0;
   list-style: none;
-  padding: 1rem;
+  padding: 2rem;
   margin: 0;
   background: linear-gradient(to bottom, shade($dark-blue, 35%) 0, shade($dark-blue, 20%) 1rem);
   min-width: 20rem;
   text-align: right;
   border-bottom-left-radius: $base-border-radius;
-
-  @include grid-media($grid-tablet) {
-    padding: 1rem 2rem;
-  }
 
   li {
     &:not(:last-of-type) {

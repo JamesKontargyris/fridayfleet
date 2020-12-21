@@ -21,28 +21,28 @@ $ff = new FridayFleetController;
 
 		<?php
 		$graph_colours                       = $ff->getColours();
-		$value_over_time_graph_data_quarters = $ff->getValueOverTimeDataForGraph( $ship, 'quarters' );
-		$value_over_time_graph_data_years    = $ff->getValueOverTimeDataForGraph( $ship, 'years' );
-		$value_over_time_table_data_quarters = $ff->getValueOverTimeDataForTable( $ship, 'quarters' );
-		$value_over_time_table_data_years    = $ff->getValueOverTimeDataForTable( $ship, 'years' );
+		$fixed_age_value_graph_data_quarters = $ff->getFixedAgeValueDataForGraph( $ship, 'quarters' );
+		$fixed_age_value_graph_data_years    = $ff->getFixedAgeValueDataForGraph( $ship, 'years' );
+		$fixed_age_value_table_data_quarters = $ff->getFixedAgeValueDataForTable( $ship, 'quarters' );
+		$fixed_age_value_table_data_years    = $ff->getFixedAgeValueDataForTable( $ship, 'years' );
 		?>
 
 		<?php
 		// Get number of datasets
-		$no_of_datasets = $ff->getNumberOfDatasets( $value_over_time_graph_data_years[ $ship ] );
+		$no_of_datasets = $ff->getNumberOfDatasets( $fixed_age_value_graph_data_years[ $ship ] );
 		// Get last year of data
 		// Used to ensure annotations don't go off the edge of the years chart
-		$last_year_of_data = $ff->getLastYearOfData( $value_over_time_table_data_years[ $ship ] );
+		$last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ $ship ] );
 		?>
 
         <div class="data-view data-view--<?php echo $ship; ?>">
             <div class="data-view__header--sticky">
 
                 <div class="data-view__header">
-                    <h2 class="data-view__title">
+                    <h1 class="data-view__title">
                         <strong class="data-view__title--icon-ship"><?php echo $ship; ?></strong>
                         <span class="data-view__title__divider">&rang;</span> Fixed Age Value
-                    </h2>
+                    </h1>
 
                     <div class="data-view__controls">
 						<?php // get_template_part( 'template-parts/partials/partial', 'data-view-select-desktop' ); ?>
@@ -169,7 +169,7 @@ $ff = new FridayFleetController;
                                 <tbody class="content--value-over-time-quarters is-active">
 								<?php $year   = 0;
 								$current_year = date( 'Y' );
-								foreach ( $value_over_time_table_data_quarters[ $ship ] as $ship_data ) : ?>
+								foreach ( $fixed_age_value_table_data_quarters[ $ship ] as $ship_data ) : ?>
 									<?php if ( $year != $ship_data['year'] ) : $year = $ship_data['year']; ?>
                                         <tr class="data-table__sub-title<?php if ( $year == $current_year ) : ?> is-active<?php endif; ?>"
                                             data-year="<?php echo $year; ?>">
@@ -191,7 +191,7 @@ $ff = new FridayFleetController;
 
                                 <tbody class="content--value-over-time-years">
 								<?php $year = 0;
-								foreach ( $value_over_time_table_data_years[ $ship ] as $year => $ship_data ) : ?>
+								foreach ( $fixed_age_value_table_data_years[ $ship ] as $year => $ship_data ) : ?>
                                     <tr>
                                         <td><?php echo $year; ?></td>
                                         <td><?php echo number_format( $ship_data['new'], 2 ); ?></td>
@@ -322,7 +322,7 @@ $ff = new FridayFleetController;
                 type: 'line',
                 data: {
                     datasets: [
-						<?php foreach($value_over_time_graph_data_quarters[ $ship ] as $dataset) : ?>
+						<?php foreach($fixed_age_value_graph_data_quarters[ $ship ] as $dataset) : ?>
 						<?php $colour = ( ! current( $graph_colours ) ) ? reset( $graph_colours ) : current( $graph_colours ); next( $graph_colours ); ?>
 
                         {
@@ -355,7 +355,7 @@ $ff = new FridayFleetController;
 			<?php reset( $graph_colours ); ?>
 
             // Add polynomial lines
-			<?php foreach($value_over_time_graph_data_quarters[ $ship ] as $dataset) : ?>
+			<?php foreach($fixed_age_value_graph_data_quarters[ $ship ] as $dataset) : ?>
 			<?php $colour = ( ! current( $graph_colours ) ) ? reset( $graph_colours ) : current( $graph_colours ); next( $graph_colours ); ?>
 
             // Build an array of raw data
@@ -397,7 +397,7 @@ $ff = new FridayFleetController;
                 type: 'line',
                 data: {
                     datasets: [
-						<?php foreach($value_over_time_graph_data_years[ $ship ] as $dataset) : ?>
+						<?php foreach($fixed_age_value_graph_data_years[ $ship ] as $dataset) : ?>
 						<?php $colour = ( ! current( $graph_colours ) ) ? reset( $graph_colours ) : current( $graph_colours ); next( $graph_colours ); ?>
 
                         {
