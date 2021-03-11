@@ -13,10 +13,11 @@ class ameMenuColorGenerator {
 	 *
 	 * @param string $menuId Menu item ID.
 	 * @param array $colors An array of hex colors indexed by color name. E.g. [base-color => #aabbcc, ..].
+	 * @param array $extraSelectors
 	 * @param string $templateFilename
 	 * @return string
 	 */
-	public function getCss($menuId, $colors, $templateFilename = null) {
+	public function getCss($menuId, $colors, $extraSelectors = array(), $templateFilename = null) {
 		if ( empty($templateFilename) ) {
 			$templateFilename = dirname(__FILE__) . '/menu-color-template.txt';
 		}
@@ -35,7 +36,8 @@ class ameMenuColorGenerator {
 			//WordPress replaces special characters in the ID with dashes before output.
 			//See /wp-admin/menu-header.php, line #110 in WP 5.5-alpha.
 			$sanitizedId = preg_replace('|[^a-zA-Z0-9_:.]|', '-', $menuId);
-			$css = str_replace('#menu-id-placeholder', '#' . $sanitizedId, $css);
+			$replacement = implode('', $extraSelectors) . '#' . $sanitizedId;
+			$css = str_replace('#menu-id-placeholder', $replacement, $css);
 		}
 
 		return $css;
@@ -103,6 +105,23 @@ class ameMenuColorGenerator {
 		}
 
 		return $colors;
+	}
+
+	/**
+	 * Get the calculated icon colors from the last getCss() call.
+	 *
+	 * @return array Returns an array of icon colors in the format used by admin color schemes.
+	 */
+	public function getIconColorScheme() {
+		if ( empty($this->colors) ) {
+			throw new RuntimeException('You must call getCss() before calling ' . __METHOD__ . '()');
+		}
+
+		return array(
+			'base'    => !empty($this->colors['menu-icon']) ? $this->colors['menu-icon'] : '#a0a5aa',
+			'focus'   => !empty($this->colors['menu-highlight-icon']) ? $this->colors['menu-highlight-icon'] : '#00a0d2',
+			'current' => !empty($this->colors['menu-current-icon']) ? $this->colors['menu-current-icon'] : '#fff',
+		);
 	}
 
 	/**

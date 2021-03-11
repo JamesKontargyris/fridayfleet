@@ -24,6 +24,7 @@ return array(
     'Genesis\\CustomBlocksPro\\Util' => $baseDir . '/php/Util.php',
     'Genesis\\CustomBlocks\\Admin\\Admin' => $vendorDir . '/studiopress/genesis-custom-blocks/php/Admin/Admin.php',
     'Genesis\\CustomBlocks\\Admin\\Documentation' => $vendorDir . '/studiopress/genesis-custom-blocks/php/Admin/Documentation.php',
+    'Genesis\\CustomBlocks\\Admin\\EditBlock' => $vendorDir . '/studiopress/genesis-custom-blocks/php/Admin/EditBlock.php',
     'Genesis\\CustomBlocks\\Admin\\Import' => $vendorDir . '/studiopress/genesis-custom-blocks/php/Admin/Import.php',
     'Genesis\\CustomBlocks\\Admin\\Onboarding' => $vendorDir . '/studiopress/genesis-custom-blocks/php/Admin/Onboarding.php',
     'Genesis\\CustomBlocks\\Admin\\Upgrade' => $vendorDir . '/studiopress/genesis-custom-blocks/php/Admin/Upgrade.php',

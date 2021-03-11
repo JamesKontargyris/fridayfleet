@@ -11,10 +11,12 @@ class ameMenuSeparatorStyler {
 	 * @param WPMenuEditor $menuEditor
 	 */
 	public function __construct($menuEditor) {
+		$this->menuEditor = $menuEditor;
+		ameMenu::add_custom_loader(array($this, 'loadSeparatorSettings'));
+
 		if ( !is_admin() ) {
 			return;
 		}
-		$this->menuEditor = $menuEditor;
 
 		add_action('admin_menu_editor-footer-editor', array($this, 'outputDialog'));
 		add_action('admin_menu_editor-enqueue_styles-editor', array($this, 'enqueueStyles'));
@@ -22,8 +24,6 @@ class ameMenuSeparatorStyler {
 		add_filter('ame_pre_set_custom_menu', array($this, 'addSeparatorCssToConfiguration'));
 		add_action('admin_enqueue_scripts', array($this, 'enqueueCustomSeparatorStyle'));
 		add_action('wp_ajax_' . self::CSS_AJAX_ACTION, array($this, 'ajaxOutputCss'));
-
-		ameMenu::add_custom_loader(array($this, 'loadSeparatorSettings'));
 	}
 
 	public function outputDialog() {
@@ -32,7 +32,7 @@ class ameMenuSeparatorStyler {
 		wp_enqueue_auto_versioned_script(
 			'ame-separator-settings-js',
 			plugins_url('separator-settings.js', __FILE__),
-			array('jquery', 'knockout', 'jquery-ui-dialog', 'jquery-ui-tabs', 'wp-color-picker', 'ame-lodash'),
+			array('jquery', 'knockout', 'jquery-ui-dialog', 'jquery-ui-tabs', 'ame-ko-extensions', 'ame-lodash'),
 			true
 		);
 	}

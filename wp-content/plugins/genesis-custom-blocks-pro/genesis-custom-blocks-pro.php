@@ -9,7 +9,7 @@
  * Plugin Name: Genesis Custom Blocks Pro
  * Plugin URI: https://www.studiopress.com/genesis-pro/
  * Description: The easy way to build custom blocks for Gutenberg.
- * Version: 1.0.2
+ * Version: 1.1.0
  * Author: Genesis Custom Blocks Pro
  * Author URI: https://studiopress.com
  * License: GPL2

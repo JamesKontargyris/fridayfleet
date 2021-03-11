@@ -1,32 +1,21 @@
 <?php
 
-abstract class ameBaseTweak {
-	protected $id;
-	protected $label;
+use YahnisElsts\AdminMenuEditor\Configurable\ActorFeature;
 
+abstract class ameBaseTweak extends ActorFeature {
 	protected $parentId;
 	protected $sectionId;
-
-	/**
-	 * @var ameUserInputDefinition|null
-	 */
-	protected $userInput = null;
 
 	/**
 	 * @var string[]|null List of admin screen IDs that the tweak applies to.
 	 */
 	protected $screens = null;
 
-	public function __construct($id, $label = null) {
-		$this->id = $id;
-		$this->label = ($label !== null) ? $label : $id;
-	}
-
 	/**
-	 * @param string|number|null $userInputValue
+	 * @param array|null $settings User settings for this tweak.
 	 * @return mixed
 	 */
-	abstract public function apply($userInputValue = null);
+	abstract public function apply($settings = null);
 
 	public function getId() {
 		return $this->id;
@@ -83,29 +72,18 @@ abstract class ameBaseTweak {
 		$this->screens = $screens;
 	}
 
+	public function toArray() {
+		return array_merge(
+			parent::toArray(),
+			array(
+				'parentId'  => $this->getParentId(),
+				'sectionId' => $this->getSectionId(),
+			)
+		);
+	}
+
 	public function supportsUserInput() {
-		return ($this->userInput !== null);
-	}
-
-	public function getInputDefinitionData() {
-		if ( $this->userInput !== null ) {
-			return $this->userInput->toArray();
-		}
-		return array();
-	}
-
-	/**
-	 * @param ameUserInputDefinition|null $input
-	 */
-	public function setInputDefinition($input) {
-		$this->userInput = $input;
-	}
-
-	public function getContentPropertyName() {
-		if ( isset($this->userInput->contentProperty) ) {
-			return $this->userInput->contentProperty;
-		}
-		return null;
+		return $this->hasAnySettings();
 	}
 
 	//todo: getEditableProperties(). Or maybe we don't need it at all? Just merge the settings.

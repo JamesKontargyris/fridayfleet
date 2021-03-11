@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit281eb7f170dbb5c8ca7269940e3ae4c8
+class ComposerStaticInitafffe9bc47e924fd2db3025a6bb4d283
 {
     public static $prefixLengthsPsr4 = array (
         'G' => 
@@ -44,6 +44,7 @@ class ComposerStaticInit281eb7f170dbb5c8ca7269940e3ae4c8
         'Genesis\\CustomBlocksPro\\Util' => __DIR__ . '/../..' . '/php/Util.php',
         'Genesis\\CustomBlocks\\Admin\\Admin' => __DIR__ . '/..' . '/studiopress/genesis-custom-blocks/php/Admin/Admin.php',
         'Genesis\\CustomBlocks\\Admin\\Documentation' => __DIR__ . '/..' . '/studiopress/genesis-custom-blocks/php/Admin/Documentation.php',
+        'Genesis\\CustomBlocks\\Admin\\EditBlock' => __DIR__ . '/..' . '/studiopress/genesis-custom-blocks/php/Admin/EditBlock.php',
         'Genesis\\CustomBlocks\\Admin\\Import' => __DIR__ . '/..' . '/studiopress/genesis-custom-blocks/php/Admin/Import.php',
         'Genesis\\CustomBlocks\\Admin\\Onboarding' => __DIR__ . '/..' . '/studiopress/genesis-custom-blocks/php/Admin/Onboarding.php',
         'Genesis\\CustomBlocks\\Admin\\Upgrade' => __DIR__ . '/..' . '/studiopress/genesis-custom-blocks/php/Admin/Upgrade.php',
@@ -77,9 +78,9 @@ class ComposerStaticInit281eb7f170dbb5c8ca7269940e3ae4c8
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit281eb7f170dbb5c8ca7269940e3ae4c8::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit281eb7f170dbb5c8ca7269940e3ae4c8::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit281eb7f170dbb5c8ca7269940e3ae4c8::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitafffe9bc47e924fd2db3025a6bb4d283::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitafffe9bc47e924fd2db3025a6bb4d283::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitafffe9bc47e924fd2db3025a6bb4d283::$classMap;
 
         }, null, ClassLoader::class);
     }

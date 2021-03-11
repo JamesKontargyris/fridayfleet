@@ -78,7 +78,7 @@ $menu-id: "";//  #test-hook-name;
 	.wp-submenu,
 	&.wp-has-current-submenu .wp-submenu,
 	&.wp-has-current-submenu.opensub .wp-submenu,
-	.folded &.wp-has-current-submenu .wp-submenu
+	.folded &.wp-has-current-submenu .wp-submenu,
 	a.wp-has-current-submenu:focus + .wp-submenu {
 		background: $menu-submenu-background;
 	}
@@ -94,7 +94,7 @@ $menu-id: "";//  #test-hook-name;
 	.wp-submenu a,
 	&.wp-has-current-submenu .wp-submenu a,
 	a.wp-has-current-submenu:focus + .wp-submenu a,
-	.folded &.wp-has-current-submenu .wp-submenu a
+	.folded &.wp-has-current-submenu .wp-submenu a,
 	&.wp-has-current-submenu.opensub .wp-submenu a {
 		color: $menu-submenu-text;
 

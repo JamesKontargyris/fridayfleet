@@ -15,32 +15,28 @@ class FridayFleetController {
 		$this->variables    = new Variables;
 	}
 
-	public function getShips() {
-		return $this->variables->getShips();
-	}
-
 	public function getColours() {
 		return $this->variables->getColours();
 	}
 
-	public function getFixedAgeValueDataForGraph( $ship = '', $timeline = 'quarters', $purpose = 'graph', $order = 'ASC' ) {
-		return $this->get_data->getFixedAgeValueData( $ship, $timeline, $purpose, $order );
+	public function getFixedAgeValueDataForGraph( string $ship_db_slug = '', $timeline = 'quarters', $purpose = 'graph', $order = 'ASC' ) {
+		return $this->get_data->getFixedAgeValueData( $ship_db_slug, $timeline, $purpose, $order );
 
 	}
 
-	public function getFixedAgeValueDataForTable( $ship = '', $timeline = 'quarters', $purpose = 'table', $order = 'DESC' ) {
-		return $this->get_data->getFixedAgeValueData( $ship, $timeline, $purpose, $order );
+	public function getFixedAgeValueDataForTable( string $ship_db_slug = '', $timeline = 'quarters', $purpose = 'table', $order = 'DESC' ) {
+		return $this->get_data->getFixedAgeValueData( $ship_db_slug, $timeline, $purpose, $order );
 	}
 
-	public function getFixedAgeValueLatestDataPoint( $ship = '' ) {
-		$ship_data = $this->get_data->getFixedAgeValueData( $ship, 'quarters', 'table', 'DESC' );
+	public function getFixedAgeValueLatestDataPoint( string $ship_db_slug = '' ) {
+		$ship_data   = $this->get_data->getFixedAgeValueData( $ship_db_slug, 'quarters', 'table', 'DESC' );
 		$latest_data = [];
 
-		foreach($ship_data as $ship_type => $datasets) {
-			$latest_data[$ship_type] = array_slice($datasets, 0, 1);
+		foreach ( $ship_data as $ship_type => $datasets ) {
+			$latest_data = array_slice( $datasets, 0, 1 );
 		}
 
-		return $latest_data;
+		return $latest_data[0];
 	}
 
 	public function getNumberOfDatasets( $data = [], $array_key = 'data' ) {
@@ -56,6 +52,7 @@ class FridayFleetController {
 
 	public function getLastYearOfData( $data = [] ) {
 		$last_year = 0;
+		ksort($data); // sorts array by year, oldest to newest
 		foreach ( $data as $year => $dataset ) {
 			$last_year = $year;
 		}

@@ -17,7 +17,7 @@ class ameHideSidebarTweak extends ameBaseTweak {
 		);
 	}
 
-	public function apply($unusedUserInput = null) {
+	public function apply($settings = null) {
 		unregister_sidebar($this->sidebarId);
 	}
 }

@@ -1,5 +1,5 @@
 ///<reference path="../../../js/jquery.d.ts"/>
-///<reference path="../../../js/knockout.d.ts"/>
+///<reference path="../../../js/common.d.ts"/>
 ///<reference path="../../../js/lodash-3.10.d.ts"/>
 ko.extenders['boundedInteger'] = function (target, options) {
     if (options.minValue > options.maxValue) {
@@ -344,37 +344,6 @@ var AmeSeparatorSettingsScreen = /** @class */ (function () {
         }
     });
     jQuery(function ($) {
-        ko.bindingHandlers.ameColorPicker = {
-            init: function (element, valueAccessor) {
-                var valueUnwrapped = ko.unwrap(valueAccessor());
-                var input = $(element);
-                input.val(valueUnwrapped);
-                input.wpColorPicker({
-                    change: function (event, ui) {
-                        var value = valueAccessor();
-                        value(ui.color.toString());
-                    },
-                    clear: function () {
-                        var value = valueAccessor();
-                        value('');
-                    }
-                });
-            },
-            update: function (element, valueAccessor) {
-                var newValue = ko.unwrap(valueAccessor());
-                if (typeof newValue !== 'string') {
-                    newValue = '';
-                }
-                if (newValue === '') {
-                    //Programmatically click the "Clear" button. It's not elegant, but I haven't found
-                    //a way to do this using the Iris API.
-                    $(element).closest('.wp-picker-input-wrap').find('.wp-picker-clear').click();
-                }
-                else {
-                    $(element).iris('color', newValue);
-                }
-            }
-        };
         var separatorDialog = $('#ws-ame-separator-style-settings');
         var isDialogInitialized = false;
         function initializeSeparatorDialog() {

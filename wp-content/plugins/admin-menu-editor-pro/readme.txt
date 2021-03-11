@@ -2,8 +2,8 @@
 Contributors: whiteshadow
 Tags: admin, dashboard, menu, security, wpmu
 Requires at least: 4.1
-Tested up to: 5.5
-Stable tag: 2.12.2
+Tested up to: 5.7
+Stable tag: 2.14
 
 Lets you directly edit the WordPress admin menu. You can re-order, hide or rename existing menus, add custom menus and more.
 
@@ -82,6 +82,54 @@ Here are some usage tips and other things that can be good to know when using th
 == Changelog ==
 
 [Get the latest version here.](http://adminmenueditor.com/updates/)
+
+= 2.14 (2021-03-08) = 
+##### Added
+* Added the ability to create menu headings. Headings are unclickable and can be styled separately from regular menu items. By default, their color and background don't change on hover. You can configure headings to act as collapsible sections. When you click a collapsible heading, it will show/hide all of the menu items between that heading and the next one.
+* Added environment-dependent colors. In the "Tweaks" tab, you can configure the plugin to change the background color of the Toolbar (a.k.a Admin Bar) and the admin menu based on the current environment: production, development, etc. You can also display the environment type in the Toolbar. The plugin uses the environment type reported by WP core, which in turn uses the "WP_ENVIRONMENT_TYPE" constant.
+
+##### Fixed
+* Fixed a conflict with the "PRO Theme" plugin where "PRO Theme" would expand the wrong top level admin menu if the current submenu item had been moved from one parent menu to another.
+* Fixed PHP notice "Undefined offset: 0 in /wp-includes/capabilities.php on line 70" (various line numbers).
+* Fixed a conflict with "Stripe For WooCommerce" 3.2.12 where the "Stripe Gateway" menu had a wrong URL because a hidden menu item was not removed.
+* Fixed a browser warning about the "ws_nmh_pending_seen_urls" cookie not using the SameSite attribute.
+* Fixed a conflict with WooFunnels where changing the WooFunnels menu icon would result in both of the icons - the original one and the new one - showing up at the same time. The new icon was also misaligned.
+* Fixed an unconfirmed conflict where AME could trigger a fatal error because the cached meta box settings were seemingly cleared just before they were used.
+* Fixed misleading option name in the "Export" tab that made it look like it was possible to export roles. Actually, at the moment the plugin only exports the "editable roles" setting, not the roles themselves.
+* Fixed admin menu not scrolling when the Toolbar/Admin Bar was hidden.
+* Fixed a bug where the "Admin CSS" code editor would be rendered incorrectly - broken layout, partially invisible text, etc - if the "Admin CSS" section was closed when the user opened the "Tweaks" tab.
+* Fixed an encoding related issue where the "Roles" tab would be empty or just show a "Loading..." message forever.
+* Fixed an occasional bug where AME did not detect custom Gutenberg blocks created by Advanced Custom Fields Pro. 
+
+##### Changed
+* Minor visual changes.
+* Dashboard settings are now compressed and base64-encoded to prevent data corruption caused by database migration tools that attempt to replace file paths in the database without correctly escaping (back-)slashes.
+* Tested with WordPress 5.7 and 5.8-alpha.
+
+= 2.13 (2020-12-15) = 
+##### Added
+* Added a "bbPress override" option that prevents bbPress from resetting all changes that are made to dynamic bbPress roles. Enabling this option allows you to edit bbPress roles with this or any other role editing plugin.
+
+##### Fixed
+* Fixed a bug where registering a custom post type in a mu-plugin could cause Admin Menu Editor Pro to trigger either a fatal error or a warning and multiple notices.
+* Fixed the role editor going into infinite recursion if there was a meta capability that mapped to itself. 
+* Fixed a conflict that caused some hidden Simple Calendars menu items to show up when Admin Menu Editor was activated.
+* Fixed a bug where menu items that had special characters like "&" and "/" in the slug could stop working if they were moved to a different submenu or to the top level.
+* Fixed a bug where changing the menu icon to an external image (like a URL pointing to a PNG file) could result in the old and the new icon being displayed at once, either side by side or one below the other. This only affected menu items that had an icon set in CSS by using  a `::before` pseudo-element. 
+* Fixed many jQuery deprecation warnings.
+* Fixed a bug where some menu settings would not loaded from the database when another plugin triggered a filter that caused the menu configuration to be loaded before AME loaded its modules.
+* Fixed bug that could cause an obscure conflict with plugins that change the admin URL, like "WP Hide & Security Enhancer". When a user tried to open "Dashboard -> Home", the plugin could incorrectly apply the permisssions of a another menu item to the "Home" item. If the other menu item was configured to be inaccessible, the user would get an error message when logging in (they were still successfully logged in).
+
+##### Changed
+* Improved error reporting in situations where the plugin can't parse menu data.
+
+= 2.12.4 (2020-10-02) =
+* Hotfix: Fixed a new plugin conflict introduced in version 2.12.3 that could prevent some add-on features like the "Branding" tab from being loaded on some sites.
+
+= 2.12.3 (2020-10-02) = 
+* Fixed a bug where separator settings could be lost if another plugin or theme indirectly caused this plugin to load the menu configuration earlier than expected.
+* Made custom menu icon colors apply to SVG icons. Previously, you could only change the color of those menu icons that are implemented using icon fonts like Dashicons.
+* Improved error reporting in situations where the plugin can't parse menu data.
 
 = 2.12.2 (2020-08-25) =
 * Fixed a conflict with Elementor 3.0 that caused the "Theme Builder" menu item to have the wrong URL. 

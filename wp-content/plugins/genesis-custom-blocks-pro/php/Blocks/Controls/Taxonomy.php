@@ -53,57 +53,10 @@ class Taxonomy extends ControlAbstract {
 				'name'     => 'post_type_rest_slug',
 				'label'    => __( 'Taxonomy Type', 'genesis-custom-blocks-pro' ),
 				'type'     => 'taxonomy_type_rest_slug',
-				'default'  => 'posts',
+				'default'  => 'categories',
 				'sanitize' => [ $this, 'sanitize_taxonomy_type_rest_slug' ],
 			]
 		);
-	}
-
-	/**
-	 * Renders a <select> of public taxonomy types.
-	 *
-	 * @param ControlSetting $setting The ControlSetting being rendered.
-	 * @param string         $name    The name attribute of the option.
-	 * @param string         $id      The id attribute of the option.
-	 *
-	 * @return void
-	 */
-	public function render_settings_taxonomy_type_rest_slug( $setting, $name, $id ) {
-		$taxonomy_slugs = $this->get_taxonomy_type_rest_slugs();
-		$this->render_select( $setting, $name, $id, $taxonomy_slugs );
-	}
-
-	/**
-	 * Gets the REST slugs of public taxonomy types.
-	 *
-	 * @return array {
-	 *     An associative array of the post type REST slugs.
-	 *
-	 *     @type string $rest_slug The REST slug of the post type.
-	 *     @type string $name      The name of the post type.
-	 * }
-	 */
-	public function get_taxonomy_type_rest_slugs() {
-		$taxonomy_rest_slugs = [];
-		foreach ( get_taxonomies( [ 'show_in_rest' => true ] ) as $taxonomy_slug ) {
-			$taxonomy_object                   = get_taxonomy( $taxonomy_slug );
-			$rest_slug                         = ! empty( $taxonomy_object->rest_base ) ? $taxonomy_object->rest_base : $taxonomy_slug;
-			$taxonomy_rest_slugs[ $rest_slug ] = $taxonomy_object->label;
-		}
-		return $taxonomy_rest_slugs;
-	}
-
-	/**
-	 * Sanitize the taxonomy type REST slug, to ensure that it's registered and public.
-	 *
-	 * @param string $value The rest_base of the post type to sanitize.
-	 * @return string|null The sanitized rest_base of the post type, or null.
-	 */
-	public function sanitize_taxonomy_type_rest_slug( $value ) {
-		if ( array_key_exists( $value, $this->get_taxonomy_type_rest_slugs() ) ) {
-			return $value;
-		}
-		return null;
 	}
 
 	/**

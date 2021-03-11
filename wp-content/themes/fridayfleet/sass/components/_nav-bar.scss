@@ -77,12 +77,11 @@ ul.nav-bar__menu {
 
   @include grid-media($grid-desktop) {
     flex-direction: column;
-    align-items: flex-start;
   }
 
   li {
     display: block;
-    width: 20%;
+    flex:1;
     transition: 0.3s all;
     height:9rem;
 

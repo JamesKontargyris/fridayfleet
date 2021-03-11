@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitcc36e842dea10da305fd4af0beac0a21
+class ComposerStaticInit00336c7e29336f5ee1f75afe7aecbd78
 {
     public static $prefixLengthsPsr4 = array (
         'G' => 
@@ -21,8 +21,10 @@ class ComposerStaticInitcc36e842dea10da305fd4af0beac0a21
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Genesis\\CustomBlocks\\Admin\\Admin' => __DIR__ . '/../..' . '/php/Admin/Admin.php',
         'Genesis\\CustomBlocks\\Admin\\Documentation' => __DIR__ . '/../..' . '/php/Admin/Documentation.php',
+        'Genesis\\CustomBlocks\\Admin\\EditBlock' => __DIR__ . '/../..' . '/php/Admin/EditBlock.php',
         'Genesis\\CustomBlocks\\Admin\\Import' => __DIR__ . '/../..' . '/php/Admin/Import.php',
         'Genesis\\CustomBlocks\\Admin\\Onboarding' => __DIR__ . '/../..' . '/php/Admin/Onboarding.php',
         'Genesis\\CustomBlocks\\Admin\\Upgrade' => __DIR__ . '/../..' . '/php/Admin/Upgrade.php',
@@ -56,9 +58,9 @@ class ComposerStaticInitcc36e842dea10da305fd4af0beac0a21
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitcc36e842dea10da305fd4af0beac0a21::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitcc36e842dea10da305fd4af0beac0a21::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitcc36e842dea10da305fd4af0beac0a21::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit00336c7e29336f5ee1f75afe7aecbd78::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit00336c7e29336f5ee1f75afe7aecbd78::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit00336c7e29336f5ee1f75afe7aecbd78::$classMap;
 
         }, null, ClassLoader::class);
     }

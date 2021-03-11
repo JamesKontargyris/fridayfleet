@@ -1,6 +1,9 @@
 @import "../../../css/indeterminate-checkbox";
 @import "../../../css/boxes";
 
+$desiredChildTweakOffset: 2em;
+$childrenOffset: 1.7em;
+
 .ame-twm-section {
 	@include ame-emulated-postbox();
 
@@ -12,14 +15,18 @@
 }
 
 .ame-twm-tweak-children {
-	margin-left: 2em;
+	margin-left: $childrenOffset;
+
+	& > .ame-twm-tweak {
+		margin-left: $desiredChildTweakOffset - $childrenOffset;
+	}
 }
 
-.ame-twm-tweak input[type=checkbox] {
+.ame-twm-named-node input[type=checkbox] {
 	@include ame-indeterminate-checkbox;
 }
 
-.ame-twm-tweak {
+.ame-twm-named-node {
 	font-size: 14px;
 	line-height: 1.65;
 }
@@ -96,4 +103,13 @@
 		border-color: #007cba;
 		box-shadow: 0 0 0 1px #007cba;
 	}
+}
+
+.ame-twm-color-label {
+	margin-right: 0.5em;
+}
+
+#ame-tweak-environment-dependent-colors .ame-twm-color-label {
+	display: inline-block;
+	min-width: 7em;
 }

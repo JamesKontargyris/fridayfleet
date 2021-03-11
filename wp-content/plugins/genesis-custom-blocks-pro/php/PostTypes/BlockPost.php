@@ -51,9 +51,6 @@ class BlockPost extends ComponentAbstract {
 		add_filter( 'page_row_actions', [ $this, 'page_row_actions' ] );
 		add_filter( 'bulk_actions-edit-' . $this->slug, [ $this, 'bulk_actions' ] );
 		add_filter( 'handle_bulk_actions-edit-' . $this->slug, [ $this, 'bulk_export' ], 10, 3 );
-
-		// Runs after the free plugin, so it can dequeue its script.
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ], 11 );
 	}
 
 	/**
@@ -143,61 +140,6 @@ class BlockPost extends ComponentAbstract {
 			</div>
 		</div>
 		<?php
-	}
-
-	/**
-	 * Enqueue scripts and styles used by the Block post type.
-	 *
-	 * @return void
-	 */
-	public function enqueue_scripts() {
-		$post                    = get_post();
-		$screen                  = get_current_screen();
-		$style_slug              = 'genesis-custom-blocks-pro-block-post';
-		$script_slug             = 'genesis-custom-blocks-pro-block-post-pro';
-		$free_plugin_script_slug = 'genesis-custom-blocks-block-post-script';
-
-		// Enqueue scripts and styles on the edit screen of the Block post type.
-		if ( is_object( $screen ) && $this->slug === $screen->post_type && 'post' === $screen->base ) {
-			wp_enqueue_style(
-				$style_slug,
-				$this->plugin->get_url( 'css/admin.block-post-pro.css' ),
-				[],
-				$this->plugin->get_version()
-			);
-
-			if ( ! in_array( $post->post_status, [ 'publish', 'future', 'pending' ], true ) ) {
-				wp_add_inline_style( $style_slug, '#delete-action { display: none; }' );
-			}
-
-			// Use this Pro plugin's script instead of the free one's.
-			wp_dequeue_script( $free_plugin_script_slug );
-			wp_enqueue_script(
-				$script_slug,
-				$this->plugin->get_url( 'js/admin.block-post-pro.js' ),
-				[ 'jquery', 'jquery-ui-sortable', 'wp-util', 'wp-blocks' ],
-				$this->plugin->get_version(),
-				false
-			);
-
-			wp_localize_script(
-				$script_slug,
-				'genesisCustomBlocks',
-				[
-					'fieldSettingsNonce' => wp_create_nonce( "{$this->slug}_field_settings_nonce" ),
-					'postTypes'          => [
-						'all'  => __( 'All', 'genesis-custom-blocks-pro' ),
-						'none' => __( 'None', 'genesis-custom-blocks-pro' ),
-					],
-					'copySuccessMessage' => __( 'Copied to clipboard.', 'genesis-custom-blocks-pro' ),
-					'copyFailMessage'    => sprintf(
-						// translators: Placeholder is a shortcut key combination.
-						__( '%1$s to copy.', 'genesis-custom-blocks-pro' ),
-						strpos( getenv( 'HTTP_USER_AGENT' ), 'Mac' ) ? 'Cmd+C' : 'Ctrl+C'
-					),
-				]
-			);
-		}
 	}
 
 	/**

@@ -22,10 +22,10 @@ class ameDelegatedTweak extends ameBaseTweak {
 		$this->callbackArgs = $callbackArgs;
 	}
 
-	public function apply($userInputValue = null) {
+	public function apply($settings = null) {
 		$theArgs = $this->callbackArgs;
-		if ( $userInputValue !== null ) {
-			$theArgs[] = $userInputValue;
+		if ( $settings !== null ) {
+			$theArgs[] = $settings;
 		}
 		call_user_func_array($this->callback, $theArgs);
 	}

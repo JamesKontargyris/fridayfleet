@@ -6,7 +6,7 @@ class Wslm_BasicPluginLicensingUI {
 
 	private $licenseManager;
 	/**
-	 * @var Puc_v4p9_Plugin_UpdateChecker
+	 * @var Puc_v4p10_Plugin_UpdateChecker
 	 */
 	private $updateChecker;
 	private $pluginFile;

@@ -3,12 +3,12 @@
 /// <reference path="../../../js/lodash-3.10.d.ts" />
 /// <reference path="../../../modules/actor-selector/actor-selector.ts" />
 /// <reference path="../../../js/jquery.biscuit.d.ts" />
-/// <reference path="../../ko-dialog-bindings.ts" />
+/// <reference path="../../ko-extensions.ts" />
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -17,29 +17,250 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var AmeTweakItem = /** @class */ (function () {
-    function AmeTweakItem(properties, module) {
-        var _this = this;
-        this.initialProperties = null;
-        this.editableProperties = {};
-        this.section = null;
-        this.parent = null;
-        this.isUserDefined = properties.isUserDefined ? properties.isUserDefined : false;
-        if (this.isUserDefined) {
-            this.initialProperties = properties;
-        }
+var AmeNamedNode = /** @class */ (function () {
+    function AmeNamedNode(properties) {
+        this.htmlId = '';
         this.id = properties.id;
-        if (this.isUserDefined) {
-            this.label = ko.observable(properties.label);
+        this.label = properties.label;
+    }
+    return AmeNamedNode;
+}());
+function isAmeSettingsGroupProperties(thing) {
+    var group = thing;
+    return (typeof group.children !== 'undefined');
+}
+function isAmeSettingProperties(thing) {
+    return (typeof thing.dataType === 'string');
+}
+var AmeSetting = /** @class */ (function (_super) {
+    __extends(AmeSetting, _super);
+    function AmeSetting(properties, store, path) {
+        if (path === void 0) { path = []; }
+        var _this = _super.call(this, properties) || this;
+        var defaultValue = null;
+        if (typeof properties.defaultValue !== 'undefined') {
+            defaultValue = properties.defaultValue;
+        }
+        _this.inputValue = store.getObservableProperty(properties.id, defaultValue, path);
+        AmeSetting.idCounter++;
+        _this.uniqueInputId = 'ws-ame-gen-setting-' + AmeSetting.idCounter;
+        return _this;
+    }
+    AmeSetting.idCounter = 0;
+    return AmeSetting;
+}(AmeNamedNode));
+var AmeStringSetting = /** @class */ (function (_super) {
+    __extends(AmeStringSetting, _super);
+    function AmeStringSetting(properties, module, store, path) {
+        if (path === void 0) { path = []; }
+        var _this = _super.call(this, properties, store, path) || this;
+        _this.syntaxHighlightingOptions = null;
+        _this.templateName = 'ame-tweak-textarea-input-template';
+        if (properties.syntaxHighlighting && module) {
+            _this.syntaxHighlightingOptions = module.getCodeMirrorOptions(properties.syntaxHighlighting);
+        }
+        return _this;
+    }
+    return AmeStringSetting;
+}(AmeSetting));
+var AmeColorSetting = /** @class */ (function (_super) {
+    __extends(AmeColorSetting, _super);
+    function AmeColorSetting(properties, store, path) {
+        if (path === void 0) { path = []; }
+        var _this = _super.call(this, properties, store, path) || this;
+        _this.templateName = 'ame-tweak-color-input-template';
+        return _this;
+    }
+    return AmeColorSetting;
+}(AmeSetting));
+var AmeBooleanSetting = /** @class */ (function (_super) {
+    __extends(AmeBooleanSetting, _super);
+    function AmeBooleanSetting(properties, store, path) {
+        if (path === void 0) { path = []; }
+        var _this = _super.call(this, properties, store, path) || this;
+        _this.templateName = 'ame-tweak-boolean-input-template';
+        //Ensure that the value is always a boolean.
+        var _internalValue = _this.inputValue;
+        if (typeof _internalValue() !== 'boolean') {
+            _internalValue(!!_internalValue());
+        }
+        _this.inputValue = ko.computed({
+            read: function () {
+                return _internalValue();
+            },
+            write: function (newValue) {
+                if (typeof newValue !== 'boolean') {
+                    newValue = !!newValue;
+                }
+                _internalValue(newValue);
+            },
+            owner: _this
+        });
+        return _this;
+    }
+    return AmeBooleanSetting;
+}(AmeSetting));
+function isAmeActorFeatureProperties(thing) {
+    return (typeof thing.hasAccessMap === 'boolean');
+}
+var AmeSettingStore = /** @class */ (function () {
+    function AmeSettingStore(initialProperties) {
+        if (initialProperties === void 0) { initialProperties = {}; }
+        this.observableProperties = {};
+        this.accessMaps = {};
+        this.initialProperties = initialProperties;
+    }
+    AmeSettingStore.prototype.getObservableProperty = function (name, defaultValue, path) {
+        if (path === void 0) { path = []; }
+        path = this.getFullPath(name, path);
+        if (this.observableProperties.hasOwnProperty(path)) {
+            return this.observableProperties[path];
+        }
+        var _ = AmeTweakManagerModule._;
+        var value = _.get(this.initialProperties, path, defaultValue);
+        var observable = ko.observable(value);
+        this.observableProperties[path] = observable;
+        return observable;
+    };
+    AmeSettingStore.prototype.getFullPath = function (name, path) {
+        if (typeof path !== 'string') {
+            path = path.join('.');
+        }
+        if (path === '') {
+            path = name;
         }
         else {
-            this.label = ko.pureComputed(function () {
-                return properties.label;
-            });
+            path = path + '.' + name;
         }
-        this.children = ko.observableArray([]);
+        return path;
+    };
+    AmeSettingStore.prototype.propertiesToJs = function () {
+        var _ = AmeTweakManagerModule._;
+        var newProps = {};
+        _.forOwn(this.observableProperties, function (observable, path) {
+            _.set(newProps, path, observable());
+        });
+        _.forOwn(this.accessMaps, function (map, path) {
+            //Since all tweaks are disabled by default, having a tweak disabled for a role is the same
+            //as not having a setting, so we can save some space by removing it. This does not always
+            //apply to users/Super Admins because they can have precedence over roles.
+            var temp = map.getAll();
+            var enabled = {};
+            var areAllFalse = true;
+            for (var actorId in temp) {
+                if (!temp.hasOwnProperty(actorId)) {
+                    continue;
+                }
+                areAllFalse = areAllFalse && (!temp[actorId]);
+                if (!temp[actorId]) {
+                    var actor = AmeActors.getActor(actorId);
+                    if (actor instanceof AmeRole) {
+                        continue;
+                    }
+                }
+                enabled[actorId] = temp[actorId];
+            }
+            if (areAllFalse) {
+                enabled = {};
+            }
+            _.set(newProps, path, enabled);
+        });
+        return newProps;
+    };
+    AmeSettingStore.prototype.getAccessMap = function (name, path, defaultAccessMap) {
+        if (path === void 0) { path = []; }
+        if (defaultAccessMap === void 0) { defaultAccessMap = null; }
+        path = this.getFullPath(name, path);
+        var _ = AmeTweakManagerModule._;
+        var value = _.get(this.initialProperties, path, defaultAccessMap);
+        if (!this.accessMaps.hasOwnProperty(path)) {
+            this.accessMaps[path] = new AmeObservableActorSettings(value);
+        }
+        return this.accessMaps[path];
+    };
+    return AmeSettingStore;
+}());
+function isSettingStore(thing) {
+    var maybe = thing;
+    return (typeof maybe.getObservableProperty !== 'undefined') && (typeof maybe.propertiesToJs !== 'undefined');
+}
+var AmeCompositeNode = /** @class */ (function (_super) {
+    __extends(AmeCompositeNode, _super);
+    function AmeCompositeNode(properties, module, store, path) {
+        if (store === void 0) { store = null; }
+        if (path === void 0) { path = []; }
+        var _this = _super.call(this, properties) || this;
+        _this.children = null;
+        _this.id = properties.id;
+        _this.label = properties.label;
+        if (store === 'self') {
+            if (!_this.properties) {
+                _this.properties = new AmeSettingStore(properties);
+            }
+            store = _this.properties;
+        }
+        if (isAmeSettingsGroupProperties(properties)) {
+            if ((typeof properties.propertyPath === 'string') && (properties.propertyPath !== '')) {
+                _this.propertyPath = properties.propertyPath.split('.');
+            }
+            else {
+                _this.propertyPath = [];
+            }
+            if (path.length > 0) {
+                _this.propertyPath = path.concat(_this.propertyPath);
+            }
+            var children = [];
+            if (properties.children && (properties.children.length > 0)) {
+                for (var i = 0; i < properties.children.length; i++) {
+                    var props = properties.children[i];
+                    var child = void 0;
+                    if (isAmeSettingProperties(props)) {
+                        child = AmeCompositeNode.createSetting(props, module, store, _this.propertyPath);
+                    }
+                    else {
+                        child = new AmeCompositeNode(props, module, store, _this.propertyPath);
+                    }
+                    if (child) {
+                        children.push(child);
+                    }
+                }
+            }
+            _this.children = ko.observableArray(children);
+        }
+        if (isAmeActorFeatureProperties(properties)) {
+            var name_1 = (store === _this.properties) ? 'enabledForActor' : _this.id;
+            var defaultAccess = (typeof properties.defaultAccessMap !== 'undefined') ? properties.defaultAccessMap : null;
+            _this.actorAccess = new AmeActorAccess(store.getAccessMap(name_1, path, defaultAccess), module, _this.children);
+        }
+        return _this;
+    }
+    AmeCompositeNode.createSetting = function (properties, module, store, path) {
+        if (path === void 0) { path = []; }
+        var inputType = properties.inputType ? properties.inputType : properties.dataType;
+        switch (inputType) {
+            case 'text':
+            case 'textarea':
+            case 'string':
+                return new AmeStringSetting(properties, module, store, path);
+            case 'color':
+                return new AmeColorSetting(properties, store, path);
+            case 'boolean':
+                return new AmeBooleanSetting(properties, store, path);
+            default:
+                if (console && console.error) {
+                    console.error('Unknown setting input type "%s"', inputType);
+                }
+                return null;
+        }
+    };
+    return AmeCompositeNode;
+}(AmeNamedNode));
+var AmeActorAccess = /** @class */ (function () {
+    function AmeActorAccess(actorSettings, module, children) {
+        var _this = this;
+        if (children === void 0) { children = null; }
         this.module = module;
-        this.enabledForActor = new AmeObservableActorSettings(properties.enabledForActor || null);
+        this.enabledForActor = actorSettings;
         var _isIndeterminate = ko.observable(false);
         this.isIndeterminate = ko.computed(function () {
             if (module.selectedActor() !== null) {
@@ -108,53 +329,49 @@ var AmeTweakItem = /** @class */ (function () {
                     _this.enabledForActor.set(selectedActor.getId(), checked);
                 }
                 //Apply the same setting to all children.
-                var children = _this.children();
-                for (var i = 0; i < children.length; i++) {
-                    children[i].isChecked(checked);
+                if (children) {
+                    var childrenArray = children();
+                    for (var i = 0; i < childrenArray.length; i++) {
+                        var child = childrenArray[i];
+                        if ((child instanceof AmeCompositeNode) && child.actorAccess) {
+                            child.actorAccess.isChecked(checked);
+                        }
+                    }
                 }
             }
         });
-        if (properties.userInput) {
-            this.userInput = AmeTweakInput.create(properties.userInput, module);
-            var contentProperty = properties.userInput.contentProperty || 'userInputValue';
-            var propertyObservable = this.getEditableProperty(contentProperty, properties);
-            if (propertyObservable !== null) {
-                this.userInput.setInputObservable(propertyObservable);
-            }
+    }
+    return AmeActorAccess;
+}());
+var AmeTweakItem = /** @class */ (function (_super) {
+    __extends(AmeTweakItem, _super);
+    function AmeTweakItem(properties, module) {
+        var _this = _super.call(this, properties, module, 'self') || this;
+        _this.initialProperties = null;
+        _this.section = null;
+        _this.parent = null;
+        _this.isUserDefined = properties.isUserDefined ? properties.isUserDefined : false;
+        if (_this.isUserDefined) {
+            _this.initialProperties = properties;
         }
+        if (_this.isUserDefined) {
+            _this.label = ko.observable(properties.label);
+        }
+        else {
+            _this.label = ko.pureComputed(function () {
+                return properties.label;
+            });
+        }
+        _this.htmlId = 'ame-tweak-' + AmeTweakManagerModule.slugify(_this.id);
+        return _this;
     }
     AmeTweakItem.prototype.toJs = function () {
-        //Since all tweaks are disabled by default, having a tweak disabled for a role is the same
-        //as not having a setting, so we can save some space by removing it. This does not always
-        //apply to users/Super Admins because they can have precedence over roles.
-        var temp = this.enabledForActor.getAll();
-        var enabled = {};
-        var areAllFalse = true;
-        for (var actorId in temp) {
-            if (!temp.hasOwnProperty(actorId)) {
-                continue;
-            }
-            areAllFalse = areAllFalse && (!temp[actorId]);
-            if (!temp[actorId]) {
-                var actor = AmeActors.getActor(actorId);
-                if (actor instanceof AmeRole) {
-                    continue;
-                }
-            }
-            enabled[actorId] = temp[actorId];
-        }
-        if (areAllFalse) {
-            enabled = {};
-        }
         var result = {
-            id: this.id,
-            enabledForActor: enabled
+            id: this.id
         };
-        if (this.userInput) {
-            var inputValue = this.userInput.getInputValue();
-            if ((inputValue !== '') && (inputValue !== null)) {
-                result[this.userInput.contentProperty] = inputValue;
-            }
+        var _ = AmeTweakManagerModule._;
+        if (this.properties) {
+            result = _.defaults(result, this.properties.propertiesToJs());
         }
         if (!this.isUserDefined) {
             return result;
@@ -165,12 +382,7 @@ var AmeTweakItem = /** @class */ (function () {
             props.label = this.label();
             props.sectionId = this.section ? this.section.id : null;
             props.parentId = this.parent ? this.parent.id : null;
-            var _1 = AmeTweakManagerModule._;
-            var editableProps_1 = {};
-            _1.forOwn(this.editableProperties, function (observable, key) {
-                editableProps_1[key] = observable();
-            });
-            props = _1.defaults(props, editableProps_1, _1.omit(this.initialProperties, 'userInputValue', 'enabledForActor'));
+            props = _.defaults(props, _.omit(this.initialProperties, 'userInputValue', 'enabledForActor'));
             return props;
         }
     };
@@ -196,22 +408,10 @@ var AmeTweakItem = /** @class */ (function () {
     AmeTweakItem.prototype.removeChild = function (tweak) {
         this.children.remove(tweak);
     };
-    AmeTweakItem.prototype.getEditableProperty = function (key, storedProperties) {
-        if (this.editableProperties.hasOwnProperty(key)) {
-            return this.editableProperties[key];
+    AmeTweakItem.prototype.getEditableProperty = function (key) {
+        if (this.properties) {
+            return this.properties.getObservableProperty(key, '');
         }
-        if (!storedProperties && this.initialProperties) {
-            storedProperties = this.initialProperties;
-        }
-        if (storedProperties && storedProperties.hasOwnProperty(key)) {
-            var observable = ko.observable(storedProperties[key]);
-            this.editableProperties[key] = observable;
-            return observable;
-        }
-        if (console && console.warn) {
-            console.warn('Trying to retrieve and edit a non-existing property "%s"', key);
-        }
-        return ko.observable('');
     };
     AmeTweakItem.prototype.getTypeId = function () {
         if (!this.isUserDefined || !this.initialProperties) {
@@ -223,7 +423,7 @@ var AmeTweakItem = /** @class */ (function () {
         return null;
     };
     return AmeTweakItem;
-}());
+}(AmeCompositeNode));
 var AmeTweakSection = /** @class */ (function () {
     function AmeTweakSection(properties) {
         this.footerTemplateName = null;
@@ -247,51 +447,6 @@ var AmeTweakSection = /** @class */ (function () {
     };
     return AmeTweakSection;
 }());
-var AmeTweakInput = /** @class */ (function () {
-    function AmeTweakInput() {
-        this.syntaxHighlightingOptions = null;
-    }
-    AmeTweakInput.prototype.setInputObservable = function (observable) {
-        this.inputValue = observable;
-    };
-    AmeTweakInput.prototype.getInputValue = function () {
-        return this.inputValue();
-    };
-    ;
-    AmeTweakInput.prototype.setInputValue = function (value) {
-        this.inputValue(value);
-    };
-    ;
-    AmeTweakInput.create = function (properties, module) {
-        var input;
-        switch (properties.inputType) {
-            case 'textarea':
-                input = new AmeTweakTextAreaInput(properties, module);
-                break;
-            case 'text':
-            default:
-                throw { 'message': 'Input type not implemented' };
-        }
-        if (properties.contentProperty) {
-            input.contentProperty = properties.contentProperty;
-        }
-        return input;
-    };
-    return AmeTweakInput;
-}());
-var AmeTweakTextAreaInput = /** @class */ (function (_super) {
-    __extends(AmeTweakTextAreaInput, _super);
-    function AmeTweakTextAreaInput(properties, module) {
-        var _this = _super.call(this) || this;
-        _this.templateName = 'ame-tweak-textarea-input-template';
-        _this.inputValue = ko.observable('');
-        if (properties.syntaxHighlighting && module) {
-            _this.syntaxHighlightingOptions = module.getCodeMirrorOptions(properties.syntaxHighlighting);
-        }
-        return _this;
-    }
-    return AmeTweakTextAreaInput;
-}(AmeTweakInput));
 var AmeTweakManagerModule = /** @class */ (function () {
     function AmeTweakManagerModule(scriptData) {
         var _this = this;
@@ -407,7 +562,7 @@ var AmeTweakManagerModule = /** @class */ (function () {
     };
     AmeTweakManagerModule.prototype.addAdminCssTweak = function (label, css) {
         this.lastUserTweakSuffix++;
-        var slug = this.slugify(label);
+        var slug = AmeTweakManagerModule.slugify(label);
         if (slug !== '') {
             slug = '-' + slug;
         }
@@ -416,22 +571,27 @@ var AmeTweakManagerModule = /** @class */ (function () {
             id: 'utw-' + this.lastUserTweakSuffix + slug,
             isUserDefined: true,
             sectionId: 'admin-css',
-            typeId: 'admin-css'
+            typeId: 'admin-css',
+            children: [],
+            hasAccessMap: true
         };
         props['css'] = css;
-        props.userInput = {
-            contentProperty: 'css',
-            syntaxHighlighting: 'css',
-            inputType: 'textarea'
+        var cssInput = {
+            id: 'css',
+            label: '',
+            dataType: 'string',
+            inputType: 'textarea',
+            syntaxHighlighting: 'css'
         };
+        props.children.push(cssInput);
         var newTweak = new AmeTweakItem(props, this);
         this.tweaksById[newTweak.id] = newTweak;
         this.sectionsById['admin-css'].addTweak(newTweak);
     };
-    AmeTweakManagerModule.prototype.slugify = function (input) {
+    AmeTweakManagerModule.slugify = function (input) {
         var _ = AmeTweakManagerModule._;
         var output = _.deburr(input);
-        output = output.replace(/[^a-zA-Z0-9]/, '');
+        output = output.replace(/[^a-zA-Z0-9 \-]/, '');
         return _.kebabCase(output);
     };
     AmeTweakManagerModule.prototype.launchTweakEditor = function (tweak) {
@@ -529,12 +689,6 @@ var AmeEditAdminCssDialog = /** @class */ (function () {
     };
     return AmeEditAdminCssDialog;
 }());
-//A one-way binding for indeterminate checkbox states.
-ko.bindingHandlers['indeterminate'] = {
-    update: function (element, valueAccessor) {
-        element.indeterminate = !!(ko.unwrap(valueAccessor()));
-    }
-};
 ko.bindingHandlers.ameCodeMirror = {
     init: function (element, valueAccessor, allBindings) {
         if (!wp.hasOwnProperty('codeEditor') || !wp.codeEditor.initialize) {
@@ -590,6 +744,27 @@ ko.bindingHandlers.ameCodeMirror = {
             refreshSubscription = refreshTrigger.subscribe(function () {
                 cm.refresh();
             });
+        }
+        //If the editor starts out hidden - for example, because it's inside a collapsed section - it will
+        //render incorrectly. To fix that, let's refresh it the first time it becomes visible.
+        if (!jQuery(element).is(':visible') && (typeof IntersectionObserver !== 'undefined')) {
+            var observer_1 = new IntersectionObserver(function (entries) {
+                for (var i = 0; i < entries.length; i++) {
+                    if (entries[i].isIntersecting) {
+                        //The editor is at least partially visible now.
+                        observer_1.disconnect();
+                        cm.refresh();
+                        break;
+                    }
+                }
+            }, {
+                //Use the browser viewport.
+                root: null,
+                //The threshold is somewhat arbitrary. Any value will work, but a lower setting means
+                //that the user is less likely to see an incorrectly rendered editor.
+                threshold: 0.05
+            });
+            observer_1.observe(cm.getWrapperElement());
         }
         ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
             //Remove subscriptions and event handlers.

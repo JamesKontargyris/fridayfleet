@@ -366,11 +366,12 @@ class ameMetaBoxEditor extends ameModule implements ameExportableModule {
 			)
 		);
 
+		$settings = $this->loadSettings();
 		wp_localize_script(
 			'ame-meta-box-editor',
 			'wsAmeMetaBoxEditorData',
 			array(
-				'settings'   => $this->settings->toArray(),
+				'settings'   => $settings->toArray(),
 				'refreshUrl' => wp_nonce_url(
 					$this->getTabUrl(array(
 						self::FORCE_REFRESH_PARAM => 1,

@@ -3,7 +3,7 @@
 /// <reference path="../../../js/lodash-3.10.d.ts" />
 /// <reference path="../../../modules/actor-selector/actor-selector.ts" />
 /// <reference path="../../../js/jquery.biscuit.d.ts" />
-/// <reference path="../../ko-dialog-bindings.ts" />
+/// <reference path="../../ko-extensions.ts" />
 
 declare let ameTweakManager: AmeTweakManagerModule;
 declare const wsTweakManagerData: AmeTweakManagerScriptData;
@@ -23,67 +23,337 @@ interface AmeTweakManagerScriptData {
 	defaultCodeEditorSettings: Record<string, any>;
 }
 
-interface AmeSavedTweakProperties {
+interface AmeNamedNodeProperties {
 	id: string;
-	enabledForActor?: AmeDictionary<boolean>;
-	userInputValue?: AmeTweakInputValueType;
-}
-
-interface AmeTweakProperties extends AmeSavedTweakProperties {
 	label: string;
-	description?: string;
-	parentId?: string;
-	sectionId?: string;
-	userInput?: AmeTweakInputProperties;
-
-	isUserDefined?: boolean;
-	typeId?: string;
-
-	//User-defined tweaks can have additional arbitrary properties.
-	[key: string]: any;
 }
 
-class AmeTweakItem {
+abstract class AmeNamedNode {
 	id: string;
-	label: KnockoutObservable<string>;
-	children: KnockoutObservableArray<AmeTweakItem>;
+	label: string | KnockoutObservable<string>;
+	htmlId: string = '';
 
+	protected constructor(properties: AmeNamedNodeProperties) {
+		this.id = properties.id;
+		this.label = properties.label;
+	}
+}
+
+interface AmeSettingsGroupProperties extends AmeNamedNodeProperties {
+	children: ConfigurationNodeProperties[];
+	propertyPath?: string | null;
+}
+
+function isAmeSettingsGroupProperties(thing: AmeNamedNodeProperties): thing is AmeSettingsGroupProperties {
+	const group = thing as AmeSettingsGroupProperties;
+	return (typeof group.children !== 'undefined');
+}
+
+interface AmeSettingProperties extends AmeNamedNodeProperties {
+	dataType: string;
+	inputType: string | null;
+	defaultValue?: any;
+}
+
+function isAmeSettingProperties(thing: AmeNamedNodeProperties): thing is AmeSettingProperties {
+	return (typeof (thing as AmeSettingProperties).dataType === 'string');
+}
+
+abstract class AmeSetting extends AmeNamedNode {
+	protected static idCounter = 0;
+
+	// noinspection JSUnusedGlobalSymbols Used in Knockout templates.
+	templateName: string;
+	inputValue: KnockoutObservable<any>;
+	readonly uniqueInputId: string;
+
+	protected constructor(properties: AmeSettingProperties, store: AmeSettingStore, path: string[] = []) {
+		super(properties);
+		let defaultValue = null;
+		if (typeof properties.defaultValue !== 'undefined') {
+			defaultValue = properties.defaultValue;
+		}
+		this.inputValue = store.getObservableProperty(properties.id, defaultValue, path);
+
+		AmeSetting.idCounter++;
+		this.uniqueInputId = 'ws-ame-gen-setting-' + AmeSetting.idCounter;
+	}
+}
+
+interface AmeStringSettingProperties extends AmeSettingProperties {
+	syntaxHighlighting?: string;
+}
+
+class AmeStringSetting extends AmeSetting {
+	syntaxHighlightingOptions: object = null;
+
+	constructor(
+		properties: AmeStringSettingProperties,
+		module: AmeTweakManagerModule,
+		store: AmeSettingStore,
+		path: string[] = []
+	) {
+		super(properties, store, path);
+		this.templateName = 'ame-tweak-textarea-input-template';
+
+		if (properties.syntaxHighlighting && module) {
+			this.syntaxHighlightingOptions = module.getCodeMirrorOptions(properties.syntaxHighlighting);
+		}
+	}
+}
+
+class AmeColorSetting extends AmeSetting {
+	constructor(
+		properties: AmeStringSettingProperties,
+		store: AmeSettingStore,
+		path: string[] = []
+	) {
+		super(properties, store, path);
+		this.templateName = 'ame-tweak-color-input-template';
+	}
+}
+
+class AmeBooleanSetting extends AmeSetting {
+	public templateName: string = 'ame-tweak-boolean-input-template';
+
+	constructor(
+		properties: AmeStringSettingProperties,
+		store: AmeSettingStore,
+		path: string[] = []
+	) {
+		super(properties, store, path);
+
+		//Ensure that the value is always a boolean.
+		let _internalValue = this.inputValue;
+		if (typeof _internalValue() !== 'boolean') {
+			_internalValue(!!_internalValue());
+		}
+
+		this.inputValue = ko.computed<boolean>({
+			read: function () {
+				return _internalValue();
+			},
+			write: function (newValue) {
+				if (typeof newValue !== 'boolean') {
+					newValue = !!newValue;
+				}
+				_internalValue(newValue);
+			},
+			owner: this
+		});
+	}
+}
+
+interface AmeActorFeatureProperties extends AmeSettingsGroupProperties {
+	hasAccessMap: true;
+	defaultAccessMap?: AmeDictionary<boolean>;
+	enabledForActor?: AmeDictionary<boolean>;
+}
+
+function isAmeActorFeatureProperties(thing: AmeNamedNodeProperties): thing is AmeActorFeatureProperties {
+	return (typeof (thing as AmeActorFeatureProperties).hasAccessMap === 'boolean');
+}
+
+type ConfigurationNodeProperties = AmeActorFeatureProperties | AmeSettingProperties | AmeSettingsGroupProperties;
+
+class AmeSettingStore {
+	private observableProperties: Record<string, KnockoutObservable<any>> = {};
+	private accessMaps: Record<string, AmeObservableActorSettings> = {};
+	private readonly initialProperties: Record<string, any>;
+
+	constructor(initialProperties: Record<string, any> = {}) {
+		this.initialProperties = initialProperties;
+	}
+
+	getObservableProperty<T>(name: string, defaultValue: T, path: string | string[] = []): KnockoutObservable<T> {
+		path = this.getFullPath(name, path);
+
+		if (this.observableProperties.hasOwnProperty(path)) {
+			return this.observableProperties[path];
+		}
+
+		const _ = AmeTweakManagerModule._;
+		const value = _.get(this.initialProperties, path, defaultValue);
+		const observable = ko.observable(value);
+		this.observableProperties[path] = observable;
+		return observable;
+	}
+
+	protected getFullPath(name: string, path: string | string[]): string {
+		if (typeof path !== 'string') {
+			path = path.join('.');
+		}
+		if (path === '') {
+			path = name;
+		} else {
+			path = path + '.' + name;
+		}
+		return path;
+	}
+
+	propertiesToJs(): Record<string, any> {
+		const _ = AmeTweakManagerModule._;
+		let newProps = {};
+		_.forOwn(this.observableProperties, function (observable, path) {
+			_.set(newProps, path, observable());
+		});
+
+		_.forOwn(this.accessMaps, function (map, path: string) {
+			//Since all tweaks are disabled by default, having a tweak disabled for a role is the same
+			//as not having a setting, so we can save some space by removing it. This does not always
+			//apply to users/Super Admins because they can have precedence over roles.
+			let temp = map.getAll();
+			let enabled: AmeDictionary<boolean> = {};
+			let areAllFalse = true;
+			for (let actorId in temp) {
+				if (!temp.hasOwnProperty(actorId)) {
+					continue;
+				}
+
+				areAllFalse = areAllFalse && (!temp[actorId]);
+				if (!temp[actorId]) {
+					const actor = AmeActors.getActor(actorId);
+					if (actor instanceof AmeRole) {
+						continue;
+					}
+				}
+				enabled[actorId] = temp[actorId];
+			}
+
+			if (areAllFalse) {
+				enabled = {};
+			}
+
+			_.set(newProps, path, enabled);
+		});
+
+		return newProps;
+	}
+
+	getAccessMap(
+		name: string,
+		path: string | string[] = [],
+		defaultAccessMap: AmeDictionary<boolean> | null = null
+	): AmeObservableActorSettings {
+		path = this.getFullPath(name, path);
+		const _ = AmeTweakManagerModule._;
+		const value = _.get(this.initialProperties, path, defaultAccessMap);
+
+		if (!this.accessMaps.hasOwnProperty(path)) {
+			this.accessMaps[path] = new AmeObservableActorSettings(value);
+
+		}
+		return this.accessMaps[path];
+	}
+}
+
+function isSettingStore(thing: object): thing is AmeSettingStore {
+	const maybe = thing as AmeSettingStore;
+	return (typeof maybe.getObservableProperty !== 'undefined') && (typeof maybe.propertiesToJs !== 'undefined');
+}
+
+class AmeCompositeNode extends AmeNamedNode {
+	children: KnockoutObservableArray<AmeNamedNode> = null;
+	propertyPath: string[];
+	actorAccess: AmeActorAccess;
+	properties: AmeSettingStore;
+
+	constructor(
+		properties: ConfigurationNodeProperties,
+		module: AmeTweakManagerModule,
+		store: AmeSettingStore | 'self' = null,
+		path: string[] = []
+	) {
+		super(properties);
+		this.id = properties.id;
+		this.label = properties.label;
+
+		if (store === 'self') {
+			if (!this.properties) {
+				this.properties = new AmeSettingStore(properties);
+			}
+			store = this.properties;
+		}
+
+		if (isAmeSettingsGroupProperties(properties)) {
+			if ((typeof properties.propertyPath === 'string') && (properties.propertyPath !== '')) {
+				this.propertyPath = properties.propertyPath.split('.');
+			} else {
+				this.propertyPath = [];
+			}
+			if (path.length > 0) {
+				this.propertyPath = path.concat(this.propertyPath);
+			}
+
+			let children = [];
+			if (properties.children && (properties.children.length > 0)) {
+				for (let i = 0; i < properties.children.length; i++) {
+					const props = properties.children[i];
+					let child;
+					if (isAmeSettingProperties(props)) {
+						child = AmeCompositeNode.createSetting(props, module, store, this.propertyPath);
+					} else {
+						child = new AmeCompositeNode(props, module, store, this.propertyPath);
+					}
+					if (child) {
+						children.push(child);
+					}
+				}
+			}
+
+			this.children = ko.observableArray(children);
+		}
+
+		if (isAmeActorFeatureProperties(properties)) {
+			let name = (store === this.properties) ? 'enabledForActor' : this.id;
+			const defaultAccess = (typeof properties.defaultAccessMap !== 'undefined') ? properties.defaultAccessMap : null;
+			this.actorAccess = new AmeActorAccess(
+				store.getAccessMap(name, path, defaultAccess),
+				module,
+				this.children
+			);
+		}
+	}
+
+	static createSetting(
+		properties: AmeSettingProperties,
+		module: AmeTweakManagerModule,
+		store: AmeSettingStore,
+		path: string[] = []
+	): AmeSetting {
+		const inputType = properties.inputType ? properties.inputType : properties.dataType;
+
+		switch (inputType) {
+			case 'text':
+			case 'textarea':
+			case 'string':
+				return new AmeStringSetting(properties, module, store, path);
+			case 'color':
+				return new AmeColorSetting(properties, store, path);
+			case 'boolean':
+				return new AmeBooleanSetting(properties, store, path);
+			default:
+				if (console && console.error) {
+					console.error('Unknown setting input type "%s"', inputType);
+				}
+				return null;
+		}
+	}
+}
+
+class AmeActorAccess {
 	isChecked: KnockoutComputed<boolean>;
-	private enabledForActor: AmeObservableActorSettings;
-	private module: AmeTweakManagerModule;
-
+	protected enabledForActor: AmeObservableActorSettings;
+	protected module: AmeTweakManagerModule;
 	isIndeterminate: KnockoutComputed<boolean>;
 
-	userInput?: AmeTweakInput;
-
-	public readonly isUserDefined: boolean;
-	private readonly initialProperties: AmeSavedTweakProperties = null;
-
-	private editableProperties: Record<string, KnockoutObservable<any>> = {};
-
-	private section: AmeTweakSection = null;
-	private parent: AmeTweakItem = null;
-
-	constructor(properties: AmeTweakProperties, module: AmeTweakManagerModule) {
-		this.isUserDefined = properties.isUserDefined ? properties.isUserDefined : false;
-		if (this.isUserDefined) {
-			this.initialProperties = properties;
-		}
-
-		this.id = properties.id;
-
-		if (this.isUserDefined) {
-			this.label = ko.observable(properties.label);
-		} else {
-			this.label = ko.pureComputed(function () {
-				return properties.label;
-			});
-		}
-
-		this.children = ko.observableArray([]);
-
+	constructor(
+		actorSettings: AmeObservableActorSettings,
+		module: AmeTweakManagerModule,
+		children: AmeCompositeNode['children'] = null
+	) {
 		this.module = module;
-		this.enabledForActor = new AmeObservableActorSettings(properties.enabledForActor || null);
+		this.enabledForActor = actorSettings;
 
 		let _isIndeterminate = ko.observable<boolean>(false);
 		this.isIndeterminate = ko.computed<boolean>(() => {
@@ -159,59 +429,73 @@ class AmeTweakItem {
 				}
 
 				//Apply the same setting to all children.
-				const children = this.children();
-				for (let i = 0; i < children.length; i++) {
-					children[i].isChecked(checked);
+				if (children) {
+					const childrenArray = children();
+					for (let i = 0; i < childrenArray.length; i++) {
+						const child = childrenArray[i];
+						if ((child instanceof AmeCompositeNode) && child.actorAccess) {
+							child.actorAccess.isChecked(checked);
+						}
+					}
 				}
 			}
 		});
+	}
+}
 
-		if (properties.userInput) {
-			this.userInput = AmeTweakInput.create(properties.userInput, module);
-			const contentProperty = properties.userInput.contentProperty || 'userInputValue';
-			const propertyObservable = this.getEditableProperty(contentProperty, properties);
-			if (propertyObservable !== null) {
-				this.userInput.setInputObservable(propertyObservable);
-			}
+interface AmeSavedTweakProperties {
+	id: string;
+	enabledForActor?: AmeDictionary<boolean>;
+}
+
+interface AmeTweakProperties extends AmeSavedTweakProperties, AmeActorFeatureProperties {
+	description?: string;
+	parentId?: string;
+	sectionId?: string;
+
+	isUserDefined?: boolean;
+	typeId?: string;
+
+	//User-defined tweaks can have additional arbitrary properties.
+	[key: string]: any;
+}
+
+class AmeTweakItem extends AmeCompositeNode {
+	label: KnockoutObservable<string>;
+
+	public readonly isUserDefined: boolean;
+	private readonly initialProperties: AmeSavedTweakProperties = null;
+
+	private section: AmeTweakSection = null;
+	private parent: AmeTweakItem = null;
+
+	constructor(properties: AmeTweakProperties, module: AmeTweakManagerModule) {
+		super(properties, module, 'self');
+
+		this.isUserDefined = properties.isUserDefined ? properties.isUserDefined : false;
+		if (this.isUserDefined) {
+			this.initialProperties = properties;
 		}
+
+		if (this.isUserDefined) {
+			this.label = ko.observable(properties.label);
+		} else {
+			this.label = ko.pureComputed(function () {
+				return properties.label;
+			});
+		}
+
+		this.htmlId = 'ame-tweak-' + AmeTweakManagerModule.slugify(this.id);
 	}
 
 	toJs(): AmeSavedTweakProperties {
-		//Since all tweaks are disabled by default, having a tweak disabled for a role is the same
-		//as not having a setting, so we can save some space by removing it. This does not always
-		//apply to users/Super Admins because they can have precedence over roles.
-		let temp = this.enabledForActor.getAll();
-		let enabled: AmeDictionary<boolean> = {};
-		let areAllFalse = true;
-		for (let actorId in temp) {
-			if (!temp.hasOwnProperty(actorId)) {
-				continue;
-			}
-
-			areAllFalse = areAllFalse && (!temp[actorId]);
-			if (!temp[actorId]) {
-				const actor = AmeActors.getActor(actorId);
-				if (actor instanceof AmeRole) {
-					continue;
-				}
-			}
-			enabled[actorId] = temp[actorId];
-		}
-
-		if (areAllFalse) {
-			enabled = {};
-		}
-
 		let result: AmeSavedTweakProperties = {
-			id: this.id,
-			enabledForActor: enabled
+			id: this.id
 		};
 
-		if (this.userInput) {
-			const inputValue = this.userInput.getInputValue();
-			if ((inputValue !== '') && (inputValue !== null)) {
-				result[this.userInput.contentProperty] = inputValue;
-			}
+		const _ = AmeTweakManagerModule._;
+		if (this.properties) {
+			result = _.defaults(result, this.properties.propertiesToJs());
 		}
 
 		if (!this.isUserDefined) {
@@ -223,15 +507,8 @@ class AmeTweakItem {
 			props.sectionId = this.section ? this.section.id : null;
 			props.parentId = this.parent ? this.parent.id : null;
 
-			const _ = AmeTweakManagerModule._;
-			let editableProps = {};
-			_.forOwn(this.editableProperties, function (observable, key) {
-				editableProps[key] = observable();
-			});
-
 			props = _.defaults(
 				props,
-				editableProps,
 				_.omit(this.initialProperties, 'userInputValue', 'enabledForActor')
 			);
 			return props;
@@ -266,22 +543,10 @@ class AmeTweakItem {
 		this.children.remove(tweak);
 	}
 
-	getEditableProperty(key: string, storedProperties?: AmeSavedTweakProperties): KnockoutObservable<any> {
-		if (this.editableProperties.hasOwnProperty(key)) {
-			return this.editableProperties[key];
+	getEditableProperty(key: string): KnockoutObservable<any> {
+		if (this.properties) {
+			return this.properties.getObservableProperty(key, '');
 		}
-		if (!storedProperties && this.initialProperties) {
-			storedProperties = this.initialProperties
-		}
-		if (storedProperties && storedProperties.hasOwnProperty(key)) {
-			const observable = ko.observable(storedProperties[key]);
-			this.editableProperties[key] = observable;
-			return observable;
-		}
-		if (console && console.warn) {
-			console.warn('Trying to retrieve and edit a non-existing property "%s"', key);
-		}
-		return ko.observable('');
 	}
 
 	getTypeId(): string | null {
@@ -331,63 +596,6 @@ class AmeTweakSection {
 
 	toggle() {
 		this.isOpen(!this.isOpen());
-	}
-}
-
-type AmeTweakInputValueType = string | number;
-
-interface AmeTweakInputProperties {
-	inputType: string;
-	contentProperty?: string;
-	syntaxHighlighting?: string;
-}
-
-abstract class AmeTweakInput {
-	// noinspection JSUnusedGlobalSymbols Used in Knockout templates.
-	templateName: string;
-	inputValue: KnockoutObservable<AmeTweakInputValueType>;
-	contentProperty: AmeTweakInputProperties['contentProperty'];
-	syntaxHighlightingOptions: object = null;
-
-	setInputObservable(observable: KnockoutObservable<AmeTweakInputValueType>) {
-		this.inputValue = observable;
-	}
-
-	getInputValue(): AmeTweakInputValueType {
-		return this.inputValue();
-	};
-
-	setInputValue(value: AmeTweakInputValueType) {
-		this.inputValue(value);
-	};
-
-	static create(properties: AmeTweakInputProperties, module?: AmeTweakManagerModule) {
-		let input: AmeTweakInput;
-		switch (properties.inputType) {
-			case 'textarea':
-				input = new AmeTweakTextAreaInput(properties, module);
-				break;
-			case 'text':
-			default:
-				throw {'message': 'Input type not implemented'};
-		}
-		if (properties.contentProperty) {
-			input.contentProperty = properties.contentProperty;
-		}
-		return input;
-	}
-}
-
-class AmeTweakTextAreaInput extends AmeTweakInput {
-	templateName: string = 'ame-tweak-textarea-input-template';
-
-	constructor(properties: AmeTweakInputProperties, module?: AmeTweakManagerModule) {
-		super();
-		this.inputValue = ko.observable('');
-
-		if (properties.syntaxHighlighting && module) {
-			this.syntaxHighlightingOptions = module.getCodeMirrorOptions(properties.syntaxHighlighting);
-		}
 	}
 }
 
@@ -543,7 +751,7 @@ class AmeTweakManagerModule {
 	addAdminCssTweak(label: string, css: string) {
 		this.lastUserTweakSuffix++;
 
-		let slug = this.slugify(label);
+		let slug = AmeTweakManagerModule.slugify(label);
 		if (slug !== '') {
 			slug = '-' + slug;
 		}
@@ -553,25 +761,30 @@ class AmeTweakManagerModule {
 			id: 'utw-' + this.lastUserTweakSuffix + slug,
 			isUserDefined: true,
 			sectionId: 'admin-css',
-			typeId: 'admin-css'
+			typeId: 'admin-css',
+			children: [],
+			hasAccessMap: true
 		};
 		props['css'] = css;
 
-		props.userInput = {
-			contentProperty: 'css',
-			syntaxHighlighting: 'css',
-			inputType: 'textarea'
+		const cssInput: AmeStringSettingProperties = {
+			id: 'css',
+			label: '',
+			dataType: 'string',
+			inputType: 'textarea',
+			syntaxHighlighting: 'css'
 		};
+		props.children.push(cssInput);
 
 		const newTweak = new AmeTweakItem(props, this);
 		this.tweaksById[newTweak.id] = newTweak;
 		this.sectionsById['admin-css'].addTweak(newTweak)
 	}
 
-	slugify(input: string): string {
+	static slugify(input: string): string {
 		const _ = AmeTweakManagerModule._;
 		let output = _.deburr(input);
-		output = output.replace(/[^a-zA-Z0-9]/, '');
+		output = output.replace(/[^a-zA-Z0-9 \-]/, '');
 		return _.kebabCase(output);
 	}
 
@@ -692,13 +905,6 @@ class AmeEditAdminCssDialog implements AmeKnockoutDialog {
 	}
 }
 
-//A one-way binding for indeterminate checkbox states.
-ko.bindingHandlers['indeterminate'] = {
-	update: function (element, valueAccessor) {
-		element.indeterminate = !!(ko.unwrap(valueAccessor()));
-	}
-};
-
 ko.bindingHandlers.ameCodeMirror = {
 	init: function (element, valueAccessor, allBindings) {
 		if (!wp.hasOwnProperty('codeEditor') || !wp.codeEditor.initialize) {
@@ -756,9 +962,34 @@ ko.bindingHandlers.ameCodeMirror = {
 		//Refresh the size of the editor element when an observable changes value.
 		let refreshSubscription: KnockoutSubscription = null;
 		if (refreshTrigger) {
-			refreshSubscription  = refreshTrigger.subscribe(function() {
+			refreshSubscription = refreshTrigger.subscribe(function () {
 				cm.refresh();
 			});
+		}
+
+		//If the editor starts out hidden - for example, because it's inside a collapsed section - it will
+		//render incorrectly. To fix that, let's refresh it the first time it becomes visible.
+		if (!jQuery(element).is(':visible') && (typeof IntersectionObserver !== 'undefined')) {
+			const observer = new IntersectionObserver(
+				function (entries) {
+					for (let i = 0; i < entries.length; i++) {
+						if (entries[i].isIntersecting) {
+							//The editor is at least partially visible now.
+							observer.disconnect();
+							cm.refresh();
+							break;
+						}
+					}
+				},
+				{
+					//Use the browser viewport.
+					root: null,
+					//The threshold is somewhat arbitrary. Any value will work, but a lower setting means
+					//that the user is less likely to see an incorrectly rendered editor.
+					threshold: 0.05
+				}
+			);
+			observer.observe(cm.getWrapperElement());
 		}
 
 		ko.utils.domNodeDisposal.addDisposeCallback(element, function () {

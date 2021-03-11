@@ -89,7 +89,8 @@ class SubscriptionResponse {
 			}
 
 			// Cache an empty object for 5 minutes to give the product info API time to recover.
-			set_transient( Subscription::PRODUCT_INFO_TRANSIENT_NAME, $this, MINUTE_IN_SECONDS * 5 );
+			update_option( Subscription::PRODUCT_INFO_OPTION_EXPIRATION, time() + MINUTE_IN_SECONDS * 5, false );
+			update_option( Subscription::PRODUCT_INFO_OPTION_NAME, $this, false );
 			return;
 		}
 
@@ -113,7 +114,8 @@ class SubscriptionResponse {
 		$response_body->slug          = genesis_custom_blocks_pro()->get_slug();
 		$this->product_info           = $response_body;
 
-		set_transient( Subscription::PRODUCT_INFO_TRANSIENT_NAME, $this, HOUR_IN_SECONDS * 12 );
+		update_option( Subscription::PRODUCT_INFO_OPTION_EXPIRATION, time() + HOUR_IN_SECONDS * 12, false );
+		update_option( Subscription::PRODUCT_INFO_OPTION_NAME, $this, false );
 	}
 
 	/**

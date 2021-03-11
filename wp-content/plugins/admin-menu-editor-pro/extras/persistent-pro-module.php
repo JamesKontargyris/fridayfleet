@@ -23,8 +23,7 @@ class amePersistentProModule extends amePersistentModule implements ameExportabl
 			return;
 		}
 
-		$this->loadSettings();
-		$this->settings = array_merge($this->settings, $newSettings);
+		$this->mergeSettingsWith($newSettings);
 		$this->saveSettings();
 	}
 

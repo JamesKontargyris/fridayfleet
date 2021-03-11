@@ -507,3 +507,26 @@ li.abe-node .abe-sort-placeholder {
     line-height: 15px;
 }
 
+
+/*
+ * Copy visibility dialog
+ */
+
+#abe-copy-visibility-dialog select {
+    width: 100%;
+}
+
+.ws_dialog_subpanel {
+    margin-bottom: 1em;
+}
+
+.ws_dialog_buttons {
+    text-align: right;
+    margin-top: 20px;
+    margin-bottom: 1px;
+    clear: both;
+}
+
+.ws_dialog_buttons .button-primary {
+    float: left;
+}

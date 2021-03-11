@@ -5,7 +5,7 @@
 /// <reference path="../../../js/jquery.d.ts" />
 /// <reference path="../../../js/jqueryui.d.ts" />
 /// <reference path="../../../modules/actor-selector/actor-selector.ts" />
-/// <reference path="../../ko-dialog-bindings.ts" />
+/// <reference path="../../ko-extensions.ts" />
 
 class RexPermission {
 	public readonly capability: RexCapability;
@@ -3447,10 +3447,10 @@ class RexRoleEditor implements AmeActorManagerInterface {
 	/**
 	 * Get or create a capability instance.
 	 */
-	getCapability(capabilityName: string): RexCapability {
+	getCapability(capabilityName: string, recursionDepth: number = 0): RexCapability {
 		//Un-map meta capabilities where possible.
-		if (this.metaCapabilityMap.hasOwnProperty(capabilityName)) {
-			return this.getCapability(this.metaCapabilityMap[capabilityName]);
+		if (this.metaCapabilityMap.hasOwnProperty(capabilityName) && (recursionDepth < 10)) {
+			return this.getCapability(this.metaCapabilityMap[capabilityName], recursionDepth + 1);
 		}
 
 		if (!this.capabilities.hasOwnProperty(capabilityName)) {

@@ -705,7 +705,7 @@ class Wslm_LicenseServer {
 		if ( $productSlug !== null ) {
 			$query .= $this->wpdb->prepare(' AND product_slug=%s', $productSlug);
 		}
-		$query .= ' ORDER BY status ASC, expires_on DESC'; //Valid licenses first.
+		$query .= ' ORDER BY status ASC, expires_on IS NULL DESC, expires_on DESC'; //Valid licenses first.
 
 		$rows = $this->wpdb->get_results($query, ARRAY_A);
 		$licenses = array();

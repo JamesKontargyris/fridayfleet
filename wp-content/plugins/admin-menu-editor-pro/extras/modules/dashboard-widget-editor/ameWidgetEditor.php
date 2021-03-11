@@ -107,7 +107,7 @@ class ameWidgetEditor extends ameModule implements ameExportableModule {
 			plugins_url('dashboard-widget-editor.js', __FILE__),
 			array(
 				'ame-lodash', 'ame-dashboard-widget', 'knockout', 'ame-actor-selector',
-				'ame-jquery-form', 'jquery-ui-dialog', 'jquery-json',
+				'ame-jquery-form', 'jquery-ui-dialog', 'jquery-json', 'ame-ko-extensions',
 			)
 		);
 
@@ -309,14 +309,14 @@ class ameWidgetEditor extends ameModule implements ameExportableModule {
 		if ( empty($settings) ) {
 			$this->dashboardWidgets = new ameWidgetCollection();
 		} else {
-			$this->dashboardWidgets = ameWidgetCollection::fromJSON($settings);
+			$this->dashboardWidgets = ameWidgetCollection::fromDbString($settings);
 		}
 		return $this->dashboardWidgets;
 	}
 
 	private function saveSettings() {
 		//Save per site or site-wide based on plugin configuration.
-		$settings = $this->dashboardWidgets->toJSON();
+		$settings = $this->dashboardWidgets->toDbString();
 		$this->setScopedOption(self::OPTION_NAME, $settings);
 	}
 

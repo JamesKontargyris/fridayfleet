@@ -2,7 +2,7 @@
 /** @noinspection PhpComposerExtensionStubsInspection, SqlResolve */
 
 /** @noinspection PhpUnused Module is loaded dynamically. */
-class ameRoleEditor extends amePersistentModule {
+class ameRoleEditor extends amePersistentProModule {
 	const REQUIRED_CAPABILITY = 'edit_users';
 	const CORE_COMPONENT_ID = ':wordpress:';
 
@@ -109,7 +109,7 @@ class ameRoleEditor extends amePersistentModule {
 				'jquery-qtip',
 				'ame-actor-manager',
 				'ame-actor-selector',
-				'ame-ko-dialog-bindings',
+				'ame-ko-extensions',
 			)
 		);
 
@@ -203,7 +203,10 @@ class ameRoleEditor extends amePersistentModule {
 		foreach ($stableMetaCaps as $metaCap => $unused) {
 			$primitiveCaps = map_meta_cap($metaCap, $currentUserId);
 			if ((count($primitiveCaps) === 1) && !in_array('do_not_allow', $primitiveCaps)) {
-				$metaCapMap[$metaCap] = reset($primitiveCaps);
+				$targetCap = reset($primitiveCaps);
+				if ($targetCap !== $metaCap) {
+					$metaCapMap[$metaCap] = $targetCap;
+				}
 			}
 		}
 
@@ -245,9 +248,31 @@ class ameRoleEditor extends amePersistentModule {
 			'updatePreferencesNonce' => wp_create_nonce(self::UPDATE_PREFERENCES_ACTION),
 		);
 
+		$jsonData = wp_json_encode($scriptData);
+
+		if ( !is_string($jsonData) ) {
+			$message = sprintf(
+				'Failed to encode role data as JSON. The encoding function returned a %s.',
+				esc_html(gettype($jsonData))
+			);
+			if ( function_exists('json_last_error_msg') ) {
+				$message .= sprintf(
+					'<br>JSON error message: "<strong>%s</strong>".',
+					esc_html(json_last_error_msg())
+				);
+			}
+			if ( function_exists('json_last_error') ) {
+				$message .= sprintf(' JSON error code: %d.', json_last_error());
+			}
+
+			add_action('all_admin_notices', function () use ($message, $scriptData) {
+				printf('<div class="notice notice-error"><p>%s</p></div>', $message);
+			});
+		}
+
 		wp_add_inline_script(
 			'ame-role-editor',
-			sprintf('wsRexRoleEditorData = (%s);', json_encode($scriptData))
+			sprintf('wsRexRoleEditorData = (%s);', $jsonData)
 		);
 	}
 
@@ -411,7 +436,7 @@ class ameRoleEditor extends amePersistentModule {
 	protected function analysePostTypes($postTypes) {
 		//Record which components use which CPT capabilities.
 		foreach ($postTypes as $name => $postType) {
-			if (empty($postType['componentId'])) {
+			if (empty($postType['componentId']) || !isset($this->knownComponents[$postType['componentId']])) {
 				continue;
 			}
 			$this->knownComponents[$postType['componentId']]->registeredPostTypes[$name] = true;
@@ -497,10 +522,21 @@ class ameRoleEditor extends amePersistentModule {
 				if ($details->componentId !== self::CORE_COMPONENT_ID) {
 					//Add the capability to the component category unless it's already there.
 					$category = $this->getComponentCategory($details->componentId);
-					if (!$category->hasCapability($capability)) {
-						$category->capabilities[$capability] = true;
+					if ($category !== null) {
+						if (!$category->hasCapability($capability)) {
+							$category->capabilities[$capability] = true;
+						}
+						unset($this->uncategorizedCapabilities[$capability]);
+					} else {
+						//This should never happen. If the capability has a component ID, that component
+						//should already be registered.
+						trigger_error(sprintf(
+							'[AME] Capability "%s" belongs to component "%s" but that component appears to be unknown.',
+							$capability,
+							$details->componentId
+						), E_USER_WARNING);
+						continue;
 					}
-					unset($this->uncategorizedCapabilities[$capability]);
 				}
 			}
 		}
@@ -693,7 +729,7 @@ class ameRoleEditor extends amePersistentModule {
 			$type = 'plugin';
 			$pos = strlen($pluginDirectory);
 		} else if (strpos($absolutePath, $muPluginDirectory) === 0) {
-			$type = 'plugin';
+			$type = 'mu-plugin';
 			$pos = strlen($muPluginDirectory);
 		} else if (strpos($absolutePath, $themeDirectory) === 0) {
 			$type = 'theme';
@@ -896,11 +932,6 @@ class ameRoleEditor extends amePersistentModule {
 			return;
 		}
 
-		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-		//Drop the first two entries because they just contain this method and an apply_filters or do_action call.
-		array_shift($trace);
-		array_shift($trace);
-
 		//Find the last entry that is part of a plugin or theme.
 		$component = $this->detectCallerComponent();
 		if ($component !== null) {
@@ -937,7 +968,9 @@ class ameRoleEditor extends amePersistentModule {
 	 */
 	private function detectCallerComponent() {
 		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-		//Drop the first two entries because they just contain this method and an apply_filters or do_action call.
+		//Drop the first three entries because they just contain this method, its caller,
+		//and an apply_filters or do_action call.
+		array_shift($trace);
 		array_shift($trace);
 		array_shift($trace);
 
@@ -969,6 +1002,17 @@ class ameRoleEditor extends amePersistentModule {
 			);
 			$component->isInstalled = true;
 			$component->isActive = is_plugin_active($pluginFile);
+			$this->knownComponents[$component->id] = $component;
+		}
+
+		$installedMuPlugins = get_mu_plugins();
+		foreach($installedMuPlugins as $pluginFile => $plugin) {
+			$component = new ameRexComponent(
+				'mu-plugin:' . $pluginFile,
+				ameUtils::get($plugin, 'Name', $pluginFile)
+			);
+			$component->isInstalled = true;
+			$component->isActive = true; //mu-plugins are always active.
 			$this->knownComponents[$component->id] = $component;
 		}
 
@@ -1048,7 +1092,7 @@ class ameRoleEditor extends amePersistentModule {
 		foreach ($potentialPostTypes as $postType => $typeCaps) {
 			if (count($typeCaps) >= 3) {
 				//Note that this group does not correspond to an existing post type. It's just a set of similar caps.
-				$title = ucwords(str_replace('_', ' ', $postType));
+				$title = ameUtils::ucWords(str_replace('_', ' ', $postType));
 				if (substr($title, -1) !== 's') {
 					$title .= 's'; //Post type titles are usually plural.
 				}
@@ -1160,7 +1204,7 @@ class ameRoleEditor extends amePersistentModule {
 			$title = $prefix;
 			//Convert all-lowercase to Title Case, but preserve stuff that already has mixed case.
 			if (strtolower($title) === $title) {
-				$title = ucwords($title);
+				$title = ameUtils::ucWords($title);
 			}
 
 			//No vowels = probably an acronym.
@@ -1945,5 +1989,9 @@ class ameRoleEditor extends amePersistentModule {
 		}
 
 		return $requiredCaps;
+	}
+
+	public function getExportOptionLabel() {
+		return '"Editable Roles" settings';
 	}
 }

@@ -5,6 +5,7 @@
  * property sheets in Delphi.
  */
 
+require_once __DIR__ . '/configurables.php';
 require_once __DIR__ . '/ameBaseTweak.php';
 require_once __DIR__ . '/ameHideSelectorTweak.php';
 require_once __DIR__ . '/ameHideSidebarTweak.php';
@@ -13,8 +14,6 @@ require_once __DIR__ . '/ameDelegatedTweak.php';
 require_once __DIR__ . '/ameTinyMceButtonManager.php';
 require_once __DIR__ . '/ameAdminCssTweakManager.php';
 require_once __DIR__ . '/ameGutenbergBlockManager.php';
-
-require_once __DIR__ . '/input-definitions.php';
 
 /** @noinspection PhpUnused The class is actually used in extras.php */
 
@@ -92,36 +91,6 @@ class ameTweakManager extends amePersistentModule {
 	}
 
 	private function registerTweaks() {
-		$tweakData = require(__DIR__ . '/default-tweaks.php');
-
-		foreach (ameUtils::get($tweakData, 'sections', array()) as $id => $section) {
-			$this->addSection($id, ameUtils::get($section, 'label', $id), ameUtils::get($section, 'priority', 10));
-		}
-
-		foreach (ameUtils::get($tweakData, 'tweaks', array()) as $id => $properties) {
-			if ( isset($properties['selector']) ) {
-				$tweak = new ameHideSelectorTweak(
-					$id,
-					isset($properties['label']) ? $properties['label'] : null,
-					$properties['selector']
-				);
-
-				if ( isset($properties['parent']) ) {
-					$tweak->setParentId($properties['parent']);
-				}
-				if ( isset($properties['section']) ) {
-					$tweak->setSectionId($properties['section']);
-				}
-				if ( isset($properties['screens']) ) {
-					$tweak->setScreens($properties['screens']);
-				}
-
-				$this->addTweak($tweak);
-			} else {
-				throw new LogicException('Unknown tweak type in default-tweaks.php for tweak "' . $id . '"');
-			}
-		}
-
 		//We may be able to improve performance by only registering tweaks that are enabled
 		//for the current user. However, we still need to show all tweaks in the "Tweaks" tab.
 		$isTweaksTab = is_admin()
@@ -132,6 +101,53 @@ class ameTweakManager extends amePersistentModule {
 			$tweakFilter = null;
 		} else {
 			$tweakFilter = $this->getEnabledTweakSettings();
+		}
+
+		$tweakData = require(__DIR__ . '/default-tweaks.php');
+
+		foreach (ameUtils::get($tweakData, 'sections', array()) as $id => $section) {
+			$this->addSection($id, ameUtils::get($section, 'label', $id), ameUtils::get($section, 'priority', 10));
+		}
+
+		$defaultTweaks = ameUtils::get($tweakData, 'tweaks', array());
+		if ( $tweakFilter !== null ) {
+			$defaultTweaks = array_intersect_key($defaultTweaks, $tweakFilter);
+		}
+
+		foreach ($defaultTweaks as $id => $properties) {
+			if ( isset($properties['selector']) ) {
+				$tweak = new ameHideSelectorTweak(
+					$id,
+					isset($properties['label']) ? $properties['label'] : null,
+					$properties['selector']
+				);
+
+				if ( isset($properties['screens']) ) {
+					$tweak->setScreens($properties['screens']);
+				}
+			} else if ( isset($properties['className']) ) {
+				if ( isset($properties['includeFile']) ) {
+					/** @noinspection PhpIncludeInspection */
+					require_once $properties['includeFile'];
+				}
+
+				$className = $properties['className'];
+				$tweak = new $className(
+					$id,
+					isset($properties['label']) ? $properties['label'] : null
+				);
+			} else {
+				throw new LogicException('Unknown tweak type in default-tweaks.php for tweak "' . $id . '"');
+			}
+
+			if ( isset($properties['parent']) ) {
+				$tweak->setParentId($properties['parent']);
+			}
+			if ( isset($properties['section']) ) {
+				$tweak->setSectionId($properties['section']);
+			}
+
+			$this->addTweak($tweak);
 		}
 
 		do_action('admin-menu-editor-register_tweaks', $this, $tweakFilter);
@@ -187,14 +203,11 @@ class ameTweakManager extends amePersistentModule {
 				}
 			}
 
-			$inputValue = null;
+			$settingsForThisTweak = null;
 			if ( $tweak->supportsUserInput() ) {
-				$inputValue = ameUtils::get($settings, array($tweak->getId(), $tweak->getContentPropertyName()), null);
-				if ( !is_scalar($inputValue) ) {
-					$inputValue = null;
-				}
+				$settingsForThisTweak = ameUtils::get($settings, array($tweak->getId()), array());
 			}
-			$tweak->apply($inputValue);
+			$tweak->apply($settingsForThisTweak);
 		}
 
 		if ( !empty($this->postponedTweaks) ) {
@@ -365,7 +378,7 @@ class ameTweakManager extends amePersistentModule {
 				'ame-actor-selector',
 				'jquery-json',
 				'ame-jquery-cookie',
-				'ame-ko-dialog-bindings',
+				'ame-ko-extensions',
 			)
 		);
 		wp_enqueue_script('ame-tweak-manager');
@@ -389,20 +402,7 @@ class ameTweakManager extends amePersistentModule {
 
 		$tweakData = array();
 		foreach ($this->tweaks as $id => $tweak) {
-			$item = array(
-				'id'        => $id,
-				'label'     => $tweak->getLabel(),
-				'parentId'  => $tweak->getParentId(),
-				'sectionId' => $tweak->getSectionId(),
-			);
-			if ( $tweak->supportsUserInput() ) {
-				$item['userInput'] = $tweak->getInputDefinitionData();
-
-				$contentProperty = $tweak->getContentPropertyName();
-				if ( ($contentProperty !== null) && (isset($tweak->$contentProperty)) ) {
-					$item[$contentProperty] = $tweak[$contentProperty];
-				}
-			}
+			$item = $tweak->toArray();
 			$item = array_merge(ameUtils::get($tweakSettings, $id, array()), $item);
 			$tweakData[] = $item;
 		}
@@ -435,7 +435,6 @@ class ameTweakManager extends amePersistentModule {
 	public function handleSettingsForm($post = array()) {
 		parent::handleSettingsForm($post);
 
-		/** @noinspection PhpComposerExtensionStubsInspection */
 		$submittedSettings = json_decode($post['settings'], true);
 
 		//To save space, filter out tweaks that are not enabled for anyone and have no other settings.

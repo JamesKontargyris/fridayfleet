@@ -6,12 +6,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/studiopress/genesis-custom-blocks",
-            "reference": "469f0098"
+            "reference": "cdc79d46"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/studiopress/genesis-custom-blocks/zipball/469f0098",
-            "reference": "469f0098",
+            "url": "https://api.github.com/repos/studiopress/genesis-custom-blocks/zipball/cdc79d46",
+            "reference": "cdc79d46",
             "shasum": ""
         },
         "require": {
@@ -19,7 +19,7 @@
         },
         "require-dev": {
             "brain/monkey": "2.4.0",
-            "dealerdirect/phpcodesniffer-composer-installer": "0.5.0",
+            "dealerdirect/phpcodesniffer-composer-installer": "0.7.0",
             "mikey179/vfsstream": "1.6.8",
             "mockery/mockery": "1.3.1",
             "phpcompatibility/phpcompatibility-wp": "2.1.0",
@@ -27,7 +27,7 @@
             "squizlabs/php_codesniffer": "3.5.3",
             "wp-coding-standards/wpcs": "2.2.0"
         },
-        "time": "2020-09-16T15:42:19+00:00",
+        "time": "2020-12-07T19:50:03+00:00",
         "type": "wordpress-plugin",
         "installation-source": "source",
         "autoload": {

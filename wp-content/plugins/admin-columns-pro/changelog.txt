@@ -1,5 +1,68 @@
 == Changelog ==
 
+= 5.4.3 =
+Release Date: March 2nd, 2021
+
+* [Fixed] Sorting on Post Formats no longer filters out the Standard format
+* [Fixed] Exporting columns settings without any sets selected gave a fatal error
+* [Fixed] WYSIWYG editing does not close in Inline Edit when selecting a style
+* [Improved] The Bulk Edit column settings is now only displayed when bulk editing is available
+
+= 5.4.2 =
+Release Date: February 8th, 2021
+
+* [Fixed] The title was not saved correctly
+* [Fixed] Column set permissions were not saved correctly
+* [Improved] Some column labels will automatically change when altering a specific setting
+
+= 5.4.1 =
+Release Date: February 3rd, 2021
+
+* [Added] Support management for columns on the Reusable Blocks (Gutenberg) list table
+* [Fixed] The 'Standard' post format does now filter correctly
+* [Fixed] Fixed javascript Violation errors
+* [Improved] When the Saved Filters do not match the column settings, you'll now get a useful message instead of a fatal error
+* [Updated] Admin Columns Core changes ( 4.2.6 )
+* [Added] User Column: First and Last Post(type)
+* [Improved] It's now possible to select a post status for the Post Count column (User)
+
+= 5.4 =
+Release Date: December 15th, 2020
+
+* [Added] Option to hide the Quick Links menu on top of the list tables
+* [Improved] Exporting to CSV is faster and will no longer store temporary files on the file system
+* [Improved] You can now limit the number of shown items for the child pages column
+* [Fixed] Don't show the clear button for empty values
+* [Fixed] Permalinks will be urldecoded when exporting
+* [Improved] Export is faster and does not store temporary files on the file system anymore
+* [Improved] Limit the number of items for Child Pages column
+* [Updated] Admin Columns Core changes ( 4.2.5 )
+* [Fixed] The updater could give a PHP warning when there were no updates
+* [Fixed] Display a correct message when an integration is not installed
+
+= 5.3.3 =
+Release Date: December 9th, 2020
+
+* [Fixed] WordPress 5.6 compatibility issues
+
+= 5.3.2 =
+Release Date: October 6th, 2020
+
+* [Added] New Media Column: Title Only
+* [Added] New filter to toggle between the new Inline Editing styling `acp/editing/inline/deprecated_style` (default:false)
+* [Fixed] The pagination when sorting on the Media list table was ignored
+* [Fixed] The Filter button was not visible on the Taxonomy list tables when the standard filter drop downs were used
+* [Fixed] The Bulk Edit setting is no longer available for unsupported column types
+* [Improved] URL's for link related columns are now displayed correctly (urldecode)
+* [Improved] The inline edit controls are not visible on hover instead of being always visible
+* [Improved] When enabling inline editing on the list table, the table row height is no longer affected
+* [Improved] We added a clear filter button which removes all filters
+* [Improved] You can now remove roles on the user list table when using inline or bulk edit
+* [Updated] Admin Columns Core changes ( 4.2.3 )
+* [Added] Title only column added to Media list table
+* [Improved] Dashicons updates for icon picker in column settings
+* [Improved] New icons for action column added
+
 = 5.3.1 =
 Release Date: August 21st, 2020
 

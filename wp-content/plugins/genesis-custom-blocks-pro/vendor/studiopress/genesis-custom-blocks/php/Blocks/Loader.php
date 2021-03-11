@@ -7,6 +7,7 @@
 
 namespace Genesis\CustomBlocks\Blocks;
 
+use WP_REST_Server;
 use WP_Query;
 use Genesis\CustomBlocks\ComponentAbstract;
 
@@ -46,12 +47,12 @@ class Loader extends ComponentAbstract {
 	public function init() {
 		$this->assets = [
 			'path' => [
-				'entry'        => $this->plugin->get_path( 'js/editor.blocks.js' ),
-				'editor_style' => $this->plugin->get_path( 'css/blocks.editor.css' ),
+				'entry'        => $this->plugin->get_path( 'js/dist/block-editor.js' ),
+				'editor_style' => $this->plugin->get_path( 'css/dist/blocks.editor.css' ),
 			],
 			'url'  => [
-				'entry'        => $this->plugin->get_url( 'js/editor.blocks.js' ),
-				'editor_style' => $this->plugin->get_url( 'css/blocks.editor.css' ),
+				'entry'        => $this->plugin->get_url( 'js/dist/block-editor.js' ),
+				'editor_style' => $this->plugin->get_url( 'css/dist/blocks.editor.css' ),
 			],
 		];
 
@@ -62,25 +63,11 @@ class Loader extends ComponentAbstract {
 	 * Register all the hooks.
 	 */
 	public function register_hooks() {
-		/**
-		 * Gutenberg JS block loading.
-		 */
-		add_action( 'enqueue_block_editor_assets', $this->get_callback( 'editor_assets' ) );
-
-		/**
-		 * Gutenberg custom categories.
-		 */
-		add_filter( 'block_categories', $this->get_callback( 'register_categories' ) );
-
-		/**
-		 * Block retrieval, must run before dynamic_block_loader().
-		 */
-		add_action( 'init', $this->get_callback( 'retrieve_blocks' ) );
-
-		/**
-		 * PHP block loading.
-		 */
-		add_action( 'init', $this->get_callback( 'dynamic_block_loader' ) );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
+		add_filter( 'block_categories', [ $this, 'register_categories' ] );
+		add_action( 'init', [ $this, 'retrieve_blocks' ] );
+		add_action( 'init', [ $this, 'dynamic_block_loader' ] );
+		add_filter( 'rest_endpoints', [ $this, 'add_rest_method' ] );
 	}
 
 	/**
@@ -113,29 +100,17 @@ class Loader extends ComponentAbstract {
 	}
 
 	/**
-	 * Gets the callback for an action or filter.
-	 *
-	 * Enables keeping these methods protected,
-	 * while allowing actions and filters to call them.
-	 *
-	 * @param string $method_name The name of the method to get the callback for.
-	 * @return callable An enclosure that calls the function.
-	 */
-	protected function get_callback( $method_name ) {
-		return function( $arg ) use ( $method_name ) {
-			return call_user_func( [ $this, $method_name ], $arg );
-		};
-	}
-
-	/**
 	 * Launch the blocks inside Gutenberg.
 	 */
-	protected function editor_assets() {
-		$js_config  = require $this->plugin->get_path( 'js/editor.blocks.asset.php' );
-		$css_config = require $this->plugin->get_path( 'css/blocks.editor.asset.php' );
+	public function editor_assets() {
+		$js_handle  = 'genesis-custom-blocks-blocks';
+		$css_handle = 'genesis-custom-blocks-editor-css';
+
+		$js_config  = require $this->plugin->get_path( 'js/dist/block-editor.asset.php' );
+		$css_config = require $this->plugin->get_path( 'css/dist/blocks.editor.asset.php' );
 
 		wp_enqueue_script(
-			'genesis-custom-blocks-blocks',
+			$js_handle,
 			$this->assets['url']['entry'],
 			$js_config['dependencies'],
 			$js_config['version'],
@@ -144,7 +119,7 @@ class Loader extends ComponentAbstract {
 
 		// Add dynamic Gutenberg blocks.
 		wp_add_inline_script(
-			'genesis-custom-blocks-blocks',
+			$js_handle,
 			'const gcbBlocks = ' . wp_json_encode( $this->blocks ),
 			'before'
 		);
@@ -161,7 +136,7 @@ class Loader extends ComponentAbstract {
 
 		$author_block_slugs = wp_list_pluck( $author_blocks, 'post_name' );
 		wp_localize_script(
-			'genesis-custom-blocks-blocks',
+			$js_handle,
 			'genesisCustomBlocks',
 			[
 				'authorBlocks' => $author_block_slugs,
@@ -171,7 +146,7 @@ class Loader extends ComponentAbstract {
 
 		// Enqueue optional editor only styles.
 		wp_enqueue_style(
-			'genesis-custom-blocks-editor-css',
+			$css_handle,
 			$this->assets['url']['editor_style'],
 			$css_config['dependencies'],
 			$css_config['version']
@@ -189,7 +164,7 @@ class Loader extends ComponentAbstract {
 	/**
 	 * Loads dynamic blocks via render_callback for each block.
 	 */
-	protected function dynamic_block_loader() {
+	public function dynamic_block_loader() {
 		if ( ! function_exists( 'register_block_type' ) ) {
 			return;
 		}
@@ -214,7 +189,7 @@ class Loader extends ComponentAbstract {
 		$block_name = str_replace( '_', '-', $block_name );
 
 		// register_block_type doesn't allow slugs starting with a number.
-		if ( is_numeric( $block_name[0] ) ) {
+		if ( isset( $block_name[0] ) && is_numeric( $block_name[0] ) ) {
 			$block_name = 'block-' . $block_name;
 		}
 
@@ -237,7 +212,7 @@ class Loader extends ComponentAbstract {
 	 *
 	 * @return array
 	 */
-	protected function register_categories( $categories ) {
+	public function register_categories( $categories ) {
 		foreach ( $this->blocks as $block_config ) {
 			if ( ! isset( $block_config['category'] ) ) {
 				continue;
@@ -519,7 +494,7 @@ class Loader extends ComponentAbstract {
 	/**
 	 * Load all the published blocks and blocks/block.json files.
 	 */
-	protected function retrieve_blocks() {
+	public function retrieve_blocks() {
 		/**
 		 * Retrieve blocks from blocks.json.
 		 * Reverse to preserve order of preference when using array_merge.
@@ -548,11 +523,9 @@ class Loader extends ComponentAbstract {
 		);
 
 		if ( 0 < $block_posts->post_count ) {
-			/** The WordPress Post object. @var \WP_Post $post */
 			foreach ( $block_posts->posts as $post ) {
 				$block_data = json_decode( $post->post_content, true );
 
-				// Merge if no json_decode error occurred.
 				if ( json_last_error() == JSON_ERROR_NONE ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 					$this->blocks = array_merge( $this->blocks, $block_data );
 				}
@@ -609,5 +582,31 @@ class Loader extends ComponentAbstract {
 		}
 
 		$this->blocks[ "genesis-custom-blocks/{$block_name}" ]['fields'][ $field_config['name'] ] = $field_config;
+	}
+
+	/**
+	 * Adds 'POST' to the allowed REST methods for GCB blocks.
+	 *
+	 * The <ServerSideRender> uses the httpMethod of 'POST' to handle a larger attributes object.
+	 * That is already added in WP 5.6+, so no need to add it there.
+	 *
+	 * @todo: Delete when this plugin's 'Requires at least' is bumped to 5.6.
+	 * @see https://core.trac.wordpress.org/ticket/49680#comment:15
+	 *
+	 * @param array $endpoints The REST API endpoints, an associative array of $route => $handlers.
+	 * @return array The filtered endpoints, with the GCB endpoints allowing POST requests.
+	 */
+	public function add_rest_method( $endpoints ) {
+		if ( is_wp_version_compatible( '5.5' ) ) {
+			return $endpoints;
+		}
+
+		foreach ( $endpoints as $route => $handler ) {
+			if ( 0 === strpos( $route, '/wp/v2/block-renderer/(?P<name>genesis-custom-blocks/' ) && isset( $endpoints[ $route ][0] ) ) {
+				$endpoints[ $route ][0]['methods'] = [ WP_REST_Server::READABLE, WP_REST_Server::CREATABLE ];
+			}
+		}
+
+		return $endpoints;
 	}
 }

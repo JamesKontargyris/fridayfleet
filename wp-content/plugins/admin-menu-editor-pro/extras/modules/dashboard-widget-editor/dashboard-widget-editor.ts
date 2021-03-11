@@ -262,7 +262,7 @@ class AmeDashboardWidgetEditor {
 		ko.applyBindings(this, this.importDialog.get(0));
 
 		//Enable the upload button only when the user selects a file.
-		importForm.find('#ame-import-file-selector').change((event) => {
+		importForm.find('#ame-import-file-selector').on('change', (event) => {
 			this.uploadButtonEnabled( !!jQuery(event.target).val() );
 		});
 
@@ -344,13 +344,6 @@ class AmeDashboardWidgetEditor {
 		this.importDialog.dialog('open');
 	}
 }
-
-//A one-way binding for indeterminate checkbox states.
-ko.bindingHandlers['indeterminate'] = {
-	update: function (element, valueAccessor) {
-		element.indeterminate = !!(ko.unwrap(valueAccessor()));
-	}
-};
 
 jQuery(function () {
 	ameWidgetEditor = new AmeDashboardWidgetEditor(

@@ -43,6 +43,8 @@ class RichText extends ControlAbstract {
 		foreach ( [ 'help', 'default', 'placeholder' ] as $setting ) {
 			$this->settings[] = new ControlSetting( $this->settings_config[ $setting ] );
 		}
+
+		$this->locations = [ 'editor' => __( 'Editor', 'genesis-custom-blocks-pro' ) ];
 	}
 
 	/**

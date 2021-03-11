@@ -14,6 +14,11 @@
  * @var array $actors A list of all roles and other actor types (e.g. Super Admin).
  * @var string|null $selectedActor The actor to select by default.
  */
+
+$ameImagesUrl = null;
+if ( isset($GLOBALS['wp_menu_editor'], $GLOBALS['wp_menu_editor']->plugin_file) ) {
+	$ameImagesUrl = plugins_url('images', $GLOBALS['wp_menu_editor']->plugin_file);
+}
 ?>
 <script type="text/javascript">
 	AbeData = (typeof AbeData === 'undefined') ? {} : AbeData;
@@ -80,6 +85,15 @@
 				<a id="abe-paste-node" class="abe-toolbar-button" title="Paste"
 				   data-bind="click: pasteNode, css: {'abe-disabled-button': !nodeInClipboard()}">
 					<div class="abe-button-image"></div>
+				</a>
+
+				<a id="abe-copy-visibility" class="abe-toolbar-button" title="Copy visibility"
+				   data-bind="click: copyVisibilityDialog.open.bind(copyVisibilityDialog)">
+					<?php if ($ameImagesUrl): ?>
+						<img src="<?php echo esc_attr($ameImagesUrl . '/copy-permissions.png') ?>" alt="Copy visibility">
+					<?php else: ?>
+						<div class="abe-button-image"></div>
+					<?php endif; ?>
 				</a>
 
 				<span class="abe-toolbar-spacer"></span>
@@ -205,7 +219,8 @@
 
 		<div class="clear"></div>
 
-    </div>
+		<?php require __DIR__ . '/copy-visibility-dialog.php'; ?>
+	</div>
 
 	<!-- Import form -->
 	<div id="abe-import-dialog" title="Import">

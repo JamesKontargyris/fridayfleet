@@ -42,6 +42,8 @@ class wsMenuEditorExtras {
 	private $fields_supporting_shortcodes = array('page_title', 'menu_title', 'file', 'css_class', 'hookname', 'icon_url');
 	private $current_shortcode_item = null;
 
+	private $are_headings_collapsible = false;
+
 	/**
 	 * Class constructor.
 	 *
@@ -59,6 +61,7 @@ class wsMenuEditorExtras {
 		//and is slightly faster than adding a separate filter for each feature.
 		add_filter('custom_admin_menu', array($this, 'apply_admin_menu_filters'));
 		add_filter('custom_admin_submenu', array($this, 'apply_admin_menu_filters'), 10, 2);
+		add_filter('admin_menu_editor-menu_merged', array($this, 'on_menu_merged'), 10, 1);
 
 		//Add some extra shortcodes of our own
 		$shortcode_callback = array($this, 'handle_shortcode');
@@ -157,20 +160,29 @@ class wsMenuEditorExtras {
 		 * Menu color scheme generation.
 		 */
 		add_filter('ame_pre_set_custom_menu', array($this, 'add_menu_color_css'));
-		add_action('admin_enqueue_scripts', array($this, 'enqueue_menu_color_style'));
 		add_action('wp_ajax_ame_output_menu_color_css', array($this,'ajax_output_menu_color_css') );
 
 		//FontAwesome icons.
-		add_action('admin_enqueue_scripts', array($this, 'enqueue_fontawesome'));
 		add_filter('custom_admin_menu', array($this, 'add_menu_fa_icon'), 10, 1);
 		add_filter('admin_menu_editor-icon_selector_tabs', array($this, 'add_fa_selector_tab'), 10, 1);
 		add_action('admin_menu_editor-icon_selector', array($this, 'output_fa_selector_tab'));
+
+		//Menu headings.
+		if ( (is_admin() || (defined('DOING_AJAX') && DOING_AJAX)) && version_compare(PHP_VERSION, '5.6', '>=') ) {
+			require_once AME_ROOT_DIR . '/extras/menu-headings/ameMenuHeadingStyler.php';
+			new ameMenuHeadingStyler($this->wp_menu_editor);
+		}
 
 		//License management
 		add_filter('wslm_license_ui_title-admin-menu-editor-pro', array($this, 'license_ui_title'), 10, 0);
 		add_action('wslm_license_ui_logo-admin-menu-editor-pro', array($this, 'license_ui_logo'));
 		add_action('wslm_license_ui_details-admin-menu-editor-pro', array($this, 'license_ui_upgrade_link'), 10, 3);
 		add_filter('wslm_product_name-admin-menu-editor-pro', array($this, 'license_ui_product_name'), 10, 0);
+
+		/**
+		 * Add scripts and styles that apply to all admin pages.
+		 */
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_dashboard_deps'));
 
 		/**
 		 * Add-on display and installation.
@@ -469,7 +481,7 @@ class wsMenuEditorExtras {
 			return;
 		}
 		
-		if ( !current_user_can($item['access_level']) ){
+		if ( !current_user_can($item['access_level'], -1) ){
 			echo "You do not have sufficient permissions to view this page.";
 			return;
 		}
@@ -739,6 +751,7 @@ class wsMenuEditorExtras {
 			return;
 		}
 
+		include AME_ROOT_DIR . '/extras/menu-headings/menu-headings-template.php';
 		?>
 		<div id="export_dialog" title="Export">
 	<div class="ws_dialog_panel">
@@ -1095,6 +1108,9 @@ wsEditorData.importMenuNonce = "<?php echo esc_js(wp_create_nonce('import_custom
 
 		<input type="button" id='ws_edit_global_colors' value="Colors" class="button ws_main_button" title="Edit default menu colors" />
 		<input type="button" id='ws_edit_separator_styles' value="Separators" class="button ws_main_button" title="Edit menu separator appearance" />
+		<input type="button" id='ws_edit_heading_styles' value="Headings" class="button ws_main_button" title="Edit the appearance of menu headings" />
+
+		<div class="ws_sidebar_button_separator"></div>
 
 		<input type="button" id='ws_export_menu' value="Export" class="button ws_main_button" title="Export current menu" />
 		<input type="button" id='ws_import_menu' value="Import" class="button ws_main_button" />
@@ -1106,6 +1122,7 @@ wsEditorData.importMenuNonce = "<?php echo esc_js(wp_create_nonce('import_custom
 			return $icons;
 		}
 		$icons['reset-permissions'] = $imageBaseUrl . '/reset-permissions.png';
+		$icons['new-heading'] = plugins_url('extras/menu-headings/heading-add.png', __FILE__);
 		return $icons;
 	}
 
@@ -1136,9 +1153,15 @@ wsEditorData.importMenuNonce = "<?php echo esc_js(wp_create_nonce('import_custom
 			array('jquery')
 		);
 		wp_register_auto_versioned_script(
-			'ame-ko-dialog-bindings',
-			plugins_url('extras/ko-dialog-bindings.js', $this->wp_menu_editor->plugin_file),
-			array('knockout', 'jquery', 'jquery-ui-dialog', 'ame-lodash')
+			'ame-ko-extensions',
+			plugins_url('extras/ko-extensions.js', $this->wp_menu_editor->plugin_file),
+			array('knockout', 'jquery', 'jquery-ui-dialog', 'ame-lodash', 'wp-color-picker')
+		);
+		wp_register_auto_versioned_script(
+			'ame-menu-heading-settings',
+			plugins_url('extras/menu-headings/menu-headings.js', $this->wp_menu_editor->plugin_file),
+			array('jquery', 'knockout', 'jquery-ui-dialog', 'wp-color-picker', 'ame-lodash', 'ame-ko-extensions',),
+			true
 		);
 	}
 
@@ -1148,6 +1171,7 @@ wsEditorData.importMenuNonce = "<?php echo esc_js(wp_create_nonce('import_custom
 	 */
 	public function add_extra_editor_dependencies($dependencies) {
 		$dependencies[] = 'ame-menu-editor-extras';
+		$dependencies[] = 'ame-menu-heading-settings';
 		return $dependencies;
 	}
 
@@ -1634,7 +1658,7 @@ wsEditorData.importMenuNonce = "<?php echo esc_js(wp_create_nonce('import_custom
 			return true;
 		}
 
-		return isset($default) ? $default : current_user_can($capability);
+		return isset($default) ? $default : current_user_can($capability, -1);
 	}
 
 	/**
@@ -1901,7 +1925,26 @@ wsEditorData.importMenuNonce = "<?php echo esc_js(wp_create_nonce('import_custom
 			$item = $this->set_final_hidden_flag($item);
 		}
 
+		//Mark headings as collapsible if that feature is enabled.
+		if ( $this->are_headings_collapsible && (ameMenuItem::get($item, 'sub_type') === 'heading') ) {
+			$item['css_class'] .= ' ame-collapsible-heading';
+		}
+
 		return $item;
+	}
+
+	/**
+	 * @param array $customMenu
+	 */
+	public function on_menu_merged($customMenu = array()) {
+		//Note: If we never add per-heading collapsible settings, it would be more efficient
+		//to get rid of this hook and the "ame-collapsible-heading" class, and instead tell
+		//the helper script to enable the expand/collapse feature for all headings.
+		$this->are_headings_collapsible = ameUtils::get(
+			$customMenu,
+			array('menu_headings', 'collapsible'),
+			$this->are_headings_collapsible
+		);
 	}
 
 	/**
@@ -1929,14 +1972,18 @@ wsEditorData.importMenuNonce = "<?php echo esc_js(wp_create_nonce('import_custom
 		$used_ids = array();
 		$colorized_menu_count = 0;
 
+		$global_icon_colors = null;
+
 		//Include global colors, if any.
 		if ( isset($custom_menu['color_presets']['[global]']) ) {
 			$base_css = $generator->getCss(
 				'',
 				$custom_menu['color_presets']['[global]'],
+				array(),
 				dirname(__FILE__) . '/extras/global-menu-color-template.txt'
 			);
 			$css[] = $base_css;
+			$global_icon_colors = $generator->getIconColorScheme();
 		}
 
 		foreach($custom_menu['tree'] as &$item) {
@@ -1955,7 +2002,14 @@ wsEditorData.importMenuNonce = "<?php echo esc_js(wp_create_nonce('import_custom
 			}
 			$used_ids[$id] = true;
 
-			$item_css = $generator->getCss($id, $item['colors']);
+			$sub_type = ameMenuItem::get($item, 'sub_type');
+			if ( $sub_type === 'heading' ) {
+				$extra_selectors = array('.ame-menu-heading-item');
+			} else {
+				$extra_selectors = array();
+			}
+
+			$item_css = $generator->getCss($id, $item['colors'], $extra_selectors);
 			if ( !empty($item_css) ) {
 				$css[] = sprintf(
 					'/* %1$s (%2$s) */',
@@ -1970,9 +2024,11 @@ wsEditorData.importMenuNonce = "<?php echo esc_js(wp_create_nonce('import_custom
 			$css = implode("\n", $css);
 			$custom_menu['color_css'] = $css;
 			$custom_menu['color_css_modified'] = time();
+			$custom_menu['icon_color_overrides'] = $global_icon_colors;
 		} else {
 			$custom_menu['color_css'] = '';
 			$custom_menu['color_css_modified'] = 0;
+			$custom_menu['icon_color_overrides'] = null;
 		}
 
 		return $custom_menu;
@@ -2002,6 +2058,10 @@ wsEditorData.importMenuNonce = "<?php echo esc_js(wp_create_nonce('import_custom
 			array(),
 			$custom_menu['color_css_modified']
 		);
+
+		if ( isset($custom_menu['icon_color_overrides']) ) {
+			add_action('admin_head', array($this, 'override_menu_icon_color_scheme'), 9);
+		}
 	}
 
 	/**
@@ -2032,6 +2092,77 @@ wsEditorData.importMenuNonce = "<?php echo esc_js(wp_create_nonce('import_custom
 
 		echo $custom_menu['color_css'];
 		exit();
+	}
+
+	/**
+	 * Replace the icon colors in the current admin color scheme with the custom colors
+	 * set by the user. This is necessary to make SVG icons display in the right color.
+	 */
+	public function override_menu_icon_color_scheme() {
+		global $_wp_admin_css_colors;
+
+		$custom_menu = $this->wp_menu_editor->load_custom_menu();
+		if (!isset($custom_menu['icon_color_overrides'])) {
+			return;
+		}
+
+		$color_scheme = get_user_option('admin_color');
+		if ( empty( $_wp_admin_css_colors[ $color_scheme ] ) ) {
+			$color_scheme = 'fresh';
+		}
+
+		$custom_colors = array_merge(
+			array(
+				'base'    => '#a0a5aa',
+				'focus'   => '#00a0d2',
+				'current' => '#fff',
+			),
+			$custom_menu['icon_color_overrides']
+		);
+
+		if ( isset($_wp_admin_css_colors[$color_scheme]) ) {
+			$_wp_admin_css_colors[$color_scheme]->icon_colors = $custom_colors;
+		}
+	}
+
+	/**
+	 * Enqueue various dependencies on all admin pages.
+	 *
+	 * It seems inelegant for one plugin to have a dozen different "admin_print_scripts" hooks
+	 * (and it might hurt performance), so I've combined some of them into this method.
+	 */
+	public function enqueue_dashboard_deps() {
+		$this->enqueue_menu_color_style();
+		$this->enqueue_fontawesome();
+
+		$is_helper_needed = true;
+		$helper_data = array();
+
+		$config_id = $this->wp_menu_editor->get_loaded_menu_config_id();
+		if ( !empty($config_id) ) {
+			$custom_menu = $this->wp_menu_editor->load_custom_menu($config_id);
+
+			if ( ameUtils::get($custom_menu, array('menu_headings', 'textColorType')) === 'default' ) {
+				$is_helper_needed = true;
+				$helper_data['setHeadingHoverColor'] = true;
+			}
+		}
+
+		if ( $is_helper_needed ) {
+			$this->wp_menu_editor->register_jquery_plugins(array('ame-jquery-cookie'));
+
+			wp_enqueue_auto_versioned_script(
+				'ame-pro-admin-helpers',
+				plugins_url('extras/pro-admin-helpers.js', __FILE__),
+				array('jquery', 'ame-jquery-cookie')
+			);
+
+			wp_add_inline_script(
+				'ame-pro-admin-helpers',
+				sprintf('wsAmeProAdminHelperData = (%s);', json_encode($helper_data)),
+				'before'
+			);
+		}
 	}
 
 	/**

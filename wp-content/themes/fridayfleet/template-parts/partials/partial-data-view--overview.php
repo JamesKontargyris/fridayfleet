@@ -10,16 +10,40 @@ $ff = new FridayFleetController;
         <div id="content-top"></div>
 
 		<?php
+		$ship_group_id = 0;
 
-		$ships                             = $ff->getShips();
-		$graph_colours                     = $ff->getColours();
-		$fixed_age_value_latest_data_point = $ff->getFixedAgeValueLatestDataPoint( $ships );
+		if ( $_GET['group'] ) { // ship group ID is passed in as query var
+			$ship_group_id = $_GET['group'];
+		} else { // no query var passed in so get first ship group
+			$all_ship_groups = get_ship_groups( 1 );
+			while ( $all_ship_groups->have_posts() ) {
+				$all_ship_groups->the_post();
+				$ship_group_id = get_the_ID();
+			}
+			wp_reset_postdata();
+		}
+
+		$ship_group = get_post( $ship_group_id );
+		?>
+
+		<?php if ( ! $ship_group ) : // no ship group found ?>
+            <div class="message message--error">ERROR: Invalid ship group.</div>
+			<?php exit();
+		endif; ?>
+
+
+
+		<?php
+		$ships         = get_field( 'ship_group_ship_types', $ship_group_id );
+		$graph_colours = $ff->getColours();
+		//		$fixed_age_value_latest_data_point = $ff->getFixedAgeValueLatestDataPoint( $ships );
 		?>
 
         <div class="data-view">
             <div class="data-view__header">
                 <h2 class="data-view__title">
-                    <strong>Overview</strong> <span class="data-view__title__divider">&rang;</span> Dry Gearless
+                    <strong>Overview</strong> <span
+                            class="data-view__title__divider">&rang;</span> <?php echo $ship_group->post_title; ?>
                 </h2>
             </div>
 
@@ -30,63 +54,25 @@ $ff = new FridayFleetController;
                     <section class="box">
                         <div class="box__header">
                             <div class="box__header__titles">
-                                <div class="box__header__title--no-toggle">Market Notes</div>
+                                <div class="box__header__title--no-toggle">Latest Market Notes</div>
                             </div>
                         </div>
 
                         <div class="box__content">
-                            <div class="note" data-year="2020">
-                                <div class="note__meta">
-                                    <a href="/data-view?ship=5000" class="btn btn--pill btn--pill--small change-ship"
-                                       data-ship="5000" data-page-type="data-view"
-                                       data-show-data-view-select="1">5000 DWT</a>
-                                </div>
-                                <div class="note__timestamp has-note-indicator note-indicator--neutral">
-                                    5 September 2019 <br>Note title here
-                                </div>
-                                <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                                    do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                                    veniam,
-                                    quis
-                                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                </div>
-                            </div>
-                            <div class="note" data-year="2014">
-                                <div class="note__meta">
-                                    <a href="/data-view?ship=3600" class="btn btn--pill btn--pill--small change-ship"
-                                       data-ship="3600" data-page-type="data-view"
-                                       data-show-data-view-select="1">3600 DWT</a><a
-                                            href="/data-view?ship=8500" class="btn btn--pill btn--pill--small change-ship"
-                                            data-ship="8500"
-                                            data-page-type="data-view" data-show-data-view-select="1">8500 DWT</a>
-                                </div>
-                                <div class="note__timestamp has-note-indicator note-indicator--negative">
-                                    10 August 2018 <br>Note title here
-                                </div>
-                                <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                                    do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                                    veniam,
-                                    quis
-                                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                </div>
-                            </div>
-                            <div class="note" data-year="2013">
-                                <div class="note__meta">
-                                    <a href="/data-view?ship=3600" class="btn btn--pill btn--pill--small change-ship"
-                                       data-ship="3600" data-page-type="data-view"
-                                       data-show-data-view-select="1">3600 DWT</a>
-                                </div>
-                                <div class="note__timestamp has-note-indicator note-indicator--positive">
-                                    1 June 2016 <br>Note title here
-                                </div>
+							<?php $market_notes = get_market_notes( 3 ); ?>
 
-                                <div class="note__content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                                    do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                                    veniam,
-                                    quis
-                                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                </div>
-                            </div>
+							<?php if ( $market_notes->have_posts() ) : ?>
+
+								<?php while ( $market_notes->have_posts() ) : $market_notes->the_post(); ?>
+									<?php get_template_part( 'template-parts/partials/partial', 'market-note--overview' ); ?>
+								<?php endwhile;
+								wp_reset_postdata(); ?>
+
+							<?php else : ?>
+                                No notes found.
+							<?php endif; ?>
+
+
                         </div>
                     </section>
 
@@ -95,15 +81,18 @@ $ff = new FridayFleetController;
 
                 <div class="data-view__side-col data-view__side-col--overview">
 
-					<?php foreach ( $ships as $ship ) : ?>
+					<?php foreach ( $ships as $ship ) : $ship_type = get_post( $ship );
+						$ship_type_db_slug = get_field( 'ship_type_database_slug', $ship_type->ID ); ?>
                         <section class="box">
-                            <a href="/data-view?ship=<?php echo $ship; ?>" class="box__full-size-link change-ship"
-                               data-ship="<?php echo $ship; ?>" data-page-type="data-view"
+                            <a href="/data-view?ship=<?php echo $ship_type_db_slug; ?>"
+                               class="box__full-size-link change-ship"
+                               data-ship="<?php echo $ship_type_db_slug; ?>" data-page-type="data-view"
                                data-show-data-view-select="1"></a>
                             <div class="box__header">
                                 <div class="box__header__titles">
                                     <div class="box__header__title--no-toggle box__header__title--icon-ship">
-										<?php echo $ship; ?> DWT <span class="box__header__title__divider">&rang;</span>
+										<?php echo get_the_title( $ship_type->ID ); ?> <span
+                                                class="box__header__title__divider">&rang;</span>
                                         Fixed Age Value
                                     </div>
                                 </div>
@@ -141,7 +130,7 @@ $ff = new FridayFleetController;
                                     </thead>
 
                                     <tbody class="is-active">
-									<?php $ship_data = $fixed_age_value_latest_data_point[ $ship ][0]; ?>
+									<?php $ship_data = $ff->getFixedAgeValueLatestDataPoint( $ship_type_db_slug ); ?>
                                     <tr>
                                         <td><?php echo $ship_data['year'] . ' Q' . $ship_data['quarter']; ?></td>
                                         <td><?php echo number_format( $ship_data['average_new_build'], 2 ); ?></td>
@@ -156,11 +145,16 @@ $ff = new FridayFleetController;
 
                                 </table>
 
-                                <div class="note" data-year="2014">
-                                    <div class="note__timestamp has-note-indicator note-indicator--positive">
-                                        10 August 2018<br>Note title here
-                                    </div>
-                                </div>
+								<?php
+								$latest_market_note = get_market_notes_by_ship_type_id( $ship_type->ID, 1 );
+								while ( $latest_market_note->have_posts() ) : $latest_market_note->the_post();
+									?>
+
+                                    <?php get_template_part('template-parts/partials/partial', 'market-note--short'); ?>
+
+								<?php endwhile;
+								wp_reset_postdata(); ?>
+
                             </div>
                         </section>
 					<?php endforeach; ?>

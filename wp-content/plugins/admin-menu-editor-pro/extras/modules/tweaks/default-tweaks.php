@@ -1,9 +1,10 @@
 <?php
 return array(
 	'sections' => array(
-		'profile'         => array('label' => 'Hide Profile Fields', 'priority' => 80),
-		'sidebar-widgets' => array('label' => 'Hide Sidebar Widgets', 'priority' => 100),
-		'sidebars'        => array('label' => 'Hide Sidebars', 'priority' => 120),
+		'profile'          => array('label' => 'Hide Profile Fields', 'priority' => 80),
+		'sidebar-widgets'  => array('label' => 'Hide Sidebar Widgets', 'priority' => 100),
+		'sidebars'         => array('label' => 'Hide Sidebars', 'priority' => 120),
+		'environment-type' => array('label' => 'Environment Type', 'priority' => 30),
 	),
 
 	'tweaks' => array(
@@ -26,7 +27,7 @@ return array(
 			'selector' => '#wpbody-content .notice, #wpbody-content .updated, #wpbody-content .update-nag',
 		),
 
-		'hide-gutenberg-options' => array(
+		'hide-gutenberg-options'    => array(
 			'label'    => 'Hide the Gutenberg options menu (three vertical dots)',
 			'selector' => '#editor .edit-post-header__settings .edit-post-more-menu',
 		),
@@ -58,6 +59,19 @@ return array(
 			'selector' => 'tr.show-admin-bar.user-admin-bar-front-wrap',
 			'section'  => 'profile',
 			'screens'  => array('profile'),
+		),
+
+		'show-environment-in-toolbar'  => array(
+			'label'       => 'Show environment type in the Toolbar',
+			'section'     => 'environment-type',
+			'className'   => 'ameEnvironmentNameTweak',
+			'includeFile' => __DIR__ . '/ameEnvironmentNameTweak.php',
+		),
+		'environment-dependent-colors' => array(
+			'label'       => 'Change menu color depending on the environment',
+			'section'     => 'environment-type',
+			'className'   => 'ameEnvironmentColorTweak',
+			'includeFile' => __DIR__ . '/ameEnvironmentColorTweak.php',
 		),
 	),
 );

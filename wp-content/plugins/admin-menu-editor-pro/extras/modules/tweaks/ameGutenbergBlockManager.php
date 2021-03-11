@@ -39,22 +39,28 @@ class ameGutenbergBlockManager {
 			self::SCRIPT_HANDLE,
 			plugins_url('gutenberg-block-detector.js', __FILE__),
 			array('wp-blocks', 'wp-dom-ready', 'wp-edit-post', 'jquery'),
-			'20200119-2',
+			'20210218-4',
 			true
 		);
 
 		$detectedItems = $this->getDetectedItems();
-		wp_localize_script(
-			self::SCRIPT_HANDLE,
-			'wsAmeGutenbergBlockData',
-			array(
-				'knownBlocks'     => array_fill_keys(array_keys($detectedItems['blocks']), true),
-				'knownCategories' => array_fill_keys(array_keys($detectedItems['categories']), true),
-				'ajaxUrl'         => self_admin_url('admin-ajax.php'),
-				'ajaxAction'      => self::UPDATE_BLOCKS_ACTION,
-				'updateNonce'     => wp_create_nonce('ws_ame_update_gtb_blocks'),
-			)
+		$scriptData = array(
+			'knownBlocks'     => array_fill_keys(array_keys($detectedItems['blocks']), true),
+			'knownCategories' => array_fill_keys(array_keys($detectedItems['categories']), true),
+			'ajaxUrl'         => self_admin_url('admin-ajax.php'),
+			'ajaxAction'      => self::UPDATE_BLOCKS_ACTION,
+			'updateNonce'     => wp_create_nonce('ws_ame_update_gtb_blocks'),
 		);
+
+		//Make sure to encode associative arrays as objects (dictionaries) even when they're empty.
+		if ( empty($scriptData['knownBlocks']) ) {
+			$scriptData['knownBlocks'] = new stdClass();
+		}
+		if ( empty($scriptData['knownCategories']) ) {
+			$scriptData['knownCategories'] = new stdClass();
+		}
+
+		wp_localize_script(self::SCRIPT_HANDLE, 'wsAmeGutenbergBlockData', $scriptData);
 	}
 
 	/** @noinspection PhpComposerExtensionStubsInspection */
@@ -127,7 +133,7 @@ class ameGutenbergBlockManager {
 			$data = get_option(self::DETECTED_BLOCK_OPTION, $default);
 		}
 		if ( !is_array($data) ) {
-			return array();
+			return $default;
 		}
 		return $data;
 	}

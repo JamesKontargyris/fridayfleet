@@ -55,7 +55,7 @@ table.data-table {
         background: url(img/icon-arrow-down-red.svg) left center no-repeat, tint($navy-blue, 7%);
         background-size: 1rem, auto;
         font-weight: $font-black;
-        color: $red;
+        color: white;
         border-bottom: 0.1rem solid $dark-blue;
         @include font-size(12, 14);
 

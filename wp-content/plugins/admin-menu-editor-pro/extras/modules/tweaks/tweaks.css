@@ -59,9 +59,11 @@
     padding-top: 8px; }
 
 .ame-twm-tweak-children {
-  margin-left: 2em; }
+  margin-left: 1.7em; }
+  .ame-twm-tweak-children > .ame-twm-tweak {
+    margin-left: 0.3em; }
 
-.ame-twm-tweak input[type=checkbox]:indeterminate:before {
+.ame-twm-named-node input[type=checkbox]:indeterminate:before {
   content: '\25a0';
   color: #1e8cbe;
   margin: -3px 0 0 -1px;
@@ -72,7 +74,7 @@
   width: 16px;
   -webkit-font-smoothing: antialiased; }
 
-.ame-twm-tweak {
+.ame-twm-named-node {
   font-size: 14px;
   line-height: 1.65; }
 
@@ -119,5 +121,12 @@
 .ame-twm-user-input .CodeMirror:focus-within, .ame-twm-dialog .CodeMirror:focus-within {
   border-color: #007cba;
   box-shadow: 0 0 0 1px #007cba; }
+
+.ame-twm-color-label {
+  margin-right: 0.5em; }
+
+#ame-tweak-environment-dependent-colors .ame-twm-color-label {
+  display: inline-block;
+  min-width: 7em; }
 
 /*# sourceMappingURL=tweaks.css.map */

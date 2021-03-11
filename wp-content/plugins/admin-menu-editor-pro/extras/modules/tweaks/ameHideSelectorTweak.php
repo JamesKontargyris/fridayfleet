@@ -17,7 +17,7 @@ class ameHideSelectorTweak extends ameBaseTweak {
 		$this->selector = $selector;
 	}
 
-	public function apply($unusedParam = null) {
+	public function apply($settings = null) {
 		self::$pendingSelectors[] = $this->selector;
 
 		if (did_action(self::OUTPUT_HOOK)) {

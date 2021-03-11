@@ -1,5 +1,5 @@
 ///<reference path="../../../js/jquery.d.ts"/>
-///<reference path="../../../js/knockout.d.ts"/>
+///<reference path="../../../js/common.d.ts"/>
 ///<reference path="../../../js/lodash-3.10.d.ts"/>
 
 declare var wsAmeLodash: _.LoDashStatic;
@@ -77,10 +77,6 @@ interface AmePlainSeparatorSettings {
 	submenuSeparators: AmePlainSeparatorTypeSettings;
 	useTopLevelSettingsForSubmenus: boolean;
 	customSettingsEnabled: boolean;
-}
-
-type AmeObservablePropertiesOf<T> = {
-	[P in keyof T]: KnockoutObservable<T[P]>;
 }
 
 class AmeSeparatorTypeSettings implements AmeObservablePropertiesOf<AmePlainSeparatorTypeSettings> {
@@ -484,39 +480,6 @@ class AmeSeparatorSettingsScreen {
 		});
 
 	jQuery(function ($) {
-		ko.bindingHandlers.ameColorPicker = {
-			init: function (element, valueAccessor) {
-				let valueUnwrapped = ko.unwrap(valueAccessor());
-
-				const input = $(element);
-				input.val(valueUnwrapped);
-
-				input.wpColorPicker({
-					change: function (event, ui) {
-						let value = valueAccessor();
-						value(ui.color.toString());
-					},
-					clear: function () {
-						let value = valueAccessor();
-						value('');
-					}
-				});
-			},
-			update: function (element, valueAccessor) {
-				let newValue = ko.unwrap(valueAccessor());
-				if (typeof newValue !== 'string') {
-					newValue = '';
-				}
-				if (newValue === '') {
-					//Programmatically click the "Clear" button. It's not elegant, but I haven't found
-					//a way to do this using the Iris API.
-					$(element).closest('.wp-picker-input-wrap').find('.wp-picker-clear').click();
-				} else {
-					$(element).iris('color', newValue);
-				}
-			}
-		};
-
 		const separatorDialog = $('#ws-ame-separator-style-settings');
 		let isDialogInitialized = false;
 

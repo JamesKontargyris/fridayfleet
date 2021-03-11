@@ -1,5 +1,7 @@
 <?php
 
+use YahnisElsts\AdminMenuEditor\Configurable\StringSetting;
+
 class ameAdminCssTweakManager {
 	private $isOutputHookRegistered = false;
 	private $pendingCss = array();
@@ -10,11 +12,11 @@ class ameAdminCssTweakManager {
 		add_action('admin-menu-editor-register_tweaks', array($this, 'registerDefaultTweak'), 10, 1);
 	}
 
-	public function enqueueCss($css = null) {
-		if ( $css === null ) {
+	public function enqueueCss($settings = null) {
+		if ( ($settings === null) || (empty($settings['css'])) ) {
 			return;
 		}
-		$this->pendingCss[] = $css;
+		$this->pendingCss[] = $settings['css'];
 		if ( !$this->isOutputHookRegistered ) {
 			add_action('admin_print_scripts', array($this, 'outputCss'));
 			$this->isOutputHookRegistered = true;
@@ -39,10 +41,7 @@ class ameAdminCssTweakManager {
 	 */
 	public function createTweak($properties) {
 		if ( $this->cachedUserInput === null ) {
-			$cssInput = new ameTweakTextAreaInput();
-			$cssInput->syntaxHighlighting = 'css';
-			$cssInput->contentProperty = 'css';
-			$this->cachedUserInput = $cssInput;
+			$this->cachedUserInput = (new StringSetting('css'))->textarea('css');
 		}
 
 		$cssTweak = new ameDelegatedTweak(
@@ -50,8 +49,9 @@ class ameAdminCssTweakManager {
 			$properties['label'],
 			array($this, 'enqueueCss')
 		);
-		$cssTweak->setInputDefinition($this->cachedUserInput);
 		$cssTweak->setSectionId('admin-css');
+		$cssTweak->add($this->cachedUserInput);
+
 		return $cssTweak;
 	}
 

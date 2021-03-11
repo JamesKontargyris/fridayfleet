@@ -33,49 +33,51 @@ if (typeof wp !== 'undefined' && typeof wp.domReady !== 'undefined') {
 
 		//Wait for Gutenberg to load.
 		loadGutenberg.then(function () {
-			let hasNewData = false;
+			setTimeout(function () {
+				let hasNewData = false;
 
-			//We're using arrays instead of objects because we want to preserve item order.
-			let registeredBlocks = [];
-			const blocks = wp.blocks.getBlockTypes();
-			for (let i = 0; i < blocks.length; i++) {
-				const block = blocks[i];
-				registeredBlocks.push({
-					name: block.name,
-					title: block.title,
-					category: block.category
-				});
+				//We're using arrays instead of objects because we want to preserve item order.
+				let registeredBlocks = [];
+				const blocks = wp.blocks.getBlockTypes();
+				for (let i = 0; i < blocks.length; i++) {
+					const block = blocks[i];
+					registeredBlocks.push({
+						name: block.name,
+						title: block.title,
+						category: block.category
+					});
 
-				if (!scriptData.knownBlocks.hasOwnProperty(block.name)) {
-					hasNewData = true;
-				}
-			}
-
-			let registeredCategories = [],
-				categories = wp.blocks.getCategories();
-			for (let j = 0; j < categories.length; j++) {
-				registeredCategories.push({
-					slug: categories[j].slug,
-					title: categories[j].title,
-				});
-
-				if (!scriptData.knownCategories.hasOwnProperty(categories[j].slug)) {
-					hasNewData = true;
-				}
-			}
-
-			if (hasNewData && scriptData.updateNonce && scriptData.ajaxAction) {
-				//Save the registered blocks and categories.
-				jQuery.post(
-					scriptData.ajaxUrl,
-					{
-						action: scriptData.ajaxAction,
-						_ajax_nonce: scriptData.updateNonce,
-						blocks: JSON.stringify(registeredBlocks),
-						categories: JSON.stringify(registeredCategories)
+					if (!scriptData.knownBlocks.hasOwnProperty(block.name)) {
+						hasNewData = true;
 					}
-				);
-			}
+				}
+
+				let registeredCategories = [],
+					categories = wp.blocks.getCategories();
+				for (let j = 0; j < categories.length; j++) {
+					registeredCategories.push({
+						slug: categories[j].slug,
+						title: categories[j].title,
+					});
+
+					if (!scriptData.knownCategories.hasOwnProperty(categories[j].slug)) {
+						hasNewData = true;
+					}
+				}
+
+				if (hasNewData && scriptData.updateNonce && scriptData.ajaxAction) {
+					//Save the registered blocks and categories.
+					jQuery.post(
+						scriptData.ajaxUrl,
+						{
+							action: scriptData.ajaxAction,
+							_ajax_nonce: scriptData.updateNonce,
+							blocks: JSON.stringify(registeredBlocks),
+							categories: JSON.stringify(registeredCategories)
+						}
+					);
+				}
+			}, 50);
 		});
 
 	});

@@ -32,11 +32,18 @@ class Subscription extends ComponentAbstract {
 	const SUBSCRIPTION_KEY_OPTION_NAME = 'genesis_pro_subscription_key';
 
 	/**
-	 * Transient name where the subscription endpoint response is stored.
+	 * Option name where the subscription endpoint response is stored.
 	 *
 	 * @var string
 	 */
-	const PRODUCT_INFO_TRANSIENT_NAME = 'genesis_custom_blocks_pro_subscription_response';
+	const PRODUCT_INFO_OPTION_NAME = 'genesis_custom_blocks_pro_subscription_response';
+
+	/**
+	 * Option name where the subscription expiration is stored.
+	 *
+	 * @var string
+	 */
+	const PRODUCT_INFO_OPTION_EXPIRATION = 'genesis_custom_blocks_pro_subscription_expiration';
 
 	/**
 	 * Adds the component filter.
@@ -58,7 +65,8 @@ class Subscription extends ComponentAbstract {
 		$sanitized_key = $this->sanitize_subscription_key( $key );
 		if ( empty( $sanitized_key ) ) {
 			genesis_custom_blocks_pro()->admin->settings->prepare_notice( $this->get_subscription_empty_notice() );
-			delete_transient( self::PRODUCT_INFO_TRANSIENT_NAME );
+			delete_option( self::PRODUCT_INFO_OPTION_NAME );
+			delete_option( self::PRODUCT_INFO_OPTION_EXPIRATION );
 			return false;
 		}
 
@@ -279,7 +287,12 @@ class Subscription extends ComponentAbstract {
 	 * @return SubscriptionResponse The subscription data.
 	 */
 	public function get_subscription() {
-		$cached_response = get_transient( self::PRODUCT_INFO_TRANSIENT_NAME );
+		if ( time() >= (int) get_option( self::PRODUCT_INFO_OPTION_EXPIRATION ) ) {
+			delete_option( self::PRODUCT_INFO_OPTION_NAME );
+			delete_option( self::PRODUCT_INFO_OPTION_EXPIRATION );
+		}
+
+		$cached_response = get_option( self::PRODUCT_INFO_OPTION_NAME );
 		if ( $cached_response instanceof SubscriptionResponse ) {
 			return $cached_response;
 		}
@@ -304,7 +317,7 @@ class Subscription extends ComponentAbstract {
 	 * Forked from Genesis Block Pro: https://github.com/studiopress/genesis-page-builder/blob/4cf15f2f7a273ea0aee824115005b9c95db48ded/includes/updates/update-functions.php#L234
 	 */
 	public function render_plugin_row_notice() {
-		$cached_response = get_transient( self::PRODUCT_INFO_TRANSIENT_NAME );
+		$cached_response = get_option( self::PRODUCT_INFO_OPTION_NAME );
 		if ( $cached_response instanceof SubscriptionResponse && ! $cached_response->is_valid() ) {
 			remove_action( 'after_plugin_row_' . genesis_custom_blocks_pro()->get_basename(), 'wp_plugin_update_row' );
 

@@ -2,8 +2,8 @@
 Contributors: whiteshadow
 Tags: admin, toolbar, menu, security, wpmu
 Requires at least: 3.5
-Tested up to: 5.5
-Stable tag: 1.3.4
+Tested up to: 5.6
+Stable tag: 1.4
 
 Lets you edit the WordPress Toolbar (a.k.a. Admin Bar).
 
@@ -22,6 +22,12 @@ Uses some icons from the ["Silk" set by Mark James](http://www.famfamfam.com/lab
 4. (Optional) Click the small "Settings" button on the "Toolbar Editor" page to change access permissions and other add-on settings.
 
 == Changelog ==
+
+= 1.4 =
+* Added a "Copy visibility" button. It copies Toolbar item visibility from one role to another.
+* Fixed tooltips not showing up in some WordPress versions.
+* Fixed a few jQuery deprecation warnings.
+* Tested up to WP 5.6.1.
 
 = 1.3.4 =
 * Fixed the "Customize" item not appearing in the top level of the Toolbar. If you have already edited the Toolbar before installing this update, "Customize" won't show up automatically. Instead, you can find it in the "Your Site Name" -> "appearance" group.

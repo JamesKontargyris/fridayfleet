@@ -6,6 +6,7 @@
 class ameWidgetCollection {
 	const FORMAT_NAME = 'Admin Menu Editor dashboard widgets';
 	const FORMAT_VERSION = '1.1';
+	const HEADER_PREFIX = 'WH';
 
 	/**
 	 * @var ameDashboardWidget[]
@@ -318,6 +319,66 @@ class ameWidgetCollection {
 		}
 
 		return self::fromArray($input);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function toDbString() {
+		$serializedData = $this->toJSON();
+		$tags = array();
+
+		if ( function_exists('gzcompress') ) {
+			/** @noinspection PhpComposerExtensionStubsInspection */
+			$compressed = gzcompress($serializedData);
+			if ( is_string($compressed) ) {
+				$serializedData = $compressed;
+				$tags[] = 'gz';
+			}
+		}
+
+		if ( function_exists('base64_encode') ) {
+			$serializedData = base64_encode($serializedData);
+			$tags[] = '64';
+		}
+
+		$header = self::HEADER_PREFIX . sprintf('%4s', implode('', $tags));
+		return $header . 'D' . $serializedData;
+	}
+
+	/**
+	 * @param string $serializedData
+	 * @return self|null
+	 */
+	public static function fromDbString($serializedData) {
+		$fragment = substr($serializedData, 0, 32);
+		$prefixLength = strlen(self::HEADER_PREFIX);
+
+		if ( substr($fragment, 0, $prefixLength) !== self::HEADER_PREFIX ) {
+			return self::fromJSON($serializedData);
+		}
+		$dataMarkerPos = strpos($fragment, 'D', $prefixLength);
+		if ( $dataMarkerPos === false ) {
+			return self::fromJSON($serializedData);
+		}
+
+		$tags = str_split(substr($fragment, $prefixLength, $dataMarkerPos - $prefixLength), 2);
+
+		$data = substr($serializedData, $dataMarkerPos + 1);
+		if ( in_array('64', $tags) ) {
+			$data = base64_decode($data);
+		}
+		if ( in_array('gz', $tags) ) {
+			if ( !function_exists('gzuncompress') ) {
+				throw new RuntimeException(
+					'Cannot decompress dashboard widget data. This site may be missing the Zlib extension.'
+				);
+			}
+			/** @noinspection PhpComposerExtensionStubsInspection */
+			$data = gzuncompress($data);
+		}
+
+		return self::fromJSON($data);
 	}
 }
 

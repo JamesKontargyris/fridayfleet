@@ -185,7 +185,7 @@ var AmeDashboardWidgetEditor = /** @class */ (function () {
         //This means we must apply bindings directly to the dialog node.
         ko.applyBindings(this, this.importDialog.get(0));
         //Enable the upload button only when the user selects a file.
-        importForm.find('#ame-import-file-selector').change(function (event) {
+        importForm.find('#ame-import-file-selector').on('change', function (event) {
             _this.uploadButtonEnabled(!!jQuery(event.target).val());
         });
         //This function displays unhandled server side errors. In theory, our upload handler always returns a well-formed
@@ -259,12 +259,6 @@ var AmeDashboardWidgetEditor = /** @class */ (function () {
     AmeDashboardWidgetEditor.customIdPrefix = 'ame-custom-widget-';
     return AmeDashboardWidgetEditor;
 }());
-//A one-way binding for indeterminate checkbox states.
-ko.bindingHandlers['indeterminate'] = {
-    update: function (element, valueAccessor) {
-        element.indeterminate = !!(ko.unwrap(valueAccessor()));
-    }
-};
 jQuery(function () {
     ameWidgetEditor = new AmeDashboardWidgetEditor(wsWidgetEditorData.widgetSettings, wsWidgetEditorData.selectedActor, wsWidgetEditorData.isMultisite);
     ko.applyBindings(ameWidgetEditor, document.getElementById('ame-dashboard-widget-editor'));

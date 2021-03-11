@@ -123,15 +123,15 @@ add_action( 'after_setup_theme', 'fridayfleet_content_width', 0 );
  */
 function fridayfleet_widgets_init() {
 	register_sidebar(
-		array(
-			'name'          => esc_html__( 'Sidebar', 'fridayfleet' ),
-			'id'            => 'sidebar-1',
-			'description'   => esc_html__( 'Add widgets here.', 'fridayfleet' ),
-			'before_widget' => '<section id="%1$s" class="widget %2$s">',
-			'after_widget'  => '</section>',
-			'before_title'  => '<h2 class="widget-title">',
-			'after_title'   => '</h2>',
-		)
+//		array(
+//			'name'          => esc_html__( 'Sidebar', 'fridayfleet' ),
+//			'id'            => 'sidebar-1',
+//			'description'   => esc_html__( 'Add widgets here.', 'fridayfleet' ),
+//			'before_widget' => '<section id="%1$s" class="widget %2$s">',
+//			'after_widget'  => '</section>',
+//			'before_title'  => '<h2 class="widget-title">',
+//			'after_title'   => '</h2>',
+//		)
 	);
 }
 add_action( 'widgets_init', 'fridayfleet_widgets_init' );
@@ -144,6 +144,8 @@ function fridayfleet_scripts() {
 	wp_style_add_data( 'fridayfleet-style', 'rtl', 'replace' );
 	wp_enqueue_style( 'fridayfleet-tooltipster', get_template_directory_uri() . '/js/vendor/tooltipster/css/tooltipster.bundle.min.css', array(), _S_VERSION );
 
+	wp_enqueue_script( 'fridayfleet-jQuery', 'https://code.jquery.com/jquery-3.6.0.js', array(), _S_VERSION, true );
+	wp_script_add_data( 'fridayfleet-jQuery', array( 'integrity', 'crossorigin' ) , array( 'sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=', 'anonymous' ) );
 	wp_enqueue_script( 'fridayfleet-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-ajax', get_template_directory_uri() . '/js/ajax.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-buttons', get_template_directory_uri() . '/js/buttons.js', array(), _S_VERSION, true );

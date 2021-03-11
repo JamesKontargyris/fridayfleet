@@ -34,8 +34,21 @@ jQuery(function ($) {
 		});
 	});
 
+	$(document).on('filterVisibleMenuFields.adminMenuEditor', function (event, visibleMenuFieldsByType) {
+		visibleMenuFieldsByType['heading'] = {
+			file: false,
+			open_in: false,
+			hookname: false,
+			page_heading: false,
+			page_title: false,
+			is_always_open: false,
+			iframe_height: false,
+			template_id: false
+		};
+	});
+
 	//The "Reset permissions" toolbar button.
-	$('#ws_reset_actor_permissions').click(function (event) {
+	$('#ws_reset_actor_permissions').on('click', function (event) {
 		event.preventDefault();
 
 		var selectedActor = AmeEditorApi.actorSelectorWidget.selectedActor;
@@ -84,5 +97,30 @@ jQuery(function ($) {
 				AmeEditorApi.updateParentAccessUi(containerNode);
 			}
 		});
+	});
+
+	//"New heading" toolbar button.
+	let headingCount = 0;
+	$('#ws_new_heading').on('click', function (event) {
+		event.preventDefault();
+		headingCount++;
+
+		//The new menu starts out rather bare
+		const randomId = AmeEditorApi.randomMenuId('heading-');
+		let menu = $.extend(true, {}, wsEditorData.blankMenuItem, {
+			sub_type: 'heading',
+			menu_title: 'Heading ' + headingCount,
+			custom: true,
+			template_id: '',
+			css_class: 'menu-top ame-menu-heading-item',
+			file: randomId,
+			hookname: randomId,
+			access_level: 'read',
+			items: []
+		});
+
+		AmeEditorApi.insertMenu(menu);
+
+		$(document).trigger('adminMenuEditor:newHeadingCreated');
 	});
 });

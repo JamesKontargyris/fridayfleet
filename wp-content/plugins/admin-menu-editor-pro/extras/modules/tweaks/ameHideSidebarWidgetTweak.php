@@ -20,7 +20,7 @@ class ameHideSidebarWidgetTweak extends ameBaseTweak {
 		);
 	}
 
-	public function apply($unusedUserInput = null) {
+	public function apply($settings = null) {
 		unregister_widget($this->widgetClass);
 	}
 }

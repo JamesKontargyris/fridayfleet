@@ -63,7 +63,7 @@ class Abe_AdminBarEditor {
 			//Add-ons are updated separately from the main plugin, but use the same license details.
 			require WS_ADMIN_BAR_EDITOR_DIR . '/includes/plugin-updates/plugin-update-checker.php';
 			$this->updateChecker = Puc_v4_Factory::buildUpdateChecker(
-				'http://adminmenueditor.com/?get_metadata_for=wp-toolbar-editor',
+				'https://adminmenueditor.com/?get_metadata_for=wp-toolbar-editor',
 				WS_ADMIN_BAR_EDITOR_FILE,
 				'wp-toolbar-editor',
 				12,
@@ -1010,7 +1010,7 @@ class Abe_AdminBarEditor {
 		printf(
 			'<div class="updated" id="abe-demo-notice">
 			 <p>
-				<a href="http://adminmenueditor.com/toolbar-editor/">Toolbar Editor</a>
+				<a href="https://adminmenueditor.com/toolbar-editor/">Toolbar Editor</a>
 				is an optional add-on that is included for free
 				with the "Agency" license. You can also purchase it separately.
 

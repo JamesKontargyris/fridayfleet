@@ -135,11 +135,13 @@ var wsAdminBarEditor = wsAdminBarEditor || {};
 			if (typeof excludeNode === 'undefined') {
 				excludeNode = null;
 			}
+			//Ensure that id is a string.
+			id = id + '';
 
 			function searchArray(nodes) {
 				var foundNode = null, i = 0;
 				while(!foundNode && i < nodes.length) {
-					if ( (nodes[i] !== excludeNode) && (nodes[i].id() == id) ) {
+					if ( (nodes[i] !== excludeNode) && ((nodes[i].id() + '') === id) ) {
 						foundNode = nodes[i];
 					} else {
 						foundNode = searchArray(nodes[i].children());
@@ -325,7 +327,7 @@ var wsAdminBarEditor = wsAdminBarEditor || {};
 						prefix = matches[1];
 					}
 					//Append a dash.
-					if (prefix.charAt(prefix.length - 1) != '-') {
+					if (prefix.charAt(prefix.length - 1) !== '-') {
 						prefix = prefix + '-';
 					}
 
@@ -334,7 +336,7 @@ var wsAdminBarEditor = wsAdminBarEditor || {};
 				}
 				ko.utils.arrayForEach(node.children(), ensureIdIsUnique);
 			}
-			
+
 			ensureIdIsUnique(pastedNode);
 		};
 
@@ -435,6 +437,7 @@ var wsAdminBarEditor = wsAdminBarEditor || {};
 		 * Drag & drop sorting utility functions and event handlers.
 		 */
 
+		// noinspection JSUnusedGlobalSymbols
 		/**
 		 * Check if it's okay to move a node to a new parent.
 		 *
@@ -447,6 +450,7 @@ var wsAdminBarEditor = wsAdminBarEditor || {};
 			return ! (node.group() && newParent && newParent.group());
 		};
 
+		// noinspection JSUnusedGlobalSymbols
 		/**
 		 * Event handler for when a node has successfully been moved to a new location.
 		 *
@@ -510,6 +514,7 @@ var wsAdminBarEditor = wsAdminBarEditor || {};
 			version: 1
 		};
 
+		// noinspection JSUnusedGlobalSymbols Used in KO templates.
 		this.exportMenu = function() {
 			var exportData = {
 				format: self.exportFormat,
@@ -529,7 +534,7 @@ var wsAdminBarEditor = wsAdminBarEditor || {};
 			importFileInput = $('#abe-import-file');
 
 		//Enable the upload button when the user selects a file.
-		importFileInput.change(function() {
+		importFileInput.on('change', function() {
 			var fileName = $(this).val();
 			uploadButton.prop('disabled', !fileName);
 		});
@@ -546,8 +551,7 @@ var wsAdminBarEditor = wsAdminBarEditor || {};
 			dataType: 'json',
 
 			beforeSubmit: function() {
-				var fileName = importFileInput.val();
-				if (fileName == '') {
+				if (importFileInput.get(0).files.length <= 0) {
 					alert('Select a file first!');
 					return false;
 				}
@@ -608,6 +612,7 @@ var wsAdminBarEditor = wsAdminBarEditor || {};
 			}
 		});
 
+		// noinspection JSUnusedGlobalSymbols Used in KO templates.
 		/**
 		 * Open the menu import dialog.
 		 */
@@ -619,6 +624,110 @@ var wsAdminBarEditor = wsAdminBarEditor || {};
 			importDialog.find('.abe-hide-while-importing').show();
 
 			importDialog.dialog('open');
+		};
+
+		/*
+		 * The "Copy Visibility" dialog.
+		 */
+
+		this.copyVisibilityDialog = {
+			dialogNode: null,
+			copySourceActor: ko.observable(null),
+			copyTargetActor: ko.observable(null)
+		};
+
+		this.copyVisibilityDialog.open = function () {
+			if (this.dialogNode === null) {
+				this.dialogNode = $('#abe-copy-visibility-dialog').dialog({
+					autoOpen: false,
+					modal: true,
+					draggable: false,
+					minWidth: 320,
+				});
+			}
+
+			//Pre-select the current actor as the target.
+			if (self.selectedActor() !== null) {
+				this.copyTargetActor(self.selectedActor());
+			}
+
+			this.dialogNode.dialog('open');
+		};
+		this.copyVisibilityDialog.close = function () {
+			this.dialogNode.dialog('close');
+		};
+
+		this.copyVisibilityDialog.validCopySourceActors = ko.computed({
+			read: function () {
+				//Include everything except the "All" actor.
+				return ko.utils.arrayFilter(self.actors(), function (actor) {
+					return (actor.slug !== null);
+				});
+			},
+			deferEvaluation: true,
+			owner: self.copyVisibilityDialog
+		});
+		this.copyVisibilityDialog.validCopyTargetActors = this.copyVisibilityDialog.validCopySourceActors;
+
+		this.copyVisibilityDialog.isCopyVisButtonEnabled = ko.computed({
+			read: function () {
+				//Source and target must be different.
+				if (this.copySourceActor() === this.copyTargetActor()) {
+					return false;
+				}
+				//Both source and target must be set (i.e. not null or undefined).
+				return !!(this.copySourceActor() && this.copyTargetActor());
+			},
+			owner: self.copyVisibilityDialog,
+			deferEvaluation: true
+		});
+
+		this.copyVisibilityDialog.copyVisibility = function () {
+			var sourceSlug = this.copySourceActor().slug,
+				targetSlug = this.copyTargetActor().slug;
+
+			if ((typeof sourceSlug !== 'string') || (typeof targetSlug !== 'string')) {
+				alert('Error: Source or destination is either not selected or invalid.');
+				return;
+			}
+
+			function updateNodes(nodes) {
+				var actorVisibility = null, isDifferent = false;
+
+				for (var i = 0; i < nodes.length; i++) {
+					actorVisibility = nodes[i].is_visible_to_actor();
+					isDifferent = false;
+
+					if (actorVisibility.hasOwnProperty(sourceSlug)) {
+						//Copy settings from source to target if they're different.
+						isDifferent = !(
+							actorVisibility.hasOwnProperty(targetSlug)
+							&& (actorVisibility[targetSlug] === actorVisibility[sourceSlug])
+						)
+						if (isDifferent) {
+							actorVisibility[targetSlug] = actorVisibility[sourceSlug];
+						}
+					} else {
+						//Reset the target's setting to default.
+						if (actorVisibility.hasOwnProperty(targetSlug)) {
+							delete actorVisibility[targetSlug];
+							isDifferent = true;
+						}
+					}
+
+					if (isDifferent) {
+						nodes[i].is_visible_to_actor.valueHasMutated();
+					}
+
+					if (nodes[i].children().length > 0) {
+						updateNodes(nodes[i].children());
+					}
+				}
+			}
+
+			updateNodes(self.nodes());
+
+			this.dialogNode.dialog('close');
 		};
 
 		this.loadCurrentConfiguration();

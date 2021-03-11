@@ -9,6 +9,7 @@
 
 namespace Genesis\CustomBlocksPro\Blocks\Controls;
 
+use stdClass;
 use Genesis\CustomBlocks\Blocks\Controls\ControlAbstract;
 use Genesis\CustomBlocks\Blocks\Controls\ControlSetting;
 
@@ -65,6 +66,15 @@ class Repeater extends ControlAbstract {
 				'sanitize' => [ $this, 'sanitize_number' ],
 			]
 		);
+		$this->settings[] = new ControlSetting(
+			[
+				'name'    => 'sub_fields',
+				'type'    => 'sub_fields', // Doesn't appear in the <FieldSettings> React component.
+				'default' => new stdClass(), // So this appears as {} in JavaScript.
+			]
+		);
+
+		$this->locations = [ 'editor' => __( 'Editor', 'genesis-custom-blocks-pro' ) ];
 	}
 
 	/**

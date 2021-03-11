@@ -15,6 +15,27 @@ use Genesis\CustomBlocks\ComponentAbstract;
 class Asset extends ComponentAbstract {
 
 	/**
+	 * The slug for the block editor script.
+	 *
+	 * @var string
+	 */
+	const BLOCK_EDITOR_SCRIPT_SLUG = 'genesis-custom-blocks-block-editor-script';
+
+	/**
+	 * The slug for the block editor stylesheet.
+	 *
+	 * @var string
+	 */
+	const BLOCK_EDITOR_STYLE_SLUG = 'genesis-custom-blocks-pro-block-editor-css';
+
+	/**
+	 * The slug for the 'Edit Block' UI script.
+	 *
+	 * @var string
+	 */
+	const EDIT_BLOCK_SCRIPT_SLUG = 'genesis-custom-blocks-pro-edit-block-script';
+
+	/**
 	 * Asset paths and urls for blocks.
 	 *
 	 * @var array
@@ -31,42 +52,23 @@ class Asset extends ComponentAbstract {
 	protected $blocks = [];
 
 	/**
-	 * Initiates the class.
-	 *
-	 * @return $this
-	 */
-	public function init() {
-		$this->assets = [
-			'path' => [
-				'entry'        => $this->plugin->get_path( 'js/dist/editor-blocks-pro.js' ),
-				'editor_style' => $this->plugin->get_path( 'css/dist/blocks-editor-pro.css' ),
-			],
-			'url'  => [
-				'entry'        => $this->plugin->get_url( 'js/dist/editor-blocks-pro.js' ),
-				'editor_style' => $this->plugin->get_url( 'css/dist/blocks-editor-pro.css' ),
-			],
-		];
-
-		return $this;
-	}
-
-	/**
 	 * Registers all the hooks.
 	 */
 	public function register_hooks() {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
+		add_action( 'admin_footer', [ $this, 'enqueue_edit_block_script' ] );
 	}
 
 	/**
 	 * Launches the blocks inside Gutenberg.
 	 */
 	public function editor_assets() {
-		$js_config  = require $this->plugin->get_path( 'js/dist/editor-blocks-pro.asset.php' );
+		$js_config  = require $this->plugin->get_path( 'js/dist/block-editor-pro.asset.php' );
 		$css_config = require $this->plugin->get_path( 'css/dist/blocks-editor-pro.asset.php' );
 
 		wp_enqueue_script(
-			'genesis-custom-blocks-pro-blocks',
-			$this->assets['url']['entry'],
+			self::BLOCK_EDITOR_SCRIPT_SLUG,
+			$this->plugin->get_url( 'js/dist/block-editor-pro.js' ),
 			$js_config['dependencies'],
 			$js_config['version'],
 			true
@@ -74,10 +76,34 @@ class Asset extends ComponentAbstract {
 
 		// Enqueue optional editor only styles.
 		wp_enqueue_style(
-			'genesis-custom-blocks-pro-editor-css',
-			$this->assets['url']['editor_style'],
+			self::BLOCK_EDITOR_STYLE_SLUG,
+			$this->plugin->get_url( 'css/dist/blocks-editor-pro.css' ),
 			$css_config['dependencies'],
 			$css_config['version']
+		);
+	}
+
+	/**
+	 * Enqueues the 'Edit Block' UI script.
+	 */
+	public function enqueue_edit_block_script() {
+		$screen = get_current_screen();
+
+		if (
+			! is_object( $screen ) ||
+			genesis_custom_blocks()->get_post_type_slug() !== $screen->post_type ||
+			'post' !== $screen->base
+		) {
+			return;
+		}
+
+		$js_config = require $this->plugin->get_path( 'js/dist/edit-block-pro.asset.php' );
+		wp_enqueue_script(
+			self::EDIT_BLOCK_SCRIPT_SLUG,
+			$this->plugin->get_url( 'js/dist/edit-block-pro.js' ),
+			$js_config['dependencies'],
+			$js_config['version'],
+			true
 		);
 	}
 }
