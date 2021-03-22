@@ -13,13 +13,18 @@ var chartOptionsLegend = {
 }
 
 var chartOptionsTooltips = {
-    onlyShowForDatasetIndex: [0, 1, 2, 3, 4, 5, 6, 7],
-    displayColors: false,
+    onlyShowForDatasetIndex: [7, 8, 9, 10, 11, 12, 13], // only for polynomial lines
+    // mode: 'interpolate',
+    intersect: false,
+    mode: 'nearest',
+    displayColors: true,
     backgroundColor: '#ffffff',
     titleFontColor: '#086296',
     titleFontFamily: "'Lato', Calibri, sans-serif",
+    titleFontSize: 14,
     bodyFontColor: '#002235',
     bodyFontFamily: "'Lato', Calibri, sans-serif",
+    bodyFontSize: 14,
 };
 
 var chartOptionsHover = {
@@ -122,12 +127,15 @@ var chartOptionsPlugins = {
             }
         }
     },
-    // crosshair: {
-    //     line: {
-    //         color: '#F66',  // crosshair line color
-    //         width: 1        // crosshair line width
-    //     },
-    // }
+    crosshair: {
+        line: {
+            color: '#F66',  // crosshair line color
+            width: 1        // crosshair line width
+        },
+        zoom: {
+            enabled: false,                                      // enable zooming
+        },
+    }
 }
 
 var chartOptionsQuarters = {
@@ -137,7 +145,7 @@ var chartOptionsQuarters = {
         legendCallback: function (chart) {
             var text = [];
             text.push('<ul class="' + chart.id + '-legend chartjs-legend">');
-            for (var i = 0; i < chart.data.datasets.length; i++) {
+            for (var i = 0; i < (chart.data.datasets.length / 2); i++) { // divide by 2 as the second set of data is polynomial lines
                 if (chart.data.datasets[i].label) {
                     text.push('<li>');
                     text.push(chart.data.datasets[i].label);
@@ -162,12 +170,12 @@ var chartOptionsYears = {
     legendCallback: function (chart) {
         var text = [];
         text.push('<ul class="' + chart.id + '-legend chartjs-legend">');
-        for (var i = 0; i < chart.data.datasets.length; i++) {
-            text.push('<li>');
+        for (var i = 0; i < (chart.data.datasets.length / 2); i++) { // divide by 2 as the second set of data is polynomial lines
             if (chart.data.datasets[i].label) {
+                text.push('<li>');
                 text.push(chart.data.datasets[i].label);
+                text.push('</li>');
             }
-            text.push('</li>');
         }
         text.push('</ul>');
         return text.join('');

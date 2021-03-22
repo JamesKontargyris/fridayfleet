@@ -290,10 +290,10 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                         borderWidth: 2,
                         spanGaps: true,
                         pointStyle: 'circle',
-                        pointRadius: 2,
-                        pointHoverRadius: 4,
-                        pointHoverBorderColor: 'rgba(<?php echo $colour; ?>, 0.8)',
-                        pointHoverBackgroundColor: 'rgba(<?php echo $colour; ?>, 0.8)',
+                        pointRadius: 3,
+                        pointHoverRadius: 3,
+                        pointHoverBorderColor: 'rgba(<?php echo $colour; ?>, 0.2)',
+                        pointHoverBackgroundColor: 'rgba(<?php echo $colour; ?>, 0.2)',
                         lineTension: 0.3,
                     },
 					<?php endforeach; ?>
@@ -306,7 +306,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 
 		<?php reset( $graph_colours ); ?>
 
-        // Add polynomial lines
+        // Add polynomial lines to quarters chart
 		<?php foreach($fixed_age_value_graph_data_quarters[ $ship_db_slug ] as $dataset) : ?>
 		<?php $colour = ( ! current( $graph_colours ) ) ? reset( $graph_colours ) : current( $graph_colours ); next( $graph_colours ); ?>
 
@@ -321,10 +321,11 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
         polynomialData = regression.polynomial(rawData, {order: 3, precision: 10});
 
         chartQuarters.data.datasets.push({
+            label: '<?php echo $dataset['label']; ?>',
             data: [
 				<?php $i = 0; ?>
 				<?php foreach($dataset['data'] as $x => $y) : ?>
-                {x: moment('<?php echo $x; ?>', "YYYYMM"), y: polynomialData['points'][<?php echo $i; ?>][1]},
+                {x: moment('<?php echo $x; ?>', "YYYYMM"), y: +(polynomialData['points'][<?php echo $i; ?>][1].toFixed(2))},
 				<?php $i ++; ?>
 				<?php endforeach; ?>
             ],
@@ -335,13 +336,14 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             spanGaps: true,
             pointStyle: 'circle',
             pointRadius: 0,
+            pointHitRadius: 5,
             pointHoverRadius: 0,
             lineTension: 0.3,
+            options: chartOptionsQuarters,
         });
         chartQuarters.update();
 
 		<?php endforeach; ?>
-
 
 		<?php reset( $graph_colours ); ?>
 
@@ -360,12 +362,15 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 							<?php endforeach; ?>
                         ],
                         fill: false,
-                        borderColor: 'rgba(<?php echo $colour; ?>, 1)',
-                        backgroundColor: 'rgba(<?php echo $colour; ?>, 1)',
+                        borderColor: 'rgba(<?php echo $colour; ?>, 0.2)',
+                        backgroundColor: 'rgba(<?php echo $colour; ?>, 0.2)',
                         borderWidth: 2,
-                        spanGaps: false,
+                        spanGaps: true,
                         pointStyle: 'circle',
                         pointRadius: 3,
+                        pointHoverRadius: 3,
+                        pointHoverBorderColor: 'rgba(<?php echo $colour; ?>, 0.2)',
+                        pointHoverBackgroundColor: 'rgba(<?php echo $colour; ?>, 0.2)',
                         lineTension: 0.3,
                     },
 
@@ -377,6 +382,47 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             options: chartOptionsYears,
 
         });
+
+        // Add polynomial lines to years chart
+		<?php foreach($fixed_age_value_graph_data_years[ $ship_db_slug ] as $dataset) : ?>
+		<?php $colour = ( ! current( $graph_colours ) ) ? reset( $graph_colours ) : current( $graph_colours ); next( $graph_colours ); ?>
+
+        // Build an array of raw data
+        var rawData = [],
+            i = 0;
+		<?php foreach($dataset['data'] as $x => $y) : ?>
+        rawData.push([i, <?php echo number_format( $y, 2 ); ?>]);
+        i++;
+		<?php endforeach; ?>
+
+        polynomialData = regression.polynomial(rawData, {order: 3, precision: 10});
+
+        chartYears.data.datasets.push({
+            label: '<?php echo $dataset['label']; ?>',
+            data: [
+				<?php $i = 0; ?>
+				<?php foreach($dataset['data'] as $x => $y) : ?>
+                {x: moment('<?php echo $x; ?>', "YYYYMM"), y: +(polynomialData['points'][<?php echo $i; ?>][1].toFixed(2))},
+				<?php $i ++; ?>
+				<?php endforeach; ?>
+            ],
+            fill: false,
+            borderColor: 'rgba(<?php echo $colour; ?>, 1)',
+            backgroundColor: 'rgba(<?php echo $colour; ?>, 1)',
+            borderWidth: 2,
+            spanGaps: true,
+            pointStyle: 'circle',
+            pointRadius: 0,
+            pointHitRadius: 5,
+            pointHoverRadius: 0,
+            lineTension: 0.3,
+            options: chartOptionsYears,
+        });
+        chartYears.update();
+
+		<?php endforeach; ?>
+
+		<?php reset( $graph_colours ); ?>
 
         // Custom legend
         var quartersLegendContainer = document.getElementById("quarters-legend-container"),
