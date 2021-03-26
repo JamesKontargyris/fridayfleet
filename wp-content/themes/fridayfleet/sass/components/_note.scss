@@ -73,3 +73,9 @@
   background-size: 2rem;
   padding-left: 2.4rem;
 }
+
+.note-group--hide-plot-links {
+  a.btn--plot-on-graph {
+    display: none; // hide plot-on-graph links when graph isn't available
+  }
+}

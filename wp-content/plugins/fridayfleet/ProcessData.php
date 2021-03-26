@@ -14,14 +14,14 @@ class ProcessData {
 	];
 
 	protected $first_month_of_quarter = [ // number of first month of each quarter
-			1 => '01',
-			2 => '04',
-			3 => '07',
-			4 => '10'
-		];
+		1 => '01',
+		2 => '04',
+		3 => '07',
+		4 => '10'
+	];
 
 	public function processFixedAgeValueData( $ship_data, $timeline = 'quarters', $purpose = 'graph' ) {
-		$fixed_age_value_data   = []; // the master array of all processed data
+		$fixed_age_value_data = []; // the master array of all processed data
 
 
 		if ( $purpose == 'table' && $timeline == 'quarters' ) {
@@ -98,6 +98,23 @@ class ProcessData {
 
 		}
 
+	}
+
+	public function processDepreciationData( $data ) {
+		$depreciation_data = [];
+
+		foreach ( $data as $dataset ) {
+
+			if ( $dataset['adjusted_price'] ) {
+				$depreciation_data[ $dataset['comm_advice_year'] . $this->first_month_of_quarter[ $dataset['comm_advice_quarter'] ] ] = $dataset[ 'adjusted_price' ];
+			} else {
+				$depreciation_data[ $dataset['comm_advice_year'] . $this->first_month_of_quarter[ $dataset['comm_advice_quarter'] ] ] = 0;
+			}
+		}
+
+		ksort($depreciation_data);
+
+		return $depreciation_data;
 	}
 
 }

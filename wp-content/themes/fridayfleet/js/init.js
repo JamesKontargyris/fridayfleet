@@ -1,4 +1,4 @@
-window.addEventListener('load', function(e) {
+window.addEventListener('load', function (e) {
     jQuery('.ajax-loader').removeClass('is-active');
 });
 
@@ -26,6 +26,14 @@ window.addEventListener('load', function(e) {
 
         // Make tab header sticky on scroll
         $(".data-view__header--sticky").sticky({topSpacing: 0});
+
+        // Datepicker
+        $('.datepicker').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'd MM yy',
+            maxDate: '+0d'
+        });
     }
 
     window.ffInit();
@@ -37,8 +45,8 @@ window.addEventListener('load', function(e) {
         $('html,body').animate({scrollTop: $(aid).offset().top}, 'slow');
     });
 
-    $('body').on('click', '.btn--key', function(e) {
-       $('.data-view__legend').slideToggle();
+    $('body').on('click', '.btn--key', function (e) {
+        $('.data-view__legend').slideToggle();
     });
 
 })(jQuery);

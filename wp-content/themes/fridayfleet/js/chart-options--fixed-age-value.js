@@ -1,4 +1,4 @@
-var chartOptionsLegend = {
+var fixedAgeValue_chartOptionsLegend = {
     display: false,
 
     // position: 'bottom',
@@ -12,9 +12,8 @@ var chartOptionsLegend = {
     // },
 }
 
-var chartOptionsTooltips = {
-    onlyShowForDatasetIndex: [7, 8, 9, 10, 11, 12, 13], // only for polynomial lines
-    // mode: 'interpolate',
+var fixedAgeValue_chartOptionsTooltips = {
+    onlyShowForDatasetIndex: [0, 1, 2, 3, 4, 5, 6], // show raw data, not polynomial data
     intersect: false,
     mode: 'nearest',
     displayColors: true,
@@ -25,19 +24,43 @@ var chartOptionsTooltips = {
     bodyFontColor: '#002235',
     bodyFontFamily: "'Lato', Calibri, sans-serif",
     bodyFontSize: 14,
+    callbacks: {
+        label: function (tooltipItem, data) {
+            if (tooltipItem.datasetIndex < 7) { // if above 7 this dataset is polynomial data, so shouldn't be displayed
+                var label = data.datasets[tooltipItem.datasetIndex].label || '';
+                if (label) {
+                    label += ': ';
+                }
+                label += tooltipItem.yLabel;
+
+                return label;
+            }
+
+            return false;
+
+        },
+        labelColor: function (tooltipItem, chart) {
+            var useDatasetIndex = tooltipItem.datasetIndex < 7 ? tooltipItem.datasetIndex + 7 : tooltipItem.datasetIndex; // only use a higher dataset index if it is one of the first six datasets, i.e. the raw data, otherwise you get a console error
+            return {
+                borderColor: 'rgba(255,0,0, 0)',
+                backgroundColor: chart.config.data.datasets[useDatasetIndex].backgroundColor, // use the background color of the polynomial lines rather than the lower opacity raw data lines
+
+            }
+        }
+    }
 };
 
-var chartOptionsHover = {
+var fixedAgeValue_chartOptionsHover = {
     mode: 'nearest'
 };
 
-var chartOptionsAnnotations = {
+var fixedAgeValue_chartOptionsAnnotations = {
     events: ["click"],
     annotations: []
 };
 
 var
-    chartOptionsScalesQuarters = {
+    fixedAgeValue_chartOptionsScalesQuarters = {
         xAxes: [{
             type: 'time',
             distribution: 'series',
@@ -73,7 +96,7 @@ var
         }]
     }
 
-var chartOptionsScalesYears = {
+var fixedAgeValue_chartOptionsScalesYears = {
     xAxes: [{
         type: 'time',
         distribution: 'series',
@@ -109,7 +132,7 @@ var chartOptionsScalesYears = {
     }]
 }
 
-var chartOptionsPlugins = {
+var fixedAgeValue_chartOptionsPlugins = {
     zoom: {
         pan: {
             enabled: false,
@@ -135,13 +158,16 @@ var chartOptionsPlugins = {
         zoom: {
             enabled: false,                                      // enable zooming
         },
+    },
+    datalabels: {
+        display: false
     }
 }
 
-var chartOptionsQuarters = {
+var fixedAgeValue_chartOptionsQuarters = {
         responsive: true,
         maintainAspectRatio: false,
-        legend: chartOptionsLegend,
+        legend: fixedAgeValue_chartOptionsLegend,
         legendCallback: function (chart) {
             var text = [];
             text.push('<ul class="' + chart.id + '-legend chartjs-legend">');
@@ -155,18 +181,49 @@ var chartOptionsQuarters = {
             text.push('</ul>');
             return text.join('');
         },
-        tooltips: chartOptionsTooltips,
-        hover: chartOptionsHover,
-        scales: chartOptionsScalesQuarters,
-        plugins: chartOptionsPlugins,
-        annotation: chartOptionsAnnotations,
+        tooltips: fixedAgeValue_chartOptionsTooltips,
+        hover: fixedAgeValue_chartOptionsHover,
+        scales: fixedAgeValue_chartOptionsScalesQuarters,
+        plugins: fixedAgeValue_chartOptionsPlugins,
+        annotation: fixedAgeValue_chartOptionsAnnotations,
+        onClick: function (event, activeElements) {
+
+
+            // Get X and Y values when clicking on graph
+            // var yTop = this.chart.chartArea.top;
+            // var yBottom = this.chart.chartArea.bottom;
+            //
+            // var yMin = this.chart.scales['y-axis-0'].min;
+            // var yMax = this.chart.scales['y-axis-0'].max;
+            // var newY = 0;
+            //
+            // if (event.offsetY <= yBottom && event.offsetY >= yTop) {
+            //     newY = Math.abs((event.offsetY - yTop) / (yBottom - yTop));
+            //     newY = (newY - 1) * -1;
+            //     newY = newY * (Math.abs(yMax - yMin)) + yMin;
+            // }
+            // ;
+            //
+            // var xTop = this.chart.chartArea.left;
+            // var xBottom = this.chart.chartArea.right;
+            // var xMin = this.chart.scales['x-axis-0'].min;
+            // var xMax = this.chart.scales['x-axis-0'].max;
+            // var newX = 0;
+            //
+            // if (event.offsetX <= xBottom && event.offsetX >= xTop) {
+            //     newX = Math.abs((event.offsetX - xTop) / (xBottom - xTop));
+            //     newX = newX * (Math.abs(xMax - xMin)) + xMin;
+            // };
+            //
+            // console.log(newX, newY);
+        }
     }
 ;
 
-var chartOptionsYears = {
+var fixedAgeValue_chartOptionsYears = {
     responsive: true,
     maintainAspectRatio: false,
-    legend: chartOptionsLegend,
+    legend: fixedAgeValue_chartOptionsLegend,
     legendCallback: function (chart) {
         var text = [];
         text.push('<ul class="' + chart.id + '-legend chartjs-legend">');
@@ -180,9 +237,9 @@ var chartOptionsYears = {
         text.push('</ul>');
         return text.join('');
     },
-    tooltips: chartOptionsTooltips,
-    hover: chartOptionsHover,
-    scales: chartOptionsScalesYears,
-    plugins: chartOptionsPlugins,
-    annotation: chartOptionsAnnotations,
+    tooltips: fixedAgeValue_chartOptionsTooltips,
+    hover: fixedAgeValue_chartOptionsHover,
+    scales: fixedAgeValue_chartOptionsScalesYears,
+    plugins: fixedAgeValue_chartOptionsPlugins,
+    annotation: fixedAgeValue_chartOptionsAnnotations,
 };

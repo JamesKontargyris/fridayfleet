@@ -18,6 +18,17 @@ class GetData {
 		return $this->process_data->processFixedAgeValueData( $data, $timeline, $purpose );
 	}
 
+	public function getDepreciationData( $build_date = '', $ship_db_slug = '' ) {
+		$data = $this->queries->get_vessel_prices_at_age($build_date, $ship_db_slug);
+
+		if($data) {
+			return $this->process_data->processDepreciationData($data);
+		}
+
+		return false;
+
+	}
+
 	public function getFinalPriceAverages( $ship_db_slug = '', $order = 'ASC' ) {
 		$datasets = [];
 

@@ -47,13 +47,10 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             <div class="data-view__header">
                 <h1 class="data-view__title">
                     <strong class="data-view__title--icon-ship"><?php echo $ship_db_slug; ?></strong>
-                    <span class="data-view__title__divider">&rang;</span> Fixed Age Value
+                    <span class="data-view__title__divider">&rang;</span> <span
+                            class="data-view__title__view-title-and-menu-toggle">Fixed Age Value <a href="#"
+                                                                                                    class="data-view__title__change-data-view-link show-data-view-menu">Change View</a></span>
                 </h1>
-
-                <div class="data-view__controls">
-					<?php // get_template_part( 'template-parts/partials/partial', 'data-view-select-desktop' ); ?>
-
-                </div>
             </div>
 
         </div>
@@ -70,7 +67,8 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                                 <span class="help-icon tooltip--help hide--touch"
                                       title="Drag out an area to zoom. Click a datapoint to view data. Click a legend label to show/hide other datasets."></span>
                             </div>
-                            <div class="box__header__sub-title content--value-over-time-years">Data based on an average of quarter figures for each year
+                            <div class="box__header__sub-title content--value-over-time-years">Data based on an average
+                                of quarter figures for each year
                             </div>
                         </div>
                         <div class="box__header__controls">
@@ -110,7 +108,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                             <div class="graph-group graph-group--value-over-time-quarters content--value-over-time-quarters is-active">
                                 <div class="graph-group__canvas-container">
                                     <canvas class="graph graph__value-over-time-quarters"
-                                            id="graph__value-over-time-quarters--<?php echo $ship_db_slug; ?>"></canvas>
+                                            id="graph__value-over-time-quarters"></canvas>
                                 </div>
                                 <div id="quarters-legend-container"></div>
                             </div>
@@ -118,7 +116,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                             <div class="graph-group graph-group--value-over-time-years content--value-over-time-years">
                                 <div class="graph-group__canvas-container">
                                     <canvas class="graph graph__value-over-time-years"
-                                            id="graph__value-over-time-years--<?php echo $ship_db_slug; ?>"></canvas>
+                                            id="graph__value-over-time-years"></canvas>
                                 </div>
                                 <div id="years-legend-container"></div>
                             </div>
@@ -171,16 +169,19 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                             </thead>
 
                             <tbody class="content--value-over-time-quarters is-active">
-							<?php $year   = 0;
-							$current_year = date( 'Y', strtotime('today') );
+							<?php
+							$year                    = 0;
+							$display_on_page_load    = 1; // used to display the latest year's set of data on page load
+							$latest_set_of_data_year = $fixed_age_value_table_data_quarters[ $ship_db_slug ][0]['year']; // gets the year from the latest set of data. Used to display the latest year's set of data on page load
+
 							foreach ( $fixed_age_value_table_data_quarters[ $ship_db_slug ] as $ship_data ) : ?>
 								<?php if ( $year != $ship_data['year'] ) : $year = $ship_data['year']; ?>
-                                    <tr class="data-table__sub-title<?php if ( $year == $current_year ) : ?> is-active<?php endif; ?>"
+                                    <tr class="data-table__sub-title<?php if ( $display_on_page_load && $latest_set_of_data_year == $year ) : ?> is-active<?php endif; ?>"
                                         data-year="<?php echo $year; ?>">
                                         <td colspan="8"><?php echo $ship_data['year']; ?></td>
                                     </tr>
 								<?php endif; ?>
-                                <tr data-year-data="<?php echo $year; ?>" <?php if ( $year == $current_year ) : ?> class="is-active"<?php endif; ?>>
+                                <tr data-year-data="<?php echo $year; ?>" <?php if ( $display_on_page_load && $latest_set_of_data_year == $year ) : ?> class="is-active"<?php endif; ?>>
                                     <td><?php echo 'Q' . $ship_data['quarter']; ?></td>
                                     <td><?php echo number_format( $ship_data['average_new_build'], 2 ); ?></td>
                                     <td><?php echo number_format( $ship_data['average_5_year'], 2 ); ?></td>
@@ -217,18 +218,18 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 
             <div class="data-view__side-col data-view__side-col--ship-view">
 
-                <?php if($ship_definition = get_field('ship_type_definition', $ship_type_id)) : ?>
+				<?php if ( $ship_definition = get_field( 'ship_type_definition', $ship_type_id ) ) : ?>
 
-                <div class="box box--is-closed">
-                    <div class="box__header">
-                        <div class="box__header__titles">
-                            <div class="box__header__title">Ship Definition</div>
+                    <div class="box box--is-closed">
+                        <div class="box__header">
+                            <div class="box__header__titles">
+                                <div class="box__header__title">Ship Definition</div>
+                            </div>
+                        </div>
+                        <div class="box__content">
+							<?php echo $ship_definition; ?>
                         </div>
                     </div>
-                    <div class="box__content">
-                        <?php echo $ship_definition; ?>
-                    </div>
-                </div>
 
 				<?php endif; ?>
 
@@ -241,7 +242,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 
                     <div class="box__content box__content--scrollable" style="max-height: 70vh;">
 
-                        <?php $market_notes = get_market_notes_by_ship_type_id( $ship_type_id ); ?>
+						<?php $market_notes = get_market_notes_by_ship_type_id( $ship_type_id ); ?>
 
 						<?php if ( $market_notes->have_posts() ) : ?>
 
@@ -263,12 +264,14 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 
 </main>
 
+<?php get_template_part( 'template-parts/partials/partial', 'data-view-selection-menu' ); ?>
+
 <?php get_footer(); ?>
 
 <script>
     (function ($) {
-        var ctxQuarters = document.getElementById('graph__value-over-time-quarters--<?php echo $ship_db_slug; ?>');
-        var ctxYears = document.getElementById('graph__value-over-time-years--<?php echo $ship_db_slug; ?>');
+        var ctxQuarters = document.getElementById('graph__value-over-time-quarters');
+        var ctxYears = document.getElementById('graph__value-over-time-years');
 
         var chartQuarters = new Chart(ctxQuarters, {
             type: 'line',
@@ -291,6 +294,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                         spanGaps: true,
                         pointStyle: 'circle',
                         pointRadius: 3,
+                        pointHitRadius: 10,
                         pointHoverRadius: 3,
                         pointHoverBorderColor: 'rgba(<?php echo $colour; ?>, 0.2)',
                         pointHoverBackgroundColor: 'rgba(<?php echo $colour; ?>, 0.2)',
@@ -300,7 +304,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                 ]
             },
 
-            options: chartOptionsQuarters,
+            options: fixedAgeValue_chartOptionsQuarters,
 
         });
 
@@ -325,7 +329,10 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             data: [
 				<?php $i = 0; ?>
 				<?php foreach($dataset['data'] as $x => $y) : ?>
-                {x: moment('<?php echo $x; ?>', "YYYYMM"), y: +(polynomialData['points'][<?php echo $i; ?>][1].toFixed(2))},
+                {
+                    x: moment('<?php echo $x; ?>', "YYYYMM"),
+                    y: +(polynomialData['points'][<?php echo $i; ?>][1].toFixed(2))
+                },
 				<?php $i ++; ?>
 				<?php endforeach; ?>
             ],
@@ -336,10 +343,10 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             spanGaps: true,
             pointStyle: 'circle',
             pointRadius: 0,
-            pointHitRadius: 5,
+            pointHitRadius: 0,
             pointHoverRadius: 0,
             lineTension: 0.3,
-            options: chartOptionsQuarters,
+            options: fixedAgeValue_chartOptionsQuarters,
         });
         chartQuarters.update();
 
@@ -379,7 +386,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                 ]
             },
 
-            options: chartOptionsYears,
+            options: fixedAgeValue_chartOptionsYears,
 
         });
 
@@ -402,7 +409,10 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             data: [
 				<?php $i = 0; ?>
 				<?php foreach($dataset['data'] as $x => $y) : ?>
-                {x: moment('<?php echo $x; ?>', "YYYYMM"), y: +(polynomialData['points'][<?php echo $i; ?>][1].toFixed(2))},
+                {
+                    x: moment('<?php echo $x; ?>', "YYYYMM"),
+                    y: +(polynomialData['points'][<?php echo $i; ?>][1].toFixed(2))
+                },
 				<?php $i ++; ?>
 				<?php endforeach; ?>
             ],
@@ -416,7 +426,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             pointHitRadius: 5,
             pointHoverRadius: 0,
             lineTension: 0.3,
-            options: chartOptionsYears,
+            options: fixedAgeValue_chartOptionsYears,
         });
         chartYears.update();
 
@@ -514,12 +524,12 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                         xAdjust: -12,
                     }
             };
-            chartQuarters.options.annotation.annotations = [newAnnotation];
+            chartQuarters.options.annotation.annotations.push(newAnnotation);
             chartQuarters.update();
 
             // Update the value for the years chart
             newAnnotation.value = yearGraphValue;
-            chartYears.options.annotation.annotations = [newAnnotation];
+            chartYears.options.annotation.annotations.push(newAnnotation);
             chartYears.update();
 
             document.getElementsByClassName('btn--clear-annotations')[0].className += ' is-active';

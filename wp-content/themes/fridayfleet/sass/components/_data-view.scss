@@ -23,7 +23,7 @@
 }
 
 .data-view__legend {
-  display:none;
+  display: none;
   width: 100%;
 }
 
@@ -36,12 +36,12 @@
   padding: 1.5rem;
   border: 0.1rem solid tint($navy-blue, 12%);
   border-radius: $base-border-radius;
-  width:100%;
+  width: 100%;
 
   @include grid-media($grid-tablet-plus) {
     display: inline-flex;
     padding: 2rem 1rem;
-    width:100%;
+    width: 100%;
   }
 
   li {
@@ -49,7 +49,7 @@
     text-align: center;
 
     @include grid-media($grid-tablet-plus) {
-      display:flex;
+      display: flex;
       flex-direction: row;
       justify-content: flex-start;
       align-items: center;
@@ -62,14 +62,14 @@
     }
 
     .data-view__legend__colour-circle {
-      display:block;
+      display: block;
       @include font-size(40, 1);
-      margin-bottom:2rem;
+      margin-bottom: 2rem;
 
       @include grid-media($grid-tablet-plus) {
         display: inline;
         @include font-size(40, 1);
-        margin-bottom:0;
+        margin-bottom: 0;
       }
     }
   }
@@ -90,6 +90,23 @@
 
   @include grid-media($grid-tablet-plus) {
     @include font-size(20, 22);
+  }
+}
+
+a.data-view__title__change-data-view-link {
+  margin-left: 0.5rem;
+  @include font-size(13, 24);
+
+  @include no-touch {
+    &:hover,
+    &:active,
+    &:focus {
+      opacity: 0.6;
+    }
+  }
+
+  @include grid-media($grid-tablet-plus) {
+    @include font-size(14, 28);
   }
 }
 
@@ -121,17 +138,17 @@
 
 @include grid-media($grid-desktop) {
   .data-view__main-col {
-    float:left;
-    margin-right:2rem;
-    width:calc(75% - 2rem);
-    max-width:200rem;
+    float: left;
+    margin-right: 2rem;
+    width: calc(75% - 2rem);
+    max-width: 200rem;
   }
 
   .data-view__side-col {
-    float:left;
+    float: left;
     margin-top: 2rem; // to allow for sticky header
-    width:25%;
-    max-width:50rem;
+    width: 25%;
+    max-width: 50rem;
   }
 
 }

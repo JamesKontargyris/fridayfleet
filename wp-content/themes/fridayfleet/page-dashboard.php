@@ -28,7 +28,7 @@
                         <a href="/data-view?ship=<?php echo get_field( 'ship_type_database_slug', $ship_type_id ); ?>"
                            class="icon--ship nav-bar__link__<?php echo get_field( 'ship_type_database_slug', $ship_type_id ); ?>"
                            data-ship="<?php echo get_field( 'ship_type_database_slug', $ship_type_id ); ?>"
-                           data-page-type="data-view" data-show-data-view-select="1">
+                           data-page-type="data-view">
 							<?php echo get_the_title( $ship_type_id ); ?>
                         </a>
                     </li>

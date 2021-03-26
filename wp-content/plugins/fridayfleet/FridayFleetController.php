@@ -39,6 +39,10 @@ class FridayFleetController {
 		return $latest_data[0];
 	}
 
+	public function getDepreciationData( $build_date = '', string $ship_db_slug = '' ) {
+		return $this->get_data->getDepreciationData( $build_date, $ship_db_slug );
+	}
+
 	public function getNumberOfDatasets( $data = [], $array_key = 'data' ) {
 		$no_of_datasets = 0;
 		foreach ( $data as $dataset ) {

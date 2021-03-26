@@ -4,8 +4,7 @@
         var url = $(this).attr('href'),
             dataView = $('#data-view-value').val(),
             pageType = $(this).data('page-type'),
-            shipType = $(this).data('ship'),
-            showDataViewSelect = $(this).data('show-data-view-select');
+            shipType = $(this).data('ship');
 
         $('#current-url').val(url);
         $('#page-type').val(pageType);
@@ -15,7 +14,7 @@
             $('.nav-bar__menu a').removeClass('is-active');
             $(this).addClass('is-active');
 
-            window.ajaxUpdate(url, dataView, pageType, showDataViewSelect);
+            window.ajaxUpdate(url, dataView, pageType);
 
         }
 
@@ -23,7 +22,7 @@
             $('.nav-bar__menu a').removeClass('is-active');
             $('.nav-bar__link__' + shipType).addClass('is-active');
 
-            window.ajaxUpdate(url, dataView, pageType, showDataViewSelect);
+            window.ajaxUpdate(url, dataView, pageType);
         }
 
         e.preventDefault();

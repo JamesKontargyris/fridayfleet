@@ -45,4 +45,13 @@ class Queries {
 
 		return $this->dbConn->fetchRowMany( $query, $bound_variables );
 	}
+
+	public function get_vessel_prices_at_age( $build_date = '', $deadweight_category = '' ) {
+		$bound_variables['build_date']                = $build_date;
+		$bound_variables['deadweight_category'] = $deadweight_category;
+
+		$query = 'call sp_getVesselPricesAtSpecificAge( :build_date, :deadweight_category )';
+
+		return $this->dbConn->fetchRowMany( $query, $bound_variables );
+	}
 }

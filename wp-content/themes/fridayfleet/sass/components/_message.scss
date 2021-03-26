@@ -1,8 +1,10 @@
 .message {
-  margin:1rem 0;
+  position: relative;
+  margin:0 0 1rem 0;
   background:tint($navy-blue, 12%);
-  padding:2rem;
+  padding:1rem 6rem 1rem 2rem; // extra padding to allow for close button
   color:white;
+  border-radius: $base-border-radius;
 }
 
 .message--error {
@@ -27,4 +29,16 @@
   background:url(img/icon-message-info.svg) left 2rem center no-repeat, tint($navy-blue, 12%);
   background-size: 1.8rem;
   padding-left:4.4rem;
+}
+
+.message__close {
+  position: absolute;
+  top:50%;
+  right:2rem;
+  transform: translateY(-50%);
+  width:1rem;
+  height:1rem;
+  background:url(img/icon-cross-white.svg) center no-repeat;
+  background-size:1rem;
+  cursor:pointer;
 }
