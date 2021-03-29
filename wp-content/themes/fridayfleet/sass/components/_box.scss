@@ -50,6 +50,10 @@ a.box__full-size-link {
 .box__content {
 }
 
+.box__content--medium-font-size {
+  @include font-size(14, 21);
+}
+
 .box__header__titles {
   flex-grow: 1;
 }

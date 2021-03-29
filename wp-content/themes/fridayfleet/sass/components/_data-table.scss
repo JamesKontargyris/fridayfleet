@@ -1,12 +1,13 @@
 table.data-table {
   position: relative;
-  @include font-size(11, 13);
+  @include font-size(13, 13);
   width: 100%;
   margin: 0 0 0.5rem;
   border-collapse: collapse;
 
-  @include grid-media($grid-desktop) {
-    @include font-size(13, 15);
+  &.data-table--standard-font-size {
+    font-size:inherit;
+    line-height: inherit;
   }
 
   tr {
@@ -21,7 +22,7 @@ table.data-table {
       }
 
       @include grid-media($grid-tablet-plus) {
-        padding: 0.4rem;
+        padding: 0.6rem;
       }
     }
   }
@@ -57,11 +58,6 @@ table.data-table {
         font-weight: $font-black;
         color: white;
         border-bottom: 0.1rem solid $dark-blue;
-        @include font-size(12, 14);
-
-        @include grid-media($grid-tablet-plus) {
-          @include font-size(13, 15);
-        }
 
         &.is-active {
           background: url(img/icon-arrow-up-red.svg) left center no-repeat, tint($navy-blue, 7%);

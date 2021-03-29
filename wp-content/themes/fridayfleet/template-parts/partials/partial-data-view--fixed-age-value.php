@@ -218,20 +218,9 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 
             <div class="data-view__side-col data-view__side-col--ship-view">
 
-				<?php if ( $ship_definition = get_field( 'ship_type_definition', $ship_type_id ) ) : ?>
-
-                    <div class="box box--is-closed">
-                        <div class="box__header">
-                            <div class="box__header__titles">
-                                <div class="box__header__title">Ship Definition</div>
-                            </div>
-                        </div>
-                        <div class="box__content">
-							<?php echo $ship_definition; ?>
-                        </div>
-                    </div>
-
-				<?php endif; ?>
+				<?php get_template_part('template-parts/partials/partial', 'ship-definition', [
+				        'ship_type_id' => $ship_type_id
+                ]); ?>
 
                 <section class="box">
                     <div class="box__header">
