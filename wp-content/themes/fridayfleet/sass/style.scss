@@ -13,6 +13,7 @@ Text Domain: textdomainhere
 @import
 'vendors/bourbon/bourbon',
 'vendors/neat/neat',
+'vendors/toggle-switchy/toggle-switchy',
 'vendors/hamburgers/hamburgers';
 
 /// Abstracts (utilities that do not output any CSS)
@@ -64,6 +65,7 @@ Text Domain: textdomainhere
 'components/powered-by-message',
 'components/tooltipster',
 'components/depreciation-form',
+'components/toggle-switch',
 'components/graph-legend';
 
 /// Page-specific stylesheets

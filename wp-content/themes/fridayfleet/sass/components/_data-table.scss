@@ -6,7 +6,7 @@ table.data-table {
   border-collapse: collapse;
 
   &.data-table--standard-font-size {
-    font-size:inherit;
+    font-size: inherit;
     line-height: inherit;
   }
 
@@ -16,6 +16,12 @@ table.data-table {
       padding: 0.3rem;
       text-align: left;
       border-right: 0.1rem dotted tint($navy-blue, 20%);
+      line-height: 1.1;
+
+      .is-trend-data {
+        color: $grey;
+        font-style: italic;
+      }
 
       &:last-of-type {
         border-right: none;
@@ -109,6 +115,19 @@ html.js {
       display: table-row;
       cursor: pointer;
     }
+  }
+
+}
+
+.data-table__key {
+  display: inline-block;
+  padding:0.5rem;
+  border:0.1rem solid $grey;
+  @include font-size(13, 13);
+
+  .is-trend-data {
+    font-style: italic;
+    color: $grey;
   }
 
 }

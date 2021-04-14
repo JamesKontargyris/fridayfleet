@@ -31,6 +31,22 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 	$fixed_age_value_graph_data_years    = $ff->getFixedAgeValueDataForGraph( $ship_db_slug, 'years' );
 	$fixed_age_value_table_data_quarters = $ff->getFixedAgeValueDataForTable( $ship_db_slug, 'quarters' );
 	$fixed_age_value_table_data_years    = $ff->getFixedAgeValueDataForTable( $ship_db_slug, 'years' );
+
+	//	var_dump( $fixed_age_value_table_data_quarters );
+	// Precision digits in BC math.
+	bcscale( 10 );
+	$poly_regression_data_25yr = new PolynomialRegression( 4 );
+	$array_index               = 0;
+	foreach ( $fixed_age_value_table_data_quarters[ $ship_db_slug ] as $dataset ) {
+		$poly_regression_data_25yr->addData( $array_index, $dataset['average_25_year'] );
+		$array_index ++;
+	}
+	$coefficients = $poly_regression_data_25yr->getCoefficients();
+
+	for ( $i = 0; $i <= $array_index; $i ++ ) {
+//	    var_dump($poly_regression_data_25yr->interpolate($coefficients, $i));
+
+	}
 	?>
 
 	<?php
@@ -48,8 +64,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                 <h1 class="data-view__title">
                     <strong class="data-view__title--icon-ship"><?php echo $ship_db_slug; ?></strong>
                     <span class="data-view__title__divider">&rang;</span> <span
-                            class="data-view__title__view-title-and-menu-toggle">Fixed Age Value <a href="#"
-                                                                                                    class="data-view__title__change-data-view-link show-data-view-menu">Change View</a></span>
+                            class="data-view__title__view-title-and-menu-toggle">Fixed Age Value</span>
                 </h1>
             </div>
 
@@ -65,7 +80,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                                         class="help-icon tooltip--help hide--no-touch"
                                         title="Drag out an area to zoom. Tap a datapoint to view data. Tap a legend label to show/hide other datasets."></span>
                                 <span class="help-icon tooltip--help hide--touch"
-                                      title="Drag out an area to zoom. Click a datapoint to view data. Click a legend label to show/hide other datasets."></span>
+                                      title="Drag out an area to zoom. Hover over a datapoint to view data. Click a legend label to show/hide other datasets."></span>
                             </div>
                             <div class="box__header__sub-title content--value-over-time-years">Data based on an average
                                 of quarter figures for each year
@@ -135,12 +150,26 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                                 average of quarter figures for each year
                             </div>
                         </div>
+                        <div class="box__header__controls">
+                            <div class="toggle-switch">
+                                <label for="view-trend-data" data-style="rounded" data-text="false" data-size="xs">
+                                    <input checked type="checkbox" id="view-trend-data">
+                                    <span class="toggle">
+                                    <span class="switch"></span>
+                                </span>
+                                    <span class="toggle-switch__label">View trend data</span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="box__content box__content--scrollable" style="max-height: 25vh;">
+                        <!--                        <p class="data-table__key">Actual data <span class="is-trend-data">Trend data</span></p>-->
+
 
                         <table class="data-table data-table--first-col data-table--sticky-header"
                                cellpadding="0" cellspacing="0" border="0">
+
                             <thead>
                             <tr>
                                 <th></th>
@@ -174,7 +203,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 							$display_on_page_load    = 1; // used to display the latest year's set of data on page load
 							$latest_set_of_data_year = $fixed_age_value_table_data_quarters[ $ship_db_slug ][0]['year']; // gets the year from the latest set of data. Used to display the latest year's set of data on page load
 
-							foreach ( $fixed_age_value_table_data_quarters[ $ship_db_slug ] as $ship_data ) : ?>
+							foreach ( $fixed_age_value_table_data_quarters[ $ship_db_slug ] as $key => $ship_data ) : ?>
 								<?php if ( $year != $ship_data['year'] ) : $year = $ship_data['year']; ?>
                                     <tr class="data-table__sub-title<?php if ( $display_on_page_load && $latest_set_of_data_year == $year ) : ?> is-active<?php endif; ?>"
                                         data-year="<?php echo $year; ?>">
@@ -183,31 +212,33 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 								<?php endif; ?>
                                 <tr data-year-data="<?php echo $year; ?>" <?php if ( $display_on_page_load && $latest_set_of_data_year == $year ) : ?> class="is-active"<?php endif; ?>>
                                     <td><?php echo 'Q' . $ship_data['quarter']; ?></td>
-                                    <td><?php echo number_format( $ship_data['average_new_build'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['average_5_year'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['average_10_year'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['average_15_year'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['average_20_year'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['average_25_year'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['average_scrap'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="quarters-0-<?php echo $key; ?>"><?php echo number_format( $ship_data['average_new_build'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="quarters-1-<?php echo $key; ?>"><?php echo number_format( $ship_data['average_5_year'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="quarters-2-<?php echo $key; ?>"><?php echo number_format( $ship_data['average_10_year'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="quarters-3-<?php echo $key; ?>"><?php echo number_format( $ship_data['average_15_year'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="quarters-4-<?php echo $key; ?>"><?php echo number_format( $ship_data['average_20_year'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="quarters-5-<?php echo $key; ?>"><?php echo number_format( $ship_data['average_25_year'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="quarters-6-<?php echo $key; ?>"><?php echo number_format( $ship_data['average_scrap'], 2 ); ?></td>
+									<?php // data-poly-data-target-id="time_scale-JS_polynomial_dataset-data_index" ?>
                                 </tr>
 							<?php endforeach; ?>
                             </tbody>
 
                             <tbody class="content--value-over-time-years">
 							<?php $year = 0;
+							$key        = 0; // keep track of which key of the array corresponds to the current year's position
 							foreach ( $fixed_age_value_table_data_years[ $ship_db_slug ] as $year => $ship_data ) : ?>
                                 <tr>
                                     <td><?php echo $year; ?></td>
-                                    <td><?php echo number_format( $ship_data['new'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['5yr'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['10yr'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['15yr'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['20yr'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['25yr'], 2 ); ?></td>
-                                    <td><?php echo number_format( $ship_data['scrap'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="years-0-<?php echo $key; ?>"><?php echo number_format( $ship_data['new'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="years-1-<?php echo $key; ?>"><?php echo number_format( $ship_data['5yr'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="years-2-<?php echo $key; ?>"><?php echo number_format( $ship_data['10yr'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="years-3-<?php echo $key; ?>"><?php echo number_format( $ship_data['15yr'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="years-4-<?php echo $key; ?>"><?php echo number_format( $ship_data['20yr'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="years-5-<?php echo $key; ?>"><?php echo number_format( $ship_data['25yr'], 2 ); ?></td>
+                                    <td data-poly-data-target-id="years-6-<?php echo $key; ?>"><?php echo number_format( $ship_data['scrap'], 2 ); ?></td>
                                 </tr>
-							<?php endforeach; ?>
+								<?php $key ++; endforeach; ?>
                             </tbody>
 
                         </table>
@@ -218,9 +249,9 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 
             <div class="data-view__side-col data-view__side-col--ship-view">
 
-				<?php get_template_part('template-parts/partials/partial', 'ship-definition', [
-				        'ship_type_id' => $ship_type_id
-                ]); ?>
+				<?php get_template_part( 'template-parts/partials/partial', 'ship-definition', [
+					'ship_type_id' => $ship_type_id
+				] ); ?>
 
                 <section class="box">
                     <div class="box__header">
@@ -299,7 +330,10 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 
 		<?php reset( $graph_colours ); ?>
 
-        // Add polynomial lines to quarters chart
+        // Keep track of which group of data we are working with so we can target the right data table cell with polynomial data
+        var dataGroupIndex = 0;
+
+        // Add polynomial lines to quarters chart and data table
 		<?php foreach($fixed_age_value_graph_data_quarters[ $ship_db_slug ] as $dataset) : ?>
 		<?php $colour = ( ! current( $graph_colours ) ) ? reset( $graph_colours ) : current( $graph_colours ); next( $graph_colours ); ?>
 
@@ -338,6 +372,15 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             options: fixedAgeValue_chartOptionsQuarters,
         });
         chartQuarters.update();
+
+        // Reverse data as table data is descending while graph data is ascending
+        var reversedPolyData = polynomialData['points'].reverse();
+        // Append the polynomial data to the relevant data table cell
+        reversedPolyData.forEach(function (data, index) {
+            $('td[data-poly-data-target-id="quarters-' + dataGroupIndex + '-' + index + '"]').append('<br><span class="is-trend-data">' + data[1].toFixed(2) + '</span>');
+        });
+
+        dataGroupIndex++;
 
 		<?php endforeach; ?>
 
@@ -379,6 +422,9 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 
         });
 
+        // Keep track of which group of data we are working with so we can target the right data table cell with polynomial data
+        var dataGroupIndex = 0;
+
         // Add polynomial lines to years chart
 		<?php foreach($fixed_age_value_graph_data_years[ $ship_db_slug ] as $dataset) : ?>
 		<?php $colour = ( ! current( $graph_colours ) ) ? reset( $graph_colours ) : current( $graph_colours ); next( $graph_colours ); ?>
@@ -418,6 +464,15 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             options: fixedAgeValue_chartOptionsYears,
         });
         chartYears.update();
+
+        // Reverse data as table data is descending while graph data is ascending
+        var reversedPolyData = polynomialData['points'].reverse();
+        // Append the polynomial data to the relevant data table cell
+        reversedPolyData.forEach(function (data, index) {
+            $('td[data-poly-data-target-id="years-' + dataGroupIndex + '-' + index + '"]').append('<br><span class="is-trend-data">' + data[1].toFixed(2) + '</span>');
+        });
+
+        dataGroupIndex++;
 
 		<?php endforeach; ?>
 

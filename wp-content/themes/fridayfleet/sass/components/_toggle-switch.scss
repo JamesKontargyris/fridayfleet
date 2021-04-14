@@ -1,0 +1,12 @@
+.toggle-switch {
+  label {
+    @extend .toggle-switchy;
+  }
+}
+
+.toggle-switch__label {
+  display: inline-block;
+  margin: 0 0.75rem;
+  @include font-size(13, 13);
+  font-weight:$font-black;
+}

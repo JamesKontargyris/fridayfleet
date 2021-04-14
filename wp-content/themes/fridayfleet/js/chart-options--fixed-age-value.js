@@ -27,27 +27,30 @@ var fixedAgeValue_chartOptionsTooltips = {
     callbacks: {
         label: function (tooltipItem, data) {
             if (tooltipItem.datasetIndex < 7) { // if above 7 this dataset is polynomial data, so shouldn't be displayed
-                var label = data.datasets[tooltipItem.datasetIndex].label || '';
-                if (label) {
-                    label += ': ';
+                // Set up the label and data for the actual value
+                var actualLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+                if (actualLabel) {
+                    actualLabel += ': ';
                 }
-                label += tooltipItem.yLabel;
+                actualLabel += tooltipItem.yLabel;
 
-                return label;
+                // Setup the label and data for the polynomial value
+                var polyLabel = 'Trend: ';
+                polyLabel += data.datasets[tooltipItem.datasetIndex + 7].data[tooltipItem.index].y;
+
+                return [actualLabel, polyLabel];
             }
-
             return false;
-
         },
         labelColor: function (tooltipItem, chart) {
             var useDatasetIndex = tooltipItem.datasetIndex < 7 ? tooltipItem.datasetIndex + 7 : tooltipItem.datasetIndex; // only use a higher dataset index if it is one of the first six datasets, i.e. the raw data, otherwise you get a console error
             return {
                 borderColor: 'rgba(255,0,0, 0)',
-                backgroundColor: chart.config.data.datasets[useDatasetIndex].backgroundColor, // use the background color of the polynomial lines rather than the lower opacity raw data lines
+                backgroundColor: chart.config.data.datasets[useDatasetIndex].backgroundColor, // use the background color of the polynomial lines rather than the lower opacity actual data lines
 
             }
         }
-    }
+    },
 };
 
 var fixedAgeValue_chartOptionsHover = {
