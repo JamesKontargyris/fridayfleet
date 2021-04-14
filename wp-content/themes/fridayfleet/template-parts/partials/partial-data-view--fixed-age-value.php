@@ -31,22 +31,6 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 	$fixed_age_value_graph_data_years    = $ff->getFixedAgeValueDataForGraph( $ship_db_slug, 'years' );
 	$fixed_age_value_table_data_quarters = $ff->getFixedAgeValueDataForTable( $ship_db_slug, 'quarters' );
 	$fixed_age_value_table_data_years    = $ff->getFixedAgeValueDataForTable( $ship_db_slug, 'years' );
-
-	//	var_dump( $fixed_age_value_table_data_quarters );
-	// Precision digits in BC math.
-	bcscale( 10 );
-	$poly_regression_data_25yr = new PolynomialRegression( 4 );
-	$array_index               = 0;
-	foreach ( $fixed_age_value_table_data_quarters[ $ship_db_slug ] as $dataset ) {
-		$poly_regression_data_25yr->addData( $array_index, $dataset['average_25_year'] );
-		$array_index ++;
-	}
-	$coefficients = $poly_regression_data_25yr->getCoefficients();
-
-	for ( $i = 0; $i <= $array_index; $i ++ ) {
-//	    var_dump($poly_regression_data_25yr->interpolate($coefficients, $i));
-
-	}
 	?>
 
 	<?php
