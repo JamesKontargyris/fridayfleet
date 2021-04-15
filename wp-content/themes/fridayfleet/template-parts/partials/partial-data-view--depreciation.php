@@ -192,7 +192,7 @@ if ( ! isset( $_SESSION['date_of_finance'] ) ) {
                             <table class="data-table data-table--first-col data-table--sticky-header"
                                    cellpadding="0" cellspacing="0" border="0">
 
-                                <tbody class="content--value-over-time-quarters is-active">
+                                <tbody class="content--fixed-age-value-quarters is-active">
 								<?php
 								$table_data              = array_reverse( $depreciation_data, true ); // change data to descending order
 								$quarters                = [

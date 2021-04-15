@@ -66,7 +66,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                                 <span class="help-icon tooltip--help hide--touch"
                                       title="Drag out an area to zoom. Hover over a datapoint to view data. Click a legend label to show/hide other datasets."></span>
                             </div>
-                            <div class="box__header__sub-title content--value-over-time-years">Data based on an average
+                            <div class="box__header__sub-title content--fixed-age-value-years">Data based on an average
                                 of quarter figures for each year
                             </div>
                         </div>
@@ -74,14 +74,14 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                             <div class="switch">
                                 <div class="switch__option-group">
                                     <button class="switch__option switch__option--quarters is-active"
-                                            data-elements-to-show=".content--value-over-time-quarters"
-                                            data-elements-to-hide=".content--value-over-time-years"
+                                            data-elements-to-show=".content--fixed-age-value-quarters"
+                                            data-elements-to-hide=".content--fixed-age-value-years"
                                             onclick="resetZoom()">
                                         Quarters
                                     </button>
                                     <button class="switch__option switch__option--years"
-                                            data-elements-to-show=".content--value-over-time-years"
-                                            data-elements-to-hide=".content--value-over-time-quarters"
+                                            data-elements-to-show=".content--fixed-age-value-years"
+                                            data-elements-to-hide=".content--fixed-age-value-quarters"
                                             onclick="resetZoom()">
                                         Years
                                     </button>
@@ -95,6 +95,8 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                         <div class="graph-update-button-group">
                             <button onclick="resetZoom()" class="btn btn--graph-update btn--reset-zoom">Reset Zoom
                             </button>
+                            <button onclick="resetGraph()" class="btn btn--graph-update btn--reset-graph">Reset Graph
+                            </button>
                             <button onclick="clearAnnotations()"
                                     class="btn btn--graph-update btn--clear-annotations">
                                 Remove Line
@@ -104,18 +106,18 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 
                         <div id="graphs" class="graphs-container">
 
-                            <div class="graph-group graph-group--value-over-time-quarters content--value-over-time-quarters is-active">
+                            <div class="graph-group graph-group--fixed-age-value-quarters content--fixed-age-value-quarters is-active">
                                 <div class="graph-group__canvas-container">
-                                    <canvas class="graph graph__value-over-time-quarters"
-                                            id="graph__value-over-time-quarters"></canvas>
+                                    <canvas class="graph graph__fixed-age-value-quarters"
+                                            id="graph__fixed-age-value-quarters"></canvas>
                                 </div>
                                 <div id="quarters-legend-container"></div>
                             </div>
 
-                            <div class="graph-group graph-group--value-over-time-years content--value-over-time-years">
+                            <div class="graph-group graph-group--fixed-age-value-years content--fixed-age-value-years">
                                 <div class="graph-group__canvas-container">
-                                    <canvas class="graph graph__value-over-time-years"
-                                            id="graph__value-over-time-years"></canvas>
+                                    <canvas class="graph graph__fixed-age-value-years"
+                                            id="graph__fixed-age-value-years"></canvas>
                                 </div>
                                 <div id="years-legend-container"></div>
                             </div>
@@ -130,7 +132,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                     <div class="box__header">
                         <div class="box__header__titles">
                             <div class="box__header__title">Data</div>
-                            <div class="box__header__sub-title content--value-over-time-years">Data based on an
+                            <div class="box__header__sub-title content--fixed-age-value-years">Data based on an
                                 average of quarter figures for each year
                             </div>
                         </div>
@@ -181,7 +183,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                             </tr>
                             </thead>
 
-                            <tbody class="content--value-over-time-quarters is-active">
+                            <tbody class="content--fixed-age-value-quarters is-active">
 							<?php
 							$year                    = 0;
 							$display_on_page_load    = 1; // used to display the latest year's set of data on page load
@@ -208,7 +210,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 							<?php endforeach; ?>
                             </tbody>
 
-                            <tbody class="content--value-over-time-years">
+                            <tbody class="content--fixed-age-value-years">
 							<?php $year = 0;
 							$key        = 0; // keep track of which key of the array corresponds to the current year's position
 							foreach ( $fixed_age_value_table_data_years[ $ship_db_slug ] as $year => $ship_data ) : ?>
@@ -274,8 +276,8 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 
 <script>
     (function ($) {
-        var ctxQuarters = document.getElementById('graph__value-over-time-quarters');
-        var ctxYears = document.getElementById('graph__value-over-time-years');
+        var ctxQuarters = document.getElementById('graph__fixed-age-value-quarters');
+        var ctxYears = document.getElementById('graph__fixed-age-value-years');
 
         var chartQuarters = new Chart(ctxQuarters, {
             type: 'line',
@@ -489,15 +491,111 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             }
             var parent = target.parentElement;
             var chartId = parseInt(parent.classList[0].split("-")[0], 10);
+            var chartQuartersId = chartQuarters.id;
+            var chartYearsId = chartYears.id;
             var chart = Chart.instances[chartId];
             var index = Array.prototype.slice.call(parent.children).indexOf(target);
+            // console.log(chart);
 
-            chart.legend.options.onClick.call(chart, event, chart.legend.legendItems[index]);
-            chart.legend.options.onClick.call(chart, event, chart.legend.legendItems[index + 7]); // +7 to hide polynomial line too
-            if (chart.isDatasetVisible(index)) {
-                target.classList.remove('hidden');
-            } else {
-                target.classList.add('hidden');
+            var allVisible = true; // assume that all datasets are visible
+
+            var i = 0;
+            while (i < (chart.config.data.datasets.length / 2)) { // all datasets divided by 2, as second half of datasets is polynomials of first half
+                if (chart.legend.legendItems[i].hidden) { // this dataset is hidden, meaning this is not the first legend click
+                    allVisible = false; // not all datasets are visible
+                    break;
+                }
+                i++;
+            }
+
+            if (allVisible) { // all datasets are visible, so hide all but the one clicked
+                i = 0;
+                while (i < (chart.config.data.datasets.length / 2)) { // all datasets divided by 2, as second half of datasets is polynomials of first half
+                    if (index !== i) {
+                        chartQuarters.data.datasets[i].hidden = true; // raw data dataset
+                        chartQuarters.data.datasets[i + 7].hidden = true; // polynomial dataset
+
+                        chartYears.data.datasets[i].hidden = true; // raw data dataset
+                        chartYears.data.datasets[i + 7].hidden = true; // polynomial dataset
+
+                        // Update the legend items
+                        $('.' + chartQuartersId + '-legend li:nth-child(' + (i + 1) + ')').addClass('hidden');
+                        $('.' + chartYearsId + '-legend li:nth-child(' + (i + 1) + ')').addClass('hidden');
+                    }
+                    i++;
+                }
+                // Show the reset graph button
+                document.getElementsByClassName('btn--reset-graph')[0].classList.add('is-active');
+
+                chartQuarters.update();
+                chartYears.update();
+
+            } else { // not all datasets are visible, so we need to show/hide the one clicked depending on current state
+                chartQuarters.data.datasets[index].hidden = !chartQuarters.data.datasets[index].hidden; // toggles hidden value - true/false
+                chartQuarters.data.datasets[index + 7].hidden = !chartQuarters.data.datasets[index + 7].hidden;
+
+                chartYears.data.datasets[index].hidden = !chartYears.data.datasets[index].hidden;
+                chartYears.data.datasets[index + 7].hidden = !chartYears.data.datasets[index + 7].hidden;
+
+                // Update the legend items
+                $('.' + chartQuartersId + '-legend li:nth-child(' + (index + 1) + ')').toggleClass('hidden');
+                $('.' + chartYearsId + '-legend li:nth-child(' + (index + 1) + ')').toggleClass('hidden');
+
+                // Show the reset graph button
+                document.getElementsByClassName('btn--reset-graph')[0].classList.add('is-active');
+
+                chartQuarters.update();
+                chartYears.update();
+            }
+
+            // Now check if the actions above have hidden all datasets - if so, reset the graph
+            var allHidden = true; // assume all datasets are hidden
+            i = 0;
+            while (i < (chart.config.data.datasets.length / 2)) { // all datasets divided by 2, as second half of datasets is polynomials of first half
+                if (!chart.legend.legendItems[i].hidden) { // this dataset is NOT hidden
+                    allHidden = false; // not all datasets are hidden
+                    break;
+                }
+                i++;
+            }
+
+            if (allHidden) {
+                // all datasets are hidden, so reset all to be visible
+                i = 0;
+                while (i < (chart.config.data.datasets.length / 2)) { // all datasets divided by 2, as second half of datasets is polynomials of first half
+                    chartQuarters.data.datasets[index].hidden = false;
+                    chartQuarters.data.datasets[index + 7].hidden = false;
+
+                    chartYears.data.datasets[index].hidden = false;
+                    chartYears.data.datasets[index + 7].hidden = false;
+
+                    i++;
+                }
+                // Update the legend item
+                $('.' + chartQuartersId + '-legend li').removeClass('hidden');
+                $('.' + chartYearsId + '-legend li').removeClass('hidden');
+
+                // Hide the reset graph button
+                document.getElementsByClassName('btn--reset-graph')[0].classList.remove('is-active');
+
+                chartQuarters.update();
+                chartYears.update();
+            }
+
+            // Now check if the actions above have led to all datasets being displayed - if so, hide the reset graph button
+            var allVisible = true; // assume all datasets are visible
+            i = 0;
+            while (i < (chart.config.data.datasets.length / 2)) { // all datasets divided by 2, as second half of datasets is polynomials of first half
+                if (chart.legend.legendItems[i].hidden) { // this dataset is hidden
+                    allVisible = false; // not all datasets are hidden
+                    break;
+                }
+                i++;
+            }
+
+            if(allVisible) {
+                // Hide the reset graph button
+                document.getElementsByClassName('btn--reset-graph')[0].classList.remove('is-active');
             }
         }
 
@@ -505,6 +603,27 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             chartQuarters.resetZoom();
             chartYears.resetZoom();
             document.getElementsByClassName('btn--reset-zoom')[0].classList.remove('is-active');
+        };
+
+        window.resetGraph = function () {
+            var chartQuartersId = chartQuarters.id;
+            var chartYearsId = chartYears.id;
+
+            // Show all datasets
+            chartQuarters.data.datasets.forEach(function (e, index) {
+                chartQuarters.data.datasets[index].hidden = false;
+            });
+            chartQuarters.update();
+
+            chartYears.data.datasets.forEach(function (e, index) {
+                chartYears.data.datasets[index].hidden = false;
+            });
+            chartYears.update();
+
+            // Update the legend items
+            $('.' + chartQuartersId + '-legend li').removeClass('hidden');
+            $('.' + chartYearsId + '-legend li').removeClass('hidden');
+            document.getElementsByClassName('btn--reset-graph')[0].classList.remove('is-active');
         };
 
         window.clearAnnotations = function () {

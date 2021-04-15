@@ -152,6 +152,7 @@ function fridayfleet_scripts() {
 	wp_enqueue_script( 'fridayfleet-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-ajax', get_template_directory_uri() . '/js/ajax.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-buttons', get_template_directory_uri() . '/js/buttons.js', array(), _S_VERSION, true );
+	wp_enqueue_script( 'fridayfleet-legend', get_template_directory_uri() . '/js/legend.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-box', get_template_directory_uri() . '/js/box.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-nav-bar', get_template_directory_uri() . '/js/nav-bar.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-sub-menu', get_template_directory_uri() . '/js/sub-menu.js', array(), _S_VERSION, true );

@@ -17,8 +17,8 @@
 
 // Display content off the page when not active
 // This avoids zero heights and widths on canvas elements that have display:none
-.content--value-over-time-quarters,
-.content--value-over-time-years {
+.content--fixed-age-value-quarters,
+.content--fixed-age-value-years {
   position: fixed;
   top: -99999rem;
 
