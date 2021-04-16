@@ -19,8 +19,17 @@
   }
 }
 
+// use this in addition to .ajax-loader for sections of the page, rather than the whole page
+.ajax-loader--section {
+  position: absolute;
+}
+
+// When JS is disabled
 .no-js {
-  .ajax-loader.is-active {
+  .ajax-loader--page.is-active {
+    display:none;
+  }
+  .ajax-loader--section.is-active {
     display:none;
   }
 }

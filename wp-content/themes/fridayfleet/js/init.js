@@ -31,7 +31,7 @@ window.addEventListener('load', function (e) {
         $('.datepicker').datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'd MM yy',
+            dateFormat: 'dd/mm/yy',
             maxDate: '+0d'
         });
     }

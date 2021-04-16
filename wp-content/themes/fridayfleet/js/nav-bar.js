@@ -14,7 +14,7 @@
             $('.nav-bar__menu a').removeClass('is-active');
             $(this).addClass('is-active');
 
-            window.ajaxUpdate(url, dataView, pageType);
+            window.ajaxPageUpdate(url, dataView, pageType);
 
         }
 
@@ -22,7 +22,7 @@
             $('.nav-bar__menu a').removeClass('is-active');
             $('.nav-bar__link__' + shipType).addClass('is-active');
 
-            window.ajaxUpdate(url, dataView, pageType);
+            window.ajaxPageUpdate(url, dataView, pageType);
         }
 
         e.preventDefault();

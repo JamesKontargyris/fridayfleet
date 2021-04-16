@@ -1,15 +1,5 @@
 var fixedAgeValue_chartOptionsLegend = {
-    display: false,
-
-    // position: 'bottom',
-    // align: 'center',
-    // labels: {
-    //     usePointStyle: true,
-    //     padding: 20,
-    //     boxWidth: 15,
-    //     fontSize: 13,
-    //     fontColor: '#7996B9',
-    // },
+    display: false
 }
 
 var fixedAgeValue_chartOptionsTooltips = {
@@ -62,8 +52,34 @@ var fixedAgeValue_chartOptionsAnnotations = {
     annotations: []
 };
 
-var
-    fixedAgeValue_chartOptionsScalesQuarters = {
+var fixedAgeValue_chartOptionsxAxes = {
+    ticks: {
+        fontColor: '#7996B9',
+    },
+    gridLines: {
+        color: 'rgba(62, 93, 122, 0.3)',
+    }
+}
+
+var fixedAgeValue_chartOptionsyAxes = [{
+    scaleLabel: {
+        display: true,
+        labelString: '€ MILLIONS',
+        fontSize: 11,
+        fontColor: '#4C7094',
+    },
+    ticks: {
+        beginAtZero: true,
+        fontColor: '#7996B9',
+    },
+    gridLines: {
+        color: 'rgba(62, 93, 122, 1)',
+        zeroLineColor: 'rgba(62, 93, 122, 1)',
+    }
+}];
+
+var fixedAgeValue_chartOptionsScales = {
+    quarters: {
         xAxes: [{
             type: 'time',
             distribution: 'series',
@@ -74,66 +90,29 @@ var
                     quarter: 'YYYY [Q]Q'
                 }
             },
-            ticks: {
-                fontColor: '#7996B9',
-            },
-            gridLines: {
-                color: 'rgba(62, 93, 122, 0.3)',
-            },
+            ticks: fixedAgeValue_chartOptionsxAxes.ticks,
+            gridLines: fixedAgeValue_chartOptionsxAxes.gridLines
         }],
-        yAxes: [{
-            scaleLabel: {
-                display: true,
-                labelString: '€ MILLIONS',
-                fontSize: 11,
-                fontColor: '#4C7094',
+        yAxes: fixedAgeValue_chartOptionsyAxes
+    },
+    years: {
+        xAxes: [{
+            type: 'time',
+            distribution: 'series',
+            time: {
+                tooltipFormat: 'YYYY',
+                minUnit: 'year',
+                displayFormats: {
+                    year: 'YYYY'
+                }
             },
-            ticks: {
-                beginAtZero: true,
-                fontColor: '#7996B9',
-            },
-            gridLines: {
-                color: 'rgba(62, 93, 122, 1)',
-                zeroLineColor: 'rgba(62, 93, 122, 1)',
-            }
-        }]
+            ticks: fixedAgeValue_chartOptionsxAxes.ticks,
+            gridLines: fixedAgeValue_chartOptionsxAxes.gridLines
+        }],
+        yAxes: fixedAgeValue_chartOptionsyAxes
     }
-
-var fixedAgeValue_chartOptionsScalesYears = {
-    xAxes: [{
-        type: 'time',
-        distribution: 'series',
-        time: {
-            tooltipFormat: 'YYYY',
-            minUnit: 'year',
-            displayFormats: {
-                year: 'YYYY'
-            }
-        },
-        ticks: {
-            fontColor: '#7996B9',
-        },
-        gridLines: {
-            color: 'rgba(62, 93, 122, 0.3)',
-        },
-    }],
-    yAxes: [{
-        scaleLabel: {
-            display: true,
-            labelString: '€ MILLIONS',
-            fontSize: 11,
-            fontColor: '#4C7094',
-        },
-        ticks: {
-            beginAtZero: true,
-            fontColor: '#7996B9',
-        },
-        gridLines: {
-            color: 'rgba(62, 93, 122, 1)',
-            zeroLineColor: 'rgba(62, 93, 122, 1)',
-        }
-    }]
 }
+
 
 var fixedAgeValue_chartOptionsPlugins = {
     zoom: {
@@ -149,17 +128,20 @@ var fixedAgeValue_chartOptionsPlugins = {
             mode: 'xy',
             sensitivity: 1,
             onZoomComplete: function ({chart}) {
-                document.getElementsByClassName('btn--reset-zoom')[0].className += ' is-active';
+                document.getElementsByClassName('btn--reset-zoom--fixed-age-value')[0].className += ' is-active';
             }
         }
     },
     crosshair: {
+        sync: {
+            enabled: false
+        },
         line: {
             color: '#F66',  // crosshair line color
             width: 1        // crosshair line width
         },
         zoom: {
-            enabled: false,                                      // enable zooming
+            enabled: false // enable zooming
         },
     },
     datalabels: {
@@ -167,28 +149,19 @@ var fixedAgeValue_chartOptionsPlugins = {
     }
 }
 
-var fixedAgeValue_chartOptionsQuarters = {
+var fixedAgeValue_chartOptions = {
+    quarters: {
         responsive: true,
         maintainAspectRatio: false,
-        legend: fixedAgeValue_chartOptionsLegend,
-        legendCallback: function (chart) {
-            var text = [];
-            text.push('<ul class="' + chart.id + '-legend chartjs-legend">');
-            for (var i = 0; i < (chart.data.datasets.length / 2); i++) { // divide by 2 as the second set of data is polynomial lines
-                if (chart.data.datasets[i].label) {
-                    text.push('<li>');
-                    text.push(chart.data.datasets[i].label);
-                    text.push('</li>');
-                }
-            }
-            text.push('</ul>');
-            return text.join('');
-        },
         tooltips: fixedAgeValue_chartOptionsTooltips,
         hover: fixedAgeValue_chartOptionsHover,
-        scales: fixedAgeValue_chartOptionsScalesQuarters,
+        scales: fixedAgeValue_chartOptionsScales.quarters,
         plugins: fixedAgeValue_chartOptionsPlugins,
         annotation: fixedAgeValue_chartOptionsAnnotations,
+        legend: fixedAgeValue_chartOptionsLegend,
+        legendCallback: function (chart) {
+            return legendCallback(chart);
+        },
         onClick: function (event, activeElements) {
 
 
@@ -220,29 +193,18 @@ var fixedAgeValue_chartOptionsQuarters = {
             //
             // console.log(newX, newY);
         }
-    }
-;
-
-var fixedAgeValue_chartOptionsYears = {
-    responsive: true,
-    maintainAspectRatio: false,
-    legend: fixedAgeValue_chartOptionsLegend,
-    legendCallback: function (chart) {
-        var text = [];
-        text.push('<ul class="' + chart.id + '-legend chartjs-legend">');
-        for (var i = 0; i < (chart.data.datasets.length / 2); i++) { // divide by 2 as the second set of data is polynomial lines
-            if (chart.data.datasets[i].label) {
-                text.push('<li>');
-                text.push(chart.data.datasets[i].label);
-                text.push('</li>');
-            }
-        }
-        text.push('</ul>');
-        return text.join('');
     },
-    tooltips: fixedAgeValue_chartOptionsTooltips,
-    hover: fixedAgeValue_chartOptionsHover,
-    scales: fixedAgeValue_chartOptionsScalesYears,
-    plugins: fixedAgeValue_chartOptionsPlugins,
-    annotation: fixedAgeValue_chartOptionsAnnotations,
-};
+    years: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: fixedAgeValue_chartOptionsLegend,
+        tooltips: fixedAgeValue_chartOptionsTooltips,
+        hover: fixedAgeValue_chartOptionsHover,
+        scales: fixedAgeValue_chartOptionsScales.years,
+        plugins: fixedAgeValue_chartOptionsPlugins,
+        annotation: fixedAgeValue_chartOptionsAnnotations,
+        legendCallback: function (chart) {
+            return legendCallback(chart);
+        },
+    }
+}

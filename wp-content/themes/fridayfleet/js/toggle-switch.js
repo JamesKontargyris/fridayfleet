@@ -3,9 +3,12 @@
     $('body').on('change', '#view-trend-data', function () {
         var checkbox = $(this).closest('input[type=checkbox]');
 
-        if (checkbox.prop("checked") == true)
+        if (checkbox.prop("checked") == true) {
             $('.is-trend-data').show();
-        else
+            $('.data-table__key').show();
+        } else {
             $('.is-trend-data').hide();
+            $('.data-table__key').hide();
+        }
     });
 })(jQuery);

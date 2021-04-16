@@ -1,4 +1,4 @@
-.depreciation-form {
+.vessel-finance-calculator {
   @include grid-media($grid-tablet-plus) {
     display: flex;
     justify-content: space-evenly;
@@ -6,7 +6,7 @@
   }
 }
 
-.depreciation-form__input-group {
+.vessel-finance-calculator__input-group {
   flex-grow: 1;
 
   @include grid-media($grid-mobile) {
@@ -23,12 +23,12 @@
 
 }
 
-.depreciation-form__label {
+.vessel-finance-calculator__label {
   display: block;
   margin-bottom: 0.5rem;
 }
 
-input[type="text"].depreciation-form__text-input {
+input[type="text"].vessel-finance-calculator__text-input {
   width: 100%;
   @include font-size(16, 16);
   background: rgba(white, 0.7);
@@ -36,7 +36,7 @@ input[type="text"].depreciation-form__text-input {
   color:black;
 }
 
-input[type="submit"].depreciation-form__button {
+input[type="submit"].vessel-finance-calculator__button {
   display: block;
   width: 100%;
   @include font-size(16, 16);

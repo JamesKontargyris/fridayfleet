@@ -81,6 +81,9 @@ var depreciation_chartOptionsPlugins = {
         }
     },
     crosshair: {
+        sync: {
+            enabled: false
+        },
         line: {
             color: '#F66',  // crosshair line color
             width: 1        // crosshair line width

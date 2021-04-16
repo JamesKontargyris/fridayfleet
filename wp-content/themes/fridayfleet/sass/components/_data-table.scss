@@ -1,3 +1,7 @@
+.data-table-container {
+  margin-top: 1rem;
+}
+
 table.data-table {
   position: relative;
   @include font-size(13, 13);
@@ -121,6 +125,7 @@ html.js {
 
 .data-table__key {
   display: inline-block;
+  float:right;
   padding:0.5rem;
   border:0.1rem solid $grey;
   @include font-size(13, 13);
@@ -128,6 +133,10 @@ html.js {
   .is-trend-data {
     font-style: italic;
     color: $grey;
+  }
+
+  &:after {
+    @include clearfix;
   }
 
 }

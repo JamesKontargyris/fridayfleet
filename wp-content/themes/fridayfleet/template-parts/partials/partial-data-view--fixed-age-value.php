@@ -25,12 +25,20 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 	endif; ?>
 
 	<?php
+	// Fixed age value stuff
 	$ship_type_id                        = $ship_type_data->ID;
 	$graph_colours                       = $ff->getColours();
 	$fixed_age_value_graph_data_quarters = $ff->getFixedAgeValueDataForGraph( $ship_db_slug, 'quarters' );
 	$fixed_age_value_graph_data_years    = $ff->getFixedAgeValueDataForGraph( $ship_db_slug, 'years' );
 	$fixed_age_value_table_data_quarters = $ff->getFixedAgeValueDataForTable( $ship_db_slug, 'quarters' );
 	$fixed_age_value_table_data_years    = $ff->getFixedAgeValueDataForTable( $ship_db_slug, 'years' );
+
+	// Vessel Finance Calculator / depreciation stuff
+	$depreciation_data     = [];
+	$build_date            = '';
+	$date_of_finance       = '';
+	$date_of_finance_array = [];
+	$graph_is_visible      = 0; // if this turns to one, market notes can be plotted on the graph, otherwise hide the plot on graph link
 	?>
 
 	<?php
@@ -57,10 +65,51 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
         <div class="data-view__cols">
 
             <div class="data-view__main-col data-view__main-col--ship-view">
+                <section class="box box--vessel-finance-calculator">
+                    <div class="box__header">
+                        <div class="box__header__titles">
+                            <div class="box__header__title">Vessel Finance Calculator <span
+                                        class="help-icon tooltip--help"
+                                        title="Dates should be entered in dd/mm/yyyy format."></span></div>
+                        </div>
+                    </div>
+                    <div class="box__content">
+						<?php get_template_part( 'template-parts/partials/partial', 'ajax-loader-section', [ 'id' => 'ajax-loader--vessel-finance-calculator' ] ); ?>
+
+                        <form action="" method="POST" class="vessel-finance-calculator">
+                            <div class="vessel-finance-calculator__input-group">
+                                <label for="build-date" class="vessel-finance-calculator__label">Build date</label>
+                                <input type="text" class="vessel-finance-calculator__text-input datepicker"
+                                       name="build-date"
+                                       placeholder="Select date..." value="<?php echo $build_date; ?>">
+                            </div>
+
+                            <div class="vessel-finance-calculator__input-group">
+                                <label for="date-of-finance" class="vessel-finance-calculator__label">Date of
+                                    finance</label>
+                                <input type="text" class="vessel-finance-calculator__text-input datepicker"
+                                       name="date-of-finance" placeholder="Select date..."
+                                       value="<?php echo $date_of_finance; ?>">
+                            </div>
+
+                            <div class="vessel-finance-calculator__input-group">
+                                <input type="hidden" name="form_submitted" value="1">
+                                <input type="hidden" name="ship" value="<?php echo $ship_db_slug ?>">
+                                <input type="submit"
+                                       class="vessel-finance-calculator__button depreciation-form__submit-button"
+                                       name="submit" value="Calculate">
+                            </div>
+                        </form>
+
+                        <div class="ajax-section ajax-section--vessel-finance-calculator"></div>
+                    </div>
+                </section>
+
+
                 <section class="box">
                     <div class="box__header">
                         <div class="box__header__titles">
-                            <div class="box__header__title">Graph <span
+                            <div class="box__header__title">Fixed Age Value Graph <span
                                         class="help-icon tooltip--help hide--no-touch"
                                         title="Drag out an area to zoom. Tap a datapoint to view data. Tap a legend label to show/hide other datasets."></span>
                                 <span class="help-icon tooltip--help hide--touch"
@@ -76,13 +125,13 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                                     <button class="switch__option switch__option--quarters is-active"
                                             data-elements-to-show=".content--fixed-age-value-quarters"
                                             data-elements-to-hide=".content--fixed-age-value-years"
-                                            onclick="resetZoom()">
+                                            onclick="resetZoom(['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years'], 'btn--reset-zoom--fixed-age-value')">
                                         Quarters
                                     </button>
                                     <button class="switch__option switch__option--years"
                                             data-elements-to-show=".content--fixed-age-value-years"
                                             data-elements-to-hide=".content--fixed-age-value-quarters"
-                                            onclick="resetZoom()">
+                                            onclick="resetZoom(['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years'], 'btn--reset-zoom--fixed-age-value')">
                                         Years
                                     </button>
                                 </div>
@@ -93,13 +142,15 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                     <div class="box__content">
 
                         <div class="graph-update-button-group">
-                            <button onclick="resetZoom()" class="btn btn--graph-update btn--reset-zoom">Reset Zoom
+                            <button onclick="resetZoom(['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years'], 'btn--reset-zoom--fixed-age-value')"
+                                    class="btn btn--graph-update btn--reset-zoom--fixed-age-value">Reset Zoom
                             </button>
-                            <button onclick="resetGraph()" class="btn btn--graph-update btn--reset-graph">Reset Graph
+                            <button onclick="resetGraph(['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years'], 'btn--reset-graph--fixed-age-value')"
+                                    class="btn btn--graph-update btn--reset-graph--fixed-age-value">Reset Graph
                             </button>
-                            <button onclick="clearAnnotations()"
-                                    class="btn btn--graph-update btn--clear-annotations">
-                                Remove Line
+                            <button onclick="clearAnnotations(['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years'], 'btn--clear-annotations--fixed-age-value')"
+                                    class="btn btn--graph-update btn--clear-annotations--fixed-age-value">
+                                Remove Line(s)
                             </button>
                         </div>
 
@@ -131,7 +182,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                 <section class="box">
                     <div class="box__header">
                         <div class="box__header__titles">
-                            <div class="box__header__title">Data</div>
+                            <div class="box__header__title">Fixed Age Value Data</div>
                             <div class="box__header__sub-title content--fixed-age-value-years">Data based on an
                                 average of quarter figures for each year
                             </div>
@@ -150,7 +201,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                     </div>
 
                     <div class="box__content box__content--scrollable" style="max-height: 25vh;">
-                        <!--                        <p class="data-table__key">Actual data <span class="is-trend-data">Trend data</span></p>-->
+                        <p class="data-table__key">Actual data <span class="is-trend-data">Trend data</span></p>
 
 
                         <table class="data-table data-table--first-col data-table--sticky-header"
@@ -205,7 +256,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                                     <td data-poly-data-target-id="quarters-4-<?php echo $key; ?>"><?php echo number_format( $ship_data['average_20_year'], 2 ); ?></td>
                                     <td data-poly-data-target-id="quarters-5-<?php echo $key; ?>"><?php echo number_format( $ship_data['average_25_year'], 2 ); ?></td>
                                     <td data-poly-data-target-id="quarters-6-<?php echo $key; ?>"><?php echo number_format( $ship_data['average_scrap'], 2 ); ?></td>
-									<?php // data-poly-data-target-id="time_scale-JS_polynomial_dataset-data_index" ?>
+									<?php // explanation: data-poly-data-target-id="time_scale-JS_polynomial_dataset-data_index" ?>
                                 </tr>
 							<?php endforeach; ?>
                             </tbody>
@@ -310,7 +361,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                 ]
             },
 
-            options: fixedAgeValue_chartOptionsQuarters,
+            options: fixedAgeValue_chartOptions.quarters,
 
         });
 
@@ -355,7 +406,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             pointHitRadius: 0,
             pointHoverRadius: 0,
             lineTension: 0.3,
-            options: fixedAgeValue_chartOptionsQuarters,
+            options: fixedAgeValue_chartOptions.quarters,
         });
         chartQuarters.update();
 
@@ -404,7 +455,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
                 ]
             },
 
-            options: fixedAgeValue_chartOptionsYears,
+            options: fixedAgeValue_chartOptions.years,
 
         });
 
@@ -447,7 +498,7 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             pointHitRadius: 5,
             pointHoverRadius: 0,
             lineTension: 0.3,
-            options: fixedAgeValue_chartOptionsYears,
+            options: fixedAgeValue_chartOptions.years,
         });
         chartYears.update();
 
@@ -464,175 +515,19 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
 
 		<?php reset( $graph_colours ); ?>
 
-        // Custom legend
-        var quartersLegendContainer = document.getElementById("quarters-legend-container"),
-            yearsLegendContainer = document.getElementById("years-legend-container");
+        // Generate custom legends for each graph
+        generateCustomLegend(['graph__fixed-age-value-quarters'], '#quarters-legend-container', ['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years']);
+        generateCustomLegend(['graph__fixed-age-value-years'], '#years-legend-container', ['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years']);
 
-        // generate HTML legends
-        quartersLegendContainer.innerHTML = chartQuarters.generateLegend();
-        yearsLegendContainer.innerHTML = chartYears.generateLegend();
+        // Change graph options depending on window width
+        // Run on page load
+        changeGraphOptions(<?php echo $no_of_datasets; ?>);
+        // Listen for screen resize and fire function
+        window.addEventListener("resize", function() {
+            changeGraphOptions(<?php echo $no_of_datasets; ?>);
+        });
 
-        // bind onClick event to all LI-tags of the legend
-        var legendItems = quartersLegendContainer.getElementsByTagName('li');
-        for (var i = 0; i < legendItems.length; i += 1) {
-            legendItems[i].addEventListener("click", legendClickCallback, false);
-        }
-        var legendItems = yearsLegendContainer.getElementsByTagName('li');
-        for (var i = 0; i < legendItems.length; i += 1) {
-            legendItems[i].addEventListener("click", legendClickCallback, false);
-        }
 
-        function legendClickCallback(event) {
-            event = event || window.event;
-
-            var target = event.target || event.srcElement;
-            while (target.nodeName !== 'LI') {
-                target = target.parentElement;
-            }
-            var parent = target.parentElement;
-            var chartId = parseInt(parent.classList[0].split("-")[0], 10);
-            var chartQuartersId = chartQuarters.id;
-            var chartYearsId = chartYears.id;
-            var chart = Chart.instances[chartId];
-            var index = Array.prototype.slice.call(parent.children).indexOf(target);
-            // console.log(chart);
-
-            var allVisible = true; // assume that all datasets are visible
-
-            var i = 0;
-            while (i < (chart.config.data.datasets.length / 2)) { // all datasets divided by 2, as second half of datasets is polynomials of first half
-                if (chart.legend.legendItems[i].hidden) { // this dataset is hidden, meaning this is not the first legend click
-                    allVisible = false; // not all datasets are visible
-                    break;
-                }
-                i++;
-            }
-
-            if (allVisible) { // all datasets are visible, so hide all but the one clicked
-                i = 0;
-                while (i < (chart.config.data.datasets.length / 2)) { // all datasets divided by 2, as second half of datasets is polynomials of first half
-                    if (index !== i) {
-                        chartQuarters.data.datasets[i].hidden = true; // raw data dataset
-                        chartQuarters.data.datasets[i + 7].hidden = true; // polynomial dataset
-
-                        chartYears.data.datasets[i].hidden = true; // raw data dataset
-                        chartYears.data.datasets[i + 7].hidden = true; // polynomial dataset
-
-                        // Update the legend items
-                        $('.' + chartQuartersId + '-legend li:nth-child(' + (i + 1) + ')').addClass('hidden');
-                        $('.' + chartYearsId + '-legend li:nth-child(' + (i + 1) + ')').addClass('hidden');
-                    }
-                    i++;
-                }
-                // Show the reset graph button
-                document.getElementsByClassName('btn--reset-graph')[0].classList.add('is-active');
-
-                chartQuarters.update();
-                chartYears.update();
-
-            } else { // not all datasets are visible, so we need to show/hide the one clicked depending on current state
-                chartQuarters.data.datasets[index].hidden = !chartQuarters.data.datasets[index].hidden; // toggles hidden value - true/false
-                chartQuarters.data.datasets[index + 7].hidden = !chartQuarters.data.datasets[index + 7].hidden;
-
-                chartYears.data.datasets[index].hidden = !chartYears.data.datasets[index].hidden;
-                chartYears.data.datasets[index + 7].hidden = !chartYears.data.datasets[index + 7].hidden;
-
-                // Update the legend items
-                $('.' + chartQuartersId + '-legend li:nth-child(' + (index + 1) + ')').toggleClass('hidden');
-                $('.' + chartYearsId + '-legend li:nth-child(' + (index + 1) + ')').toggleClass('hidden');
-
-                // Show the reset graph button
-                document.getElementsByClassName('btn--reset-graph')[0].classList.add('is-active');
-
-                chartQuarters.update();
-                chartYears.update();
-            }
-
-            // Now check if the actions above have hidden all datasets - if so, reset the graph
-            var allHidden = true; // assume all datasets are hidden
-            i = 0;
-            while (i < (chart.config.data.datasets.length / 2)) { // all datasets divided by 2, as second half of datasets is polynomials of first half
-                if (!chart.legend.legendItems[i].hidden) { // this dataset is NOT hidden
-                    allHidden = false; // not all datasets are hidden
-                    break;
-                }
-                i++;
-            }
-
-            if (allHidden) {
-                // all datasets are hidden, so reset all to be visible
-                i = 0;
-                while (i < (chart.config.data.datasets.length / 2)) { // all datasets divided by 2, as second half of datasets is polynomials of first half
-                    chartQuarters.data.datasets[index].hidden = false;
-                    chartQuarters.data.datasets[index + 7].hidden = false;
-
-                    chartYears.data.datasets[index].hidden = false;
-                    chartYears.data.datasets[index + 7].hidden = false;
-
-                    i++;
-                }
-                // Update the legend item
-                $('.' + chartQuartersId + '-legend li').removeClass('hidden');
-                $('.' + chartYearsId + '-legend li').removeClass('hidden');
-
-                // Hide the reset graph button
-                document.getElementsByClassName('btn--reset-graph')[0].classList.remove('is-active');
-
-                chartQuarters.update();
-                chartYears.update();
-            }
-
-            // Now check if the actions above have led to all datasets being displayed - if so, hide the reset graph button
-            var allVisible = true; // assume all datasets are visible
-            i = 0;
-            while (i < (chart.config.data.datasets.length / 2)) { // all datasets divided by 2, as second half of datasets is polynomials of first half
-                if (chart.legend.legendItems[i].hidden) { // this dataset is hidden
-                    allVisible = false; // not all datasets are hidden
-                    break;
-                }
-                i++;
-            }
-
-            if(allVisible) {
-                // Hide the reset graph button
-                document.getElementsByClassName('btn--reset-graph')[0].classList.remove('is-active');
-            }
-        }
-
-        window.resetZoom = function () {
-            chartQuarters.resetZoom();
-            chartYears.resetZoom();
-            document.getElementsByClassName('btn--reset-zoom')[0].classList.remove('is-active');
-        };
-
-        window.resetGraph = function () {
-            var chartQuartersId = chartQuarters.id;
-            var chartYearsId = chartYears.id;
-
-            // Show all datasets
-            chartQuarters.data.datasets.forEach(function (e, index) {
-                chartQuarters.data.datasets[index].hidden = false;
-            });
-            chartQuarters.update();
-
-            chartYears.data.datasets.forEach(function (e, index) {
-                chartYears.data.datasets[index].hidden = false;
-            });
-            chartYears.update();
-
-            // Update the legend items
-            $('.' + chartQuartersId + '-legend li').removeClass('hidden');
-            $('.' + chartYearsId + '-legend li').removeClass('hidden');
-            document.getElementsByClassName('btn--reset-graph')[0].classList.remove('is-active');
-        };
-
-        window.clearAnnotations = function () {
-            chartQuarters.options.annotation.annotations = [];
-            chartQuarters.update();
-            chartYears.options.annotation.annotations = [];
-            chartYears.update();
-            document.getElementsByClassName('btn--clear-annotations')[0].classList.remove('is-active');
-        };
 
         window.addAnnotationVertical = function (year, month, day, text) {
             var line = year + ' ' + month + ' ' + day;
@@ -679,40 +574,8 @@ $ship_type_db_slugs = get_ship_type_database_slugs(); // get all ship type datab
             chartYears.options.annotation.annotations.push(newAnnotation);
             chartYears.update();
 
-            document.getElementsByClassName('btn--clear-annotations')[0].className += ' is-active';
+            document.getElementsByClassName('btn--clear-annotations--fixed-age-value')[0].className += ' is-active';
         }
-
-        // Change the graph options based on window size
-        function changeGraphOptions() {
-            // Get width and height of the window excluding scrollbars
-            var w = document.documentElement.clientWidth;
-
-            if (w <= 767) {
-                for (var i = 0; i < <?php echo $no_of_datasets; ?>; i++) {
-                    chartQuarters.data.datasets[i].borderWidth = 1;
-                    chartYears.data.datasets[i].borderWidth = 1;
-
-                    chartQuarters.data.datasets[i].pointRadius = 2;
-                    chartYears.data.datasets[i].pointRadius = 2;
-                }
-            } else {
-                for (var i = 0; i < <?php echo $no_of_datasets; ?>; i++) {
-                    chartQuarters.data.datasets[i].borderWidth = 2;
-                    chartYears.data.datasets[i].borderWidth = 2;
-
-                    chartQuarters.data.datasets[i].pointRadius = 3;
-                    chartYears.data.datasets[i].pointRadius = 3;
-                }
-            }
-
-            chartQuarters.update();
-            chartYears.update();
-        }
-
-        // Run on page load
-        changeGraphOptions();
-        // Listen for screen resize and fire function
-        window.addEventListener("resize", changeGraphOptions);
 
 
     })(jQuery);
