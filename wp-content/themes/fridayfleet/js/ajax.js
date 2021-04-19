@@ -42,9 +42,9 @@
             }
         })
             .done(function (data) {
-                $('.ajax-section--vessel-finance-calculator').html(data);
+                $('.ajax-section--vessel-finance-calculator').addClass('is-active').html(data);
                 // Reinitialise events etc.
-                // window.ffInit();
+                window.reInit();
                 $('#ajax-loader--vessel-finance-calculator').removeClass('is-active');
             })
 

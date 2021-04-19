@@ -1,3 +1,6 @@
 .ajax-section--vessel-finance-calculator {
-  margin-top:2rem;
+
+  &.is-active {
+    margin-top:2rem;
+  }
 }

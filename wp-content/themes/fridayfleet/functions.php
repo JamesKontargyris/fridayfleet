@@ -170,11 +170,10 @@ function fridayfleet_scripts() {
 	wp_enqueue_script( 'fridayfleet-buttons', get_template_directory_uri() . '/js/buttons.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-legend', get_template_directory_uri() . '/js/legend.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-box', get_template_directory_uri() . '/js/box.js', array(), _S_VERSION, true );
-	wp_enqueue_script( 'fridayfleet-nav-bar', get_template_directory_uri() . '/js/nav-bar.js', array(), _S_VERSION, true );
-	wp_enqueue_script( 'fridayfleet-sub-menu', get_template_directory_uri() . '/js/sub-menu.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-data-table', get_template_directory_uri() . '/js/data-table.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-switch', get_template_directory_uri() . '/js/switch.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-toggle-switch', get_template_directory_uri() . '/js/toggle-switch.js', array(), _S_VERSION, true );
+	wp_enqueue_script( 'fridayfleet-tools', get_template_directory_uri() . '/js/tools.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-user-summary', get_template_directory_uri() . '/js/user-summary.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-messages', get_template_directory_uri() . '/js/messages.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'fridayfleet-vessel-finance-calculator', get_template_directory_uri() . '/js/vessel-finance-calculator.js', array(), _S_VERSION, true );

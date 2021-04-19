@@ -5,7 +5,7 @@ var depreciation_chartOptionsLegend = {
 var depreciation_chartOptionsTooltips = {
     onlyShowForDatasetIndex: [0], // show raw data, not polynomial data
     intersect: false,
-    mode: 'nearest',
+    mode: 'index',
     displayColors: false,
     backgroundColor: '#ffffff',
     titleFontColor: '#086296',
@@ -14,6 +14,22 @@ var depreciation_chartOptionsTooltips = {
     bodyFontColor: '#002235',
     bodyFontFamily: "'Lato', Calibri, sans-serif",
     bodyFontSize: 14,
+    callbacks: {
+        label: function (tooltipItem, data) {
+            if (!tooltipItem.datasetIndex > 0) { // if above 0 this dataset is polynomial data, so shouldn't be displayed
+                // Set up the label and data for the actual value
+                var actualLabel = 'Actual: ';
+                actualLabel += tooltipItem.yLabel;
+
+                // Setup the label and data for the polynomial value
+                var polyLabel = 'Trend: ';
+                polyLabel += data.datasets[tooltipItem.datasetIndex + 1].data[tooltipItem.index].y;
+
+                return [actualLabel, polyLabel];
+            }
+            return false;
+        },
+    }
 };
 
 var depreciation_chartOptionsHover = {
@@ -76,7 +92,7 @@ var depreciation_chartOptionsPlugins = {
             mode: 'xy',
             sensitivity: 1,
             onZoomComplete: function ({chart}) {
-                document.getElementsByClassName('btn--reset-zoom')[0].className += ' is-active';
+                document.getElementsByClassName('btn--reset-zoom--vessel-finance-calculator')[0].className += ' is-active';
             }
         }
     },
@@ -94,13 +110,13 @@ var depreciation_chartOptionsPlugins = {
     },
     datalabels: {
         color: '#36A2EB',
-        align: 'top',
+        align: 'bottom',
         offset: 4,
         font: {
             size: 12
         },
         formatter: function (value, context) {
-            if(context.datasetIndex > 0) { // not the first dataset, i.e. the one that should have labels
+            if (context.datasetIndex > 0) { // not the first dataset, i.e. the one that should have labels
                 return '';
             }
             return value.y;

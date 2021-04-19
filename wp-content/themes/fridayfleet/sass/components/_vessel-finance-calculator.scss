@@ -1,3 +1,11 @@
+.box--vessel-finance-calculator {
+  display: none;
+
+  &.is-active {
+    display: block;
+  }
+}
+
 .vessel-finance-calculator {
   @include grid-media($grid-tablet-plus) {
     display: flex;
@@ -40,9 +48,18 @@ input[type="submit"].vessel-finance-calculator__button {
   display: block;
   width: 100%;
   @include font-size(16, 16);
-  background: $red;
+  background: $light-blue;
   color: white;
   padding: 1rem 2rem;
   border: 0;
   border-radius: 999rem;
+  transition: all 0.2s;
+
+  @include no-touch {
+    &:hover,
+    &:active,
+    &:focus {
+      background:$red;
+    }
+  }
 }

@@ -3,7 +3,7 @@ Contributors: whiteshadow
 Tags: admin, dashboard, menu, security, wpmu
 Requires at least: 4.1
 Tested up to: 5.7
-Stable tag: 2.14
+Stable tag: 2.14.1
 
 Lets you directly edit the WordPress admin menu. You can re-order, hide or rename existing menus, add custom menus and more.
 
@@ -82,6 +82,11 @@ Here are some usage tips and other things that can be good to know when using th
 == Changelog ==
 
 [Get the latest version here.](http://adminmenueditor.com/updates/)
+
+= 2.14.1 (2021-03-15) =
+##### Fixed
+* Fixed a bug introduced in version 2.14 where the "Embed WP page" feature would no longer display the field that let you choose the page.
+* Fixed a jQuery Migrate warning about isFunction() being deprecated.
 
 = 2.14 (2021-03-08) = 
 ##### Added

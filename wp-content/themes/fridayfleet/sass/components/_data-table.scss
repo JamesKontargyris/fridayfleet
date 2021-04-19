@@ -125,10 +125,10 @@ html.js {
 
 .data-table__key {
   display: inline-block;
-  float:right;
-  padding:0.5rem;
-  border:0.1rem solid $grey;
+  padding: 0.5rem;
+  border: 0.1rem solid $grey;
   @include font-size(13, 13);
+  margin: 0;
 
   .is-trend-data {
     font-style: italic;

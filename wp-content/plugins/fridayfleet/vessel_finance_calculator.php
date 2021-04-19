@@ -16,9 +16,9 @@ function update_vessel_finance_calculator() {
 	// etc.
 
 	foreach ( $form_data_array as $form_data_group ) {
-		$form_data[ str_replace('-', '_', trim($form_data_group['name'])) ] = trim($form_data_group['value']);
+		$form_data[ trim( $form_data_group['name'] ) ] = trim( $form_data_group['value'] );
 	}
-	get_template_part( 'template-parts/partials/partial', 'vessel-finance-calculator-visuals-and-data', [ 'form_data' => $form_data ] );
+	get_template_part( 'template-parts/partials/partial', 'vessel-finance-calculator-graph-and-data', [ 'form_data' => $form_data ] );
 
-	die();
+	die(); // necessary for AJAX calls
 }

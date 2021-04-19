@@ -118,6 +118,14 @@ a.data-view__title__change-data-view-link {
   }
 }
 
+.data-view__title--icon-grid {
+  @include grid-media($grid-tablet-plus) {
+    background: url(img/icon-grid-four-outline-white.svg) left center no-repeat;
+    background-size: auto 1.8rem;
+    padding-left: 3rem;
+  }
+}
+
 .data-view__title__divider {
   display: inline-block;
   color: $light-blue;

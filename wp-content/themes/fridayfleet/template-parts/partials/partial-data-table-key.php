@@ -1,0 +1,1 @@
+<p class="data-table__key <?php if(isset($args)) : echo $args['unique_class']; endif; ?>">Actual data <span class="is-trend-data">Trend data</span></p>

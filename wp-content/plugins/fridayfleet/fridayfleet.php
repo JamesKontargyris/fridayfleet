@@ -102,6 +102,49 @@ function get_ship_type_database_slugs( $count = 9999, $offset = 0, $ignore_ids =
 	return $ship_type_db_slugs;
 }
 
+// Get ships by ship group and return an array of IDs
+/**
+ * @param string $ship_type_db_slug
+ *
+ * @return false|int|WP_Post
+ */
+function get_ships_by_ship_group( $ship_group_id = 0 ) {
+
+	$args          = [
+		'p'              => $ship_group_id,
+		'post_status'    => 'publish',
+		'post_type'      => 'ship_group',
+		'posts_per_page' => 1,
+	];
+	$ship_type_ids = [];
+
+	// First, get the ship group and loop through to get all the ship types assigned
+	$ship_group = new WP_Query( $args );
+
+	while ( $ship_group->have_posts() ) {
+		$ship_group->the_post();
+
+		$ship_types = get_field( 'ship_group_ship_types' );
+
+		foreach ( $ship_types as $ship_type_id ) {
+			$ship_types_ids[] = $ship_type_id;
+		}
+	}
+	wp_reset_postdata();
+
+	// Second, get a WP_Query object containing all ship types found and return it
+	$args = [
+		'p'              => $ship_types_ids,
+		'post_status'    => 'publish',
+		'post_type'      => 'ship_type',
+		'posts_per_page' => 9999999,
+		'order_by'       => 'menu_order',
+		'order'          => 'ASC'
+	];
+
+	return new WP_Query( $args );
+}
+
 /**
  * Return all market notes in chronological order, latest first
  *
@@ -117,7 +160,7 @@ function get_market_notes( $count = 9999, $offset = 0, $ignore_ids = [], $random
 	return get_posts_by_type( 'market_note', $count, $offset, $ignore_ids, $random, 'meta_value', 'DESC', 'market_note_date' );
 }
 
-function get_market_notes_by_ship_type_id( $ship_type_id = 0, $count = 9999, $offset = 0, $ignore_ids = [], $random = false ) {
+function get_market_notes_by_ship_type( $ship_type_id = 0, $count = 9999, $offset = 0, $ignore_ids = [], $random = false ) {
 
 	$args = [
 		'post_status'    => 'publish',

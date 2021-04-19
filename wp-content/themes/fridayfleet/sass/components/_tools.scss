@@ -1,0 +1,91 @@
+.tools {
+  margin-bottom: 2rem;
+}
+
+ul.tool-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  &:after {
+    @include clearfix;
+  }
+}
+
+a.tool-menu__button,
+button.tool-menu__button {
+  border: none;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  @extend .btn;
+  @extend .btn--pill;
+  padding: 1rem 2rem;
+  font-weight: bold;
+  @include font-size(13, 13);
+  transition: padding 0.2s ease-out;
+  margin: 0;
+
+  @include no-touch {
+    &:hover,
+    &:active,
+    &:focus {
+      opacity: 1;
+      background: tint($navy-blue, 12%);
+    }
+  }
+
+  &.with-icon--calculator {
+    padding-left: 4.25rem;
+    background: url(img/icon-calculator-outline-white.svg) left 1.5rem center no-repeat, $light-blue;
+    background-size: 2rem 2rem;
+
+    @include no-touch {
+      &:hover,
+      &:active,
+      &:focus {
+        padding-right: 3rem;
+        background: url(img/icon-arrow-down-white.svg) right 1rem center no-repeat, url(img/icon-calculator-outline-white.svg) left 1.5rem center no-repeat, $red;
+        background-size: 1rem 1rem, 2rem 2rem, auto;
+      }
+    }
+
+    &.is-active {
+      padding:1.5rem 1.5rem 1.5rem 4.25rem;
+      border-radius: $base-border-radius $base-border-radius 0 0;
+      background: url(img/icon-calculator-outline-white.svg) left 1.5rem center no-repeat, $light-blue;
+      background-size: 2rem 2rem, auto;
+
+      @include no-touch {
+        &:hover,
+        &:active,
+        &:focus {
+          padding: 1.5rem 3rem 1.5rem 4.25rem;
+          background: url(img/icon-arrow-up-white.svg) right 1rem center no-repeat, url(img/icon-calculator-outline-white.svg) left 1.5rem center no-repeat, $light-blue;
+          background-size: 1rem 1rem, 2rem 2rem, auto;
+        }
+      }
+    }
+  }
+}
+
+.tool-drawer {
+  position: relative;
+  display: none;
+  //background: tint($navy-blue, 7%);
+  padding: 1rem;
+  border:0.2rem solid $light-blue;
+  border-radius: 0 $base-border-radius $base-border-radius $base-border-radius;
+
+  .box:last-of-type {
+    margin-bottom:0; // remove extra space after the last box in the tool-drawer
+  }
+}
+
+.tool-drawer__tool {
+  display: none;
+
+  &.is-active {
+    display: block;
+  }
+}
