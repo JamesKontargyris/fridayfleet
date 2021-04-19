@@ -23,6 +23,7 @@
     box-shadow: none;
     text-align: left;
     @include font-size(14, 15);
+    @include wordpress-admin-bar-sticky-header-fix;
   }
 }
 

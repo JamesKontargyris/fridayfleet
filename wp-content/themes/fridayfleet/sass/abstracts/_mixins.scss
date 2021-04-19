@@ -128,6 +128,22 @@
   }
 }
 
+// WordPress admin bar sticky fix
+@mixin wordpress-admin-bar-sticky-header-fix( $offset: 0 ) {
+  $narrow-offset: 4.6rem;
+  $wide-offset: 3.2rem;
+  @if $offset != 0 and type-of($offset) == 'number' {
+    $narrow-offset: $narrow-offset + $offset;
+    $wide-offset: $wide-offset + $offset;
+  }
+  .admin-bar & {
+    top: $narrow-offset;
+    @media screen and (min-width: 78.3rem) {
+      top: $wide-offset;
+    }
+  }
+}
+
 // Touch / no-touch media queries
 @mixin no-touch {
   @media (hover:hover) { @content; }

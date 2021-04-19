@@ -1,13 +1,20 @@
-<main id="primary" class="site__body">
+<?php get_header(); ?>
 
-    <div id="content-top"></div>
+<?php get_template_part( 'template-parts/partials/partial', 'nav-bar' ); ?>
 
-	<?php
-	while ( have_posts() ) : the_post();
+    <main id="primary" class="site__body">
+        <div id="content-top"></div>
 
-		get_template_part( 'template-parts/content', 'page' );
+		<?php
+		while ( have_posts() ) {
+			the_post();
+			get_template_part( 'template-parts/content', 'page' );
+		}
+		?>
 
-	endwhile; // End of the loop.
-	?>
 
-</main><!-- #main -->
+		<?php get_template_part( 'template-parts/partials/partial', 'powered-by-message' ); ?>
+
+    </main>
+
+<?php get_footer();

@@ -16,9 +16,7 @@
 		}
 		?>
 
-        <div class="footer__powered-by">
-			<?php get_template_part( 'template-parts/partials/partial', 'powered-by-message' ); ?>
-        </div>
+		<?php get_template_part( 'template-parts/partials/partial', 'powered-by-message' ); ?>
 
     </main>
 
