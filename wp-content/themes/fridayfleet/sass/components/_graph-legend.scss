@@ -10,11 +10,12 @@
 
   li {
     color: $frost-blue;
-    margin: 0.5rem 1rem;
+    margin: 0 1rem;
+    line-height:2.6rem;
     cursor: pointer;
 
     @include grid-media($grid-tablet-plus) {
-      &:before {
+      &:not(.legend-controls):before {
         content: ' ';
         display: inline-block;
         width: 1.8rem;

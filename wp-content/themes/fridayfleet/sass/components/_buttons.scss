@@ -13,9 +13,32 @@
   z-index: z('high');
 }
 
+.btn--graph-control {
+  transition:0.2s all;
+
+  @include no-touch {
+    &:hover,
+    &:active,
+    &:focus {
+      opacity:0.7;
+    }
+  }
+}
+
 .btn--graph-update {
   display: none;
   background: url(img/icon-reset-light-blue.svg) left 0.7rem center no-repeat, white;
+  background-size: 1.4rem, auto;
+  padding: 0.7rem 0.5rem 0.7rem 2.4rem;
+
+  &.is-active {
+    display: inline-block;
+  }
+}
+
+.btn--graph-select-all {
+  display: none;
+  background: url(img/icon-select-all-outline-blue.svg) left 0.7rem center no-repeat, white;
   background-size: 1.4rem, auto;
   padding: 0.7rem 0.5rem 0.7rem 2.4rem;
 

@@ -133,13 +133,10 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
 
                     <div class="graph-update-button-group">
                         <button onclick="resetZoom(['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years'], 'btn--reset-zoom--fixed-age-value')"
-                                class="btn btn--graph-update btn--reset-zoom--fixed-age-value">Reset Zoom
-                        </button>
-                        <button onclick="resetGraph(['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years'], 'btn--reset-graph--fixed-age-value')"
-                                class="btn btn--graph-update btn--reset-graph--fixed-age-value">Reset Graph
+                                class="btn btn--graph-control btn--graph-update btn--reset-zoom--fixed-age-value">Reset Zoom
                         </button>
                         <button onclick="clearAnnotations(['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years'], 'btn--clear-annotations--fixed-age-value')"
-                                class="btn btn--graph-update btn--clear-annotations--fixed-age-value">
+                                class="btn btn--graph-control btn--graph-update btn--clear-annotations--fixed-age-value">
                             Remove Line(s)
                         </button>
                     </div>

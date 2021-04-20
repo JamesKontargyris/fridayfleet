@@ -224,7 +224,11 @@
                 text.push('</li>');
             }
         }
+        text.push('<li class="legend-controls">');
+        text.push('<button onclick=\'resetGraph([\"graph__fixed-age-value-quarters\", \"graph__fixed-age-value-years\"], \"btn--reset-graph--fixed-age-value\")\' class=\'btn btn--graph-control btn--graph-select-all btn--reset-graph--fixed-age-value\'>Select all</button>');
+        text.push('</li>');
         text.push('</ul>');
+
         return text.join('');
     }
 

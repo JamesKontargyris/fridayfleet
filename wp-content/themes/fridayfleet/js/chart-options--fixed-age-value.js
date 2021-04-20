@@ -3,7 +3,6 @@ var fixedAgeValue_chartOptionsLegend = {
 }
 
 var fixedAgeValue_chartOptionsTooltips = {
-    onlyShowForDatasetIndex: [0, 1, 2, 3, 4, 5, 6], // show raw data, not polynomial data
     intersect: false,
     mode: 'nearest',
     displayColors: true,
@@ -16,28 +15,31 @@ var fixedAgeValue_chartOptionsTooltips = {
     bodyFontSize: 14,
     callbacks: {
         label: function (tooltipItem, data) {
-            if (tooltipItem.datasetIndex < 7) { // if above 7 this dataset is polynomial data, so shouldn't be displayed
-                // Set up the label and data for the actual value
-                var actualLabel = data.datasets[tooltipItem.datasetIndex].label || '';
-                if (actualLabel) {
-                    actualLabel += ': ';
-                }
-                actualLabel += tooltipItem.yLabel;
+            var datasetIndexActual = tooltipItem.datasetIndex;
+            var datasetIndexPoly = tooltipItem.datasetIndex + 7;
 
-                // Setup the label and data for the polynomial value
-                var polyLabel = 'Trend: ';
-                polyLabel += data.datasets[tooltipItem.datasetIndex + 7].data[tooltipItem.index].y;
-
-                return [actualLabel, polyLabel];
+            if (tooltipItem.datasetIndex >= 7) { // if equal to or above 7 this dataset is polynomial data, so find the corresponding dataset indices
+                datasetIndexActual = tooltipItem.datasetIndex - 7;
+                datasetIndexPoly = tooltipItem.datasetIndex;
             }
-            return false;
+            // Set up the label and data for the actual value
+            var actualLabel = data.datasets[datasetIndexActual].label || '';
+            if (actualLabel) {
+                actualLabel += ': ';
+            }
+            actualLabel += data.datasets[datasetIndexActual].data[tooltipItem.index].y;
+
+            // Setup the label and data for the polynomial value
+            var polyLabel = 'Trend: ';
+            polyLabel += data.datasets[datasetIndexPoly].data[tooltipItem.index].y;
+
+            return [actualLabel, polyLabel];
         },
         labelColor: function (tooltipItem, chart) {
             var useDatasetIndex = tooltipItem.datasetIndex < 7 ? tooltipItem.datasetIndex + 7 : tooltipItem.datasetIndex; // only use a higher dataset index if it is one of the first six datasets, i.e. the raw data, otherwise you get a console error
             return {
                 borderColor: 'rgba(255,0,0, 0)',
                 backgroundColor: chart.config.data.datasets[useDatasetIndex].backgroundColor, // use the background color of the polynomial lines rather than the lower opacity actual data lines
-
             }
         }
     },
