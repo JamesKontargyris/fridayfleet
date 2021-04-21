@@ -437,9 +437,10 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
                             spanGaps: true,
                             pointStyle: 'circle',
                             pointRadius: 3,
+                            pointHitRadius: 10,
                             pointHoverRadius: 3,
-                            pointHoverBorderColor: 'rgba(<?php echo $colour; ?>, 0.2)',
-                            pointHoverBackgroundColor: 'rgba(<?php echo $colour; ?>, 0.2)',
+                            pointHoverBorderColor: 'rgba(<?php echo $colour; ?>, 1)',
+                            pointHoverBackgroundColor: 'rgba(<?php echo $colour; ?>, 1)',
                             lineTension: 0.3,
                         },
 
@@ -488,8 +489,8 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
                 spanGaps: true,
                 pointStyle: 'circle',
                 pointRadius: 0,
-                pointHitRadius: 5,
-                pointHoverRadius: 0,
+                pointHitRadius: 10,
+                pointHoverRadius: 3,
                 lineTension: 0.3,
                 options: fixedAgeValue_chartOptions.years,
             });
