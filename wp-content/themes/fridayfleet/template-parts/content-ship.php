@@ -68,7 +68,8 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
                             <div class="vessel-finance-calculator__input-group">
                                 <label for="build-date" class="vessel-finance-calculator__label">Build date
                                     (dd/mm/yyyy)</label>
-                                <input type="text" autocomplete="off" class="vessel-finance-calculator__text-input datepicker"
+                                <input type="text" autocomplete="off"
+                                       class="vessel-finance-calculator__text-input datepicker"
                                        name="build_date"
                                        placeholder="Select date..." value="<?php echo $build_date; ?>">
                             </div>
@@ -76,7 +77,8 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
                             <div class="vessel-finance-calculator__input-group">
                                 <label for="date-of-finance" class="vessel-finance-calculator__label">Date of
                                     finance (dd/mm/yyyy)</label>
-                                <input type="text" autocomplete="off" class="vessel-finance-calculator__text-input datepicker"
+                                <input type="text" autocomplete="off"
+                                       class="vessel-finance-calculator__text-input datepicker"
                                        name="date_of_finance" placeholder="Select date..."
                                        value="<?php echo $date_of_finance; ?>">
                             </div>
@@ -133,7 +135,8 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
 
                     <div class="graph-update-button-group">
                         <button onclick="resetZoom(['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years'], 'btn--reset-zoom--fixed-age-value')"
-                                class="btn btn--graph-control btn--graph-update btn--reset-zoom--fixed-age-value">Reset Zoom
+                                class="btn btn--graph-control btn--graph-update btn--reset-zoom--fixed-age-value">Reset
+                            Zoom
                         </button>
                         <button onclick="clearAnnotations(['graph__fixed-age-value-quarters', 'graph__fixed-age-value-years'], 'btn--clear-annotations--fixed-age-value')"
                                 class="btn btn--graph-control btn--graph-update btn--clear-annotations--fixed-age-value">
@@ -191,7 +194,7 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
                 </div>
 
                 <div class="box__content box__content--scrollable" style="max-height: 25vh;">
-					<?php get_template_part( 'template-parts/partials/partial', 'data-table-key', ['unique_class' => 'data-table__key--fixed-age-value'] ); ?>
+					<?php get_template_part( 'template-parts/partials/partial', 'data-table-key', [ 'unique_class' => 'data-table__key--fixed-age-value' ] ); ?>
 
 
                     <table class="data-table data-table--first-col data-table--sticky-header"
@@ -330,15 +333,20 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
                             ],
                             fill: false,
                             borderColor: 'rgba(<?php echo $colour; ?>, 0.2)',
-                            backgroundColor: 'rgba(<?php echo $colour; ?>, 0.2)',
+                            //pointBackgroundColor: 'rgba(<?php //echo $colour; ?>//, 0.2)',
+                            backgroundColor: [
+								<?php foreach($dataset['data'] as $ds) : ?>
+                                'rgba(<?php echo $colour; ?>, 0.2)',
+								<?php endforeach; ?>
+                            ],
                             borderWidth: 2,
                             spanGaps: true,
                             pointStyle: 'circle',
                             pointRadius: 3,
                             pointHitRadius: 10,
                             pointHoverRadius: 3,
-                            pointHoverBorderColor: 'rgba(<?php echo $colour; ?>, 0.2)',
-                            pointHoverBackgroundColor: 'rgba(<?php echo $colour; ?>, 0.2)',
+                            pointHoverBorderColor: 'rgba(<?php echo $colour; ?>, 1)',
+                            pointHoverBackgroundColor: 'rgba(<?php echo $colour; ?>, 1)',
                             lineTension: 0.3,
                         },
 						<?php endforeach; ?>
@@ -387,9 +395,10 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
                 spanGaps: true,
                 pointStyle: 'circle',
                 pointRadius: 0,
-                pointHitRadius: 0,
-                pointHoverRadius: 0,
+                pointHitRadius: 10,
+                pointHoverRadius: 3,
                 lineTension: 0.3,
+                pointHoverBackgroundColor: 'rgba(<?php echo $colour; ?>, 1)',
                 options: fixedAgeValue_chartOptions.quarters,
             });
             chartQuarters.update();

@@ -46,7 +46,7 @@ var fixedAgeValue_chartOptionsTooltips = {
 };
 
 var fixedAgeValue_chartOptionsHover = {
-    mode: 'nearest'
+    mode: 'nearest',
 };
 
 var fixedAgeValue_chartOptionsAnnotations = {
@@ -207,6 +207,13 @@ var fixedAgeValue_chartOptions = {
         annotation: fixedAgeValue_chartOptionsAnnotations,
         legendCallback: function (chart) {
             return legendCallback(chart);
+        },
+        onHover: function (evt) {
+            var item = chartYears.getElementAtEvent(evt);
+            if (item.length) {
+                console.log("onHover", item, evt.type);
+                console.log(">data", item[0]._index, data.datasets[0].data[item[0]._index]);
+            }
         },
     }
 }
