@@ -40,7 +40,8 @@
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd/mm/yy',
-        maxDate: '+0d'
+        maxDate: '+0d',
+        yearRange: "-100:+0"
     });
 
     // Scroll to page elements
