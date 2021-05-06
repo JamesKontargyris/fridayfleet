@@ -64,26 +64,32 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
                             <div class="form-errors__errors"></div>
                         </div>
 
-                        <form action="" method="POST" class="vessel-finance-calculator">
+                        <form action="" method="POST" class="vessel-finance-calculator is-active">
                             <div class="vessel-finance-calculator__input-group">
-                                <label for="build-date" class="vessel-finance-calculator__label">Build date
+                                <label for="build_date" class="vessel-finance-calculator__label">Build date
                                     (dd/mm/yyyy)</label>
                                 <input type="text" autocomplete="off"
                                        class="vessel-finance-calculator__text-input datepicker"
                                        name="build_date"
-                                       placeholder="Select date..." value="<?php echo $build_date; ?>">
+                                       placeholder="Select date...">
                             </div>
 
                             <div class="vessel-finance-calculator__input-group">
-                                <label for="date-of-finance" class="vessel-finance-calculator__label">Date of
+                                <label for="date_of_finance" class="vessel-finance-calculator__label">Date of
                                     finance (dd/mm/yyyy)</label>
                                 <input type="text" autocomplete="off"
                                        class="vessel-finance-calculator__text-input datepicker"
-                                       name="date_of_finance" placeholder="Select date..."
-                                       value="<?php echo $date_of_finance; ?>">
+                                       name="date_of_finance" placeholder="Select date...">
                             </div>
 
-                            <div class="vessel-finance-calculator__input-group">
+                            <div class="vessel-finance-calculator__input-group vessel-finance-calculator__input-group--shrink">
+                                <label for="percentage_of_finance" class="vessel-finance-calculator__label">Percentage of finance</label>
+                                <input type="number" autocomplete="off"
+                                       class="vessel-finance-calculator__text-input"
+                                       name="percentage_of_finance" placeholder="Enter number...">
+                            </div>
+
+                            <div class="vessel-finance-calculator__input-group vessel-finance-calculator__input-group--shrink">
                                 <input type="hidden" autocomplete="off" name="form_submitted" value="1">
                                 <input type="hidden" autocomplete="off" name="ship" value="<?php echo $ship_db_slug ?>">
                                 <input type="submit"
@@ -107,8 +113,8 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
                             <span class="help-icon tooltip--help hide--touch"
                                   title="Drag out an area to zoom. Hover over a datapoint to view data. Click a legend label to show/hide other datasets."></span>
                         </div>
-                        <div class="box__header__sub-title content--fixed-age-value-years">Data based on an average
-                            of quarter figures for each year
+                        <div class="box__header__sub-title content--fixed-age-value-years">
+                            Data based on an average of quarter figures for each year
                         </div>
                     </div>
                     <div class="box__header__controls">
@@ -297,7 +303,7 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
 					<?php if ( $market_notes->have_posts() ) : ?>
 
 						<?php while ( $market_notes->have_posts() ) : $market_notes->the_post(); ?>
-							<?php get_template_part( 'template-parts/partials/partial', 'market-note--ship-view' ); ?>
+							<?php get_template_part( 'template-parts/partials/partial', 'market-note--ship-view', ['last_year_of_data' => $last_year_of_data]); ?>
 						<?php endwhile;
 						wp_reset_postdata(); ?>
 
@@ -522,53 +528,7 @@ $last_year_of_data = $ff->getLastYearOfData( $fixed_age_value_table_data_years[ 
             });
 
 
-            window.addAnnotationVertical = function (year, month, day, text) {
-                var line = year + ' ' + month + ' ' + day;
-                var quarterGraphValue = year + ' ' + month + ' ' + day;
 
-                // If annotation will go off the edge of the chart,
-                // position it at the right-edge
-                if (year >= <?php echo $last_year_of_data; ?>) {
-                    var yearGraphValue = <?php echo $last_year_of_data; ?> +' 01 01';
-                } else {
-                    var yearGraphValue = year + ' ' + month + ' ' + day;
-                }
-
-                var newAnnotation = {
-                    drawTime: "afterDatasetsDraw",
-                    id: line,
-                    type: "line",
-                    mode: "vertical",
-                    scaleID: "x-axis-0",
-                    value: quarterGraphValue,
-                    borderColor: "white",
-                    borderWidth: 1,
-                    borderDash: [2, 2],
-                    borderDashOffset: 5,
-                    label:
-                        {
-                            enabled: true,
-                            backgroundColor: "rgba(0,0,0,0.4)",
-                            cornerRadius: 3,
-                            position: "center",
-                            fontColor: "rgba(255,255,255,1)",
-                            fontFamily: "Lato",
-                            fontSize: 11,
-                            content: text,
-                            rotation: 90,
-                            xAdjust: -12,
-                        }
-                };
-                chartQuarters.options.annotation.annotations.push(newAnnotation);
-                chartQuarters.update();
-
-                // Update the value for the years chart
-                newAnnotation.value = yearGraphValue;
-                chartYears.options.annotation.annotations.push(newAnnotation);
-                chartYears.update();
-
-                document.getElementsByClassName('btn--clear-annotations--fixed-age-value')[0].className += ' is-active';
-            }
 
 
         })(jQuery);

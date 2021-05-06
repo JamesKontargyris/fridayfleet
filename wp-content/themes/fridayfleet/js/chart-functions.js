@@ -1,22 +1,24 @@
 (function ($) {
     // Reset the zoom of a chart
-    window.resetZoom = function (GraphIDs = [], buttonClass = null) {
-        updateGraph('resetZoom', GraphIDs, buttonClass);
+    window.resetZoom = function (graphIDs = [], buttonClass = null) {
+        updateGraph('resetZoom', graphIDs, buttonClass);
     };
 
     // Reset a graph so all datasets are shown and legend items are "on"
-    window.resetGraph = function (GraphIDs = [], buttonClass = null) {
-        updateGraph('resetGraph', GraphIDs, buttonClass);
+    window.resetGraph = function (graphIDs = [], buttonClass = null) {
+        updateGraph('resetGraph', graphIDs, buttonClass);
     };
 
     // Clear annotations from a graph
-    window.clearAnnotations = function (GraphIDs = [], buttonClass = null) {
-        updateGraph('clearAnnotations', GraphIDs, buttonClass);
+    window.clearAnnotations = function (graphIDs = [], buttonClass = null, ignoreAnnotationIDs = []) {
+        updateGraph('clearAnnotations', graphIDs, buttonClass, {
+            ignoreAnnotationIDs: ignoreAnnotationIDs
+        });
     };
 
     // Generate a custom legend
-    window.generateCustomLegend = function (GraphIDs = [], legendContainer = null, clickAffectsGraphIDs = []) {
-        updateGraph('generateCustomLegend', GraphIDs, null, {
+    window.generateCustomLegend = function (graphIDs = [], legendContainer = null, clickAffectsGraphIDs = []) {
+        updateGraph('generateCustomLegend', graphIDs, null, {
             legendContainer: legendContainer,
             clickAffectsGraphIDs: clickAffectsGraphIDs
         });
@@ -36,9 +38,9 @@
         return false;
     }
 
-    window.updateGraph = function (instruction = null, GraphIDs = [], buttonClass = null, data) {
+    window.updateGraph = function (instruction = null, graphIDs = [], buttonClass = null, data) {
         // Loop through all graph IDs passed in
-        GraphIDs.forEach(function (GraphID) {
+        graphIDs.forEach(function (GraphID) {
             // Find the instance with the ID passed in, on the canvas element
             Chart.helpers.each(Chart.instances, function (instance) {
                 if (instance.chart.canvas.id == GraphID) {
@@ -57,9 +59,13 @@
                             // Update the legend items
                             $('.' + instance.chart.id + '-legend li').removeClass('hidden');
                             break;
-                        case 'clearAnnotations':
-                            // clear annotations
-                            instance.chart.options.annotation.annotations = [];
+                        case 'clearAnnotations':                            // clear annotations
+                            instance.chart.options.annotation.annotations.forEach(function(item, index) {
+                                // if this isn't an annotation ID that should be ignored, remove the annotation
+                                if(!data.ignoreAnnotationIDs.includes(item.id)) {
+                                    instance.chart.options.annotation.annotations[index] = [];
+                                }
+                            });
                             instance.chart.update();
                             break;
                         case 'generateCustomLegend':
@@ -231,5 +237,57 @@
 
         return text.join('');
     }
+
+    window.addAnnotationVertical = function (year, month, day, text, graphIDs = [], last_year_of_data = 2999) {
+        // Loop through all graph IDs passed in
+        graphIDs.forEach(function (GraphID) {
+            // Find the instance with the ID passed in, on the canvas element
+            Chart.helpers.each(Chart.instances, function (instance) {
+                if (instance.chart.canvas.id == GraphID) {
+                    var graphValue = year + ' ' + month + ' ' + day;
+
+                    // If annotation will go off the edge of the chart,
+                    // position it at the right-edge
+                    if (year >= last_year_of_data) {
+                        graphValue = last_year_of_data + ' 01 01';
+                    }
+
+                    var newAnnotation = {
+                        adjustScaleRange: true,
+                        drawTime: "afterDatasetsDraw",
+                        id: graphValue,
+                        type: "line",
+                        mode: "vertical",
+                        scaleID: "x-axis-0",
+                        value: graphValue,
+                        borderColor: "white",
+                        borderWidth: 1,
+                        borderDash: [2, 2],
+                        borderDashOffset: 5,
+                        label:
+                            {
+                                enabled: true,
+                                backgroundColor: "rgba(0,0,0,0.4)",
+                                cornerRadius: 3,
+                                position: "center",
+                                fontColor: "rgba(255,255,255,1)",
+                                fontFamily: "Lato",
+                                fontSize: 11,
+                                content: text,
+                                rotation: 90,
+                                xAdjust: -12,
+                            }
+                    };
+
+                    instance.options.annotation.annotations.push(newAnnotation);
+                    instance.update();
+
+                    $('.btn--clear-annotations--fixed-age-value, .btn--clear-annotations--vessel-finance-calculator').addClass('is-active');
+                }
+            });
+        });
+
+    }
+
 
 })(jQuery);

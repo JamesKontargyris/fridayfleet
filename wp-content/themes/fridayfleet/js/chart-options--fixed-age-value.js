@@ -47,6 +47,19 @@ var fixedAgeValue_chartOptionsTooltips = {
 
 var fixedAgeValue_chartOptionsHover = {
     mode: 'nearest',
+    // onHover: function (event, elements) {
+    //     if (elements.length) {
+    //         var chart = elements[0]._chart,
+    //             datasetIndex = elements[0]._datasetIndex,
+    //             dataIndex = elements[0]._index;
+    //         // console.log(elements[0]);
+    //         if(datasetIndex >= 7) {
+    //             datasetIndex = datasetIndex - 7;
+    //         }
+    //         chart.data.datasets[datasetIndex].backgroundColor[dataIndex] = 'white';
+    //         chart.update();
+    //     }
+    // }
 };
 
 var fixedAgeValue_chartOptionsAnnotations = {
@@ -207,13 +220,6 @@ var fixedAgeValue_chartOptions = {
         annotation: fixedAgeValue_chartOptionsAnnotations,
         legendCallback: function (chart) {
             return legendCallback(chart);
-        },
-        onHover: function (evt) {
-            var item = chartYears.getElementAtEvent(evt);
-            if (item.length) {
-                console.log("onHover", item, evt.type);
-                console.log(">data", item[0]._index, data.datasets[0].data[item[0]._index]);
-            }
         },
     }
 }

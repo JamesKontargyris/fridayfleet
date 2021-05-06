@@ -12,7 +12,7 @@ function update_vessel_finance_calculator() {
 	//     0 =>
 	//        array =>
 	//                'name' => 'build-date'
-	//                'value' => '1 January 2021'
+	//                'value' => '01/01/2021'
 	// etc.
 
 	foreach ( $form_data_array as $form_data_group ) {
